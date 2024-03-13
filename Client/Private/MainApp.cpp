@@ -12,6 +12,7 @@
 
 #include "Shader.h"
 #include "Texture.h"
+#include"Gui.h"
 
 CMainApp::CMainApp()
 	: m_pGameInstance{ CGameInstance::GetInstance() }

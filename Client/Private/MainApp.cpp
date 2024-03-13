@@ -1,6 +1,10 @@
 #include "stdafx.h"
 #include "..\Public\MainApp.h"
 
+#include "imgui.h"
+#include "imgui_impl_win32.h"
+#include "imgui_impl_dx11.h"
+
 #include "GameInstance.h"
 #include "Level_Loading.h"
 #include "BackGround.h"
@@ -24,6 +28,8 @@ HRESULT CMainApp::Initialize()
 	EngineDesc.iWinSizeY = g_iWinSizeY;
 	EngineDesc.isWindowed = true;
 
+
+
 	/* 엔진 초기화과정을 거친다. ( 그래픽디바이스 초기화과정 + 레벨매니져를 사용할 준비를 한다. ) */
 	if (FAILED(m_pGameInstance->Initialize_Engine(LEVEL_END, EngineDesc, &m_pDevice, &m_pContext)))
 		return E_FAIL;	
@@ -34,12 +40,12 @@ HRESULT CMainApp::Initialize()
 	if (FAILED(Ready_Prototype_GameObject()))
 		return E_FAIL;
 
-	if (FAILED(Open_Level(LEVEL_LOGO)))
-		return E_FAIL;
+	m_pGui->Create(m_pDevice,m_pContext);
 
 
 	
-
+	if (FAILED(Open_Level(LEVEL_LOGO)))
+		return E_FAIL;
 	
 
 	return S_OK;
@@ -48,16 +54,22 @@ HRESULT CMainApp::Initialize()
 void CMainApp::Tick(float fTimeDelta)
 {
 	m_pGameInstance->Tick_Engine(fTimeDelta);
+	m_pGui->Update_UI();
 }
 
 HRESULT CMainApp::Render()
 {
 
+	m_pGui->Render();
 
 	/* 그린다. */
 	if (FAILED(m_pGameInstance->Draw(_float4(0.f, 0.f, 0.f, 1.f))))
 		return E_FAIL;
 
+	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+
+	if (FAILED(m_pGameInstance->Present()))
+		return E_FAIL;
 	
 
 	return S_OK;
@@ -132,6 +144,8 @@ void CMainApp::Free()
 {
 	Safe_Release(m_pContext);
 	Safe_Release(m_pDevice);
+	Safe_Release(m_pGui);
+
 
 	/* 레퍼런스 카운트를 0으로만든다. */
 	Safe_Release(m_pGameInstance);

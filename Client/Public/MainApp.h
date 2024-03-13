@@ -2,6 +2,7 @@
 
 #include "Client_Defines.h"
 #include "Base.h"
+#include"Gui.h"
 
 BEGIN(Engine)
 class CGameInstance;
@@ -25,7 +26,7 @@ private:
 	ID3D11DeviceContext*	m_pContext = { nullptr };
 
 	CGameInstance*			m_pGameInstance = { nullptr };
-
+	CGui*					m_pGui = { nullptr };
 public:
 	HRESULT Open_Level(LEVEL eLevelID);
 	HRESULT Ready_Prototype_GameObject();

@@ -76,7 +76,7 @@ HRESULT CGameInstance::Draw(const _float4 & vClearColor)
 
 	m_pRenderer->Draw();	
 
-	return Present();
+	return S_OK;
 }
 
 

@@ -7,7 +7,7 @@ class CGui final:    public CBase
 {
 private:
 	 CGui();
-	 virtual ~CGui() = default;
+	 virtual ~CGui();
 
 public:
 	HRESULT Initialize() ;

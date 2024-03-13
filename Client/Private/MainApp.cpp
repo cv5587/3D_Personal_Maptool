@@ -40,7 +40,7 @@ HRESULT CMainApp::Initialize()
 	if (FAILED(Ready_Prototype_GameObject()))
 		return E_FAIL;
 
-	m_pGui->Create(m_pDevice,m_pContext);
+	m_pGui=CGui::Create(m_pDevice,m_pContext);
 
 
 	
@@ -142,9 +142,9 @@ CMainApp * CMainApp::Create()
 
 void CMainApp::Free()
 {
+	Safe_Release(m_pGui);
 	Safe_Release(m_pContext);
 	Safe_Release(m_pDevice);
-	Safe_Release(m_pGui);
 
 
 	/* 레퍼런스 카운트를 0으로만든다. */

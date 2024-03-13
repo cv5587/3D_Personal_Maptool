@@ -9,6 +9,10 @@ CGui::CGui()
 {
 }
 
+CGui::~CGui()
+{
+}
+
 HRESULT CGui::Initialize()
 {
 	return S_OK;

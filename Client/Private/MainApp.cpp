@@ -1,9 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\MainApp.h"
 
-#include "imgui.h"
-#include "imgui_impl_win32.h"
-#include "imgui_impl_dx11.h"
+
 
 #include "GameInstance.h"
 #include "Level_Loading.h"
@@ -11,7 +9,6 @@
 #include "CUIObject.h"
 
 #include "Shader.h"
-#include "Texture.h"
 #include"Gui.h"
 
 CMainApp::CMainApp()
@@ -29,10 +26,8 @@ HRESULT CMainApp::Initialize()
 	EngineDesc.iWinSizeY = g_iWinSizeY;
 	EngineDesc.isWindowed = true;
 
-
-
 	/* 엔진 초기화과정을 거친다. ( 그래픽디바이스 초기화과정 + 레벨매니져를 사용할 준비를 한다. ) */
-	if (FAILED(m_pGameInstance->Initialize_Engine(LEVEL_END, EngineDesc, &m_pDevice, &m_pContext)))
+	if (FAILED(m_pGameInstance->Initialize_Engine(g_hInst,LEVEL_END, EngineDesc, &m_pDevice, &m_pContext)))
 		return E_FAIL;	
 
 	if (FAILED(Ready_Prototype_Component()))
@@ -41,12 +36,13 @@ HRESULT CMainApp::Initialize()
 	if (FAILED(Ready_Prototype_GameObject()))
 		return E_FAIL;
 
-	m_pGui=CGui::Create(m_pDevice,m_pContext);
-
-
-	
 	if (FAILED(Open_Level(LEVEL_LOGO)))
 		return E_FAIL;
+
+	m_pGui = CGui::Create(m_pDevice, m_pContext);
+
+	
+
 	
 
 	return S_OK;
@@ -61,6 +57,7 @@ void CMainApp::Tick(float fTimeDelta)
 HRESULT CMainApp::Render()
 {
 
+
 	m_pGui->Render();
 
 	/* 그린다. */
@@ -71,7 +68,7 @@ HRESULT CMainApp::Render()
 
 	if (FAILED(m_pGameInstance->Present()))
 		return E_FAIL;
-	
+
 
 	return S_OK;
 }
@@ -92,6 +89,7 @@ HRESULT CMainApp::Ready_Prototype_GameObject()
 		return E_FAIL;
 	//if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Icon0"), CUIObject::Create(m_pDevice, m_pContext))))
 	//	return E_FAIL;
+
 	return S_OK;
 }
 
@@ -117,10 +115,6 @@ HRESULT CMainApp::Ready_Prototype_Component()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Asset2D/Textures/Icon/hinterlandLogo_texture.dds")))))
 		return E_FAIL;
 
-	/*For.Prototype_Component_Transform*/
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Transform"),
-		CTransform::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
 
 	return S_OK;
 }
@@ -146,7 +140,6 @@ void CMainApp::Free()
 	Safe_Release(m_pGui);
 	Safe_Release(m_pContext);
 	Safe_Release(m_pDevice);
-
 
 	/* 레퍼런스 카운트를 0으로만든다. */
 	Safe_Release(m_pGameInstance);

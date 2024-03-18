@@ -13,7 +13,7 @@ public:
 	typedef struct
 	{
 		_float		fSpeedPerSec;
-		_float		fRotatePerSec;
+		_float		fRotationPerSec;
 	}TRANSFORM_DESC;
 
 public:
@@ -33,6 +33,12 @@ public:
 		return _float3(XMVector3Length(Get_State(STATE_RIGHT)).m128_f32[0],
 								XMVector3Length(Get_State(STATE_UP)).m128_f32[0],
 								XMVector3Length(Get_State(STATE_LOOK)).m128_f32[0]);
+	}
+	const _float4x4* Get_WorldFloat4x4() {
+		return &m_WorldMatrix;
+	}
+	_matrix Get_WorldMatrix() {
+		return XMLoadFloat4x4(&m_WorldMatrix);
 	}
 
 public:
@@ -61,7 +67,7 @@ public:
 	HRESULT Rotate(_uint _rot, _float fTimeDelta);
 
 public:
-	HRESULT Bind_ShaderResource(class CShader* pShader);
+	HRESULT Bind_ShaderResource(class CShader* pShader, const _char* pConstantName);
 
 
 private:

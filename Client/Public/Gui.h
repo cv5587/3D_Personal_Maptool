@@ -3,14 +3,14 @@
 #include "Base.h"
 
 BEGIN(Client)
-class CGui final:    public CBase
+class CGui final : public CBase
 {
 private:
-	 CGui();
-	 virtual ~CGui();
+	CGui();
+	virtual ~CGui();
 
 public:
-	HRESULT Initialize() ;
+	HRESULT Initialize();
 	static CGui* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	HRESULT Render();
 

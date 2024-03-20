@@ -37,6 +37,11 @@ void CFreeCamera::Priority_Tick(_float fTimeDelta)
 
 void CFreeCamera::Tick(_float fTimeDelta)
 {
+	if (m_pGameInstance->Get_DIKeyState(DIK_Q) & 0x80)
+		m_bTab = !m_bTab;
+
+	if (!m_bTab)
+	{
 	if (m_pGameInstance->Get_DIKeyState(DIK_A) & 0x80)
 		m_pTransformCom->Go_Left(fTimeDelta);
 	if (m_pGameInstance->Get_DIKeyState(DIK_D) & 0x80)
@@ -47,18 +52,22 @@ void CFreeCamera::Tick(_float fTimeDelta)
 		m_pTransformCom->Go_Backward(fTimeDelta);
 
 
-	_long		MouseMove = { 0 };
 
-	if (MouseMove = m_pGameInstance->Get_DIMouseMove(DIMS_X))
-	{
-		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta * m_fSensor * MouseMove);
+		_long		MouseMove = { 0 };
+
+		if (MouseMove = m_pGameInstance->Get_DIMouseMove(DIMS_X))
+		{
+			m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta * m_fSensor * MouseMove);
+		}
+
+		if (MouseMove = m_pGameInstance->Get_DIMouseMove(DIMS_Y))
+		{
+			m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), fTimeDelta * m_fSensor * MouseMove);
+		}
+
+		Mouse_Fix();
+
 	}
-
-	if (MouseMove = m_pGameInstance->Get_DIMouseMove(DIMS_Y))
-	{
-		m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), fTimeDelta * m_fSensor * MouseMove);
-	}
-
 
 
 	__super::Tick(fTimeDelta);
@@ -71,6 +80,15 @@ void CFreeCamera::Late_Tick(_float fTimeDelta)
 HRESULT CFreeCamera::Render()
 {
     return S_OK;
+}
+
+void CFreeCamera::Mouse_Fix()
+{
+
+		POINT	pt{ g_iWinSizeX >> 1, g_iWinSizeY >> 1 };
+
+		ClientToScreen(g_hWnd, &pt);
+		SetCursorPos(pt.x, pt.y);
 }
 
 CFreeCamera* CFreeCamera::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

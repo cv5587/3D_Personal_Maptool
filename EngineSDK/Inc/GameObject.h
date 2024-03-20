@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Transform.h"
-
+#include "VIBuffer_Terrain.h"
 BEGIN(Engine)
 
 class ENGINE_DLL CGameObject abstract : public CBase
@@ -9,7 +9,7 @@ class ENGINE_DLL CGameObject abstract : public CBase
 public:
 	typedef struct : public CTransform::TRANSFORM_DESC
 	{
-		_int iData;
+
 	}GAMEOBJECT_DESC;
 
 protected:
@@ -24,6 +24,9 @@ public:
 	virtual void Tick(_float fTimeDelta);
 	virtual void Late_Tick(_float fTimeDelta);
 	virtual HRESULT Render();
+
+protected:
+	class		CComponent* Get_Transform();
 
 protected:
 	ID3D11Device* m_pDevice = { nullptr };

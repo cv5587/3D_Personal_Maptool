@@ -39,8 +39,7 @@ HRESULT CMainApp::Initialize()
 	if (FAILED(Open_Level(LEVEL_LOGO)))
 		return E_FAIL;
 
-	m_pGui = CGui::Create(m_pDevice, m_pContext);
-
+		m_pGui = CGui::Create(m_pDevice, m_pContext);	
 	
 
 	
@@ -51,21 +50,21 @@ HRESULT CMainApp::Initialize()
 void CMainApp::Tick(float fTimeDelta)
 {
 	m_pGameInstance->Tick_Engine(fTimeDelta);
-	m_pGui->Update_UI();
+		m_pGui->Update_UI();
+		m_pGui->LateUpdate_UI();
+	
 }
 
 HRESULT CMainApp::Render()
 {
 
-
 	m_pGui->Render();
-
 	/* ±×¸°´Ù. */
 	if (FAILED(m_pGameInstance->Draw(_float4(0.f, 0.f, 0.f, 1.f))))
 		return E_FAIL;
 
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-
+	
 	if (FAILED(m_pGameInstance->Present()))
 		return E_FAIL;
 
@@ -78,7 +77,9 @@ HRESULT CMainApp::Open_Level(LEVEL eLevelID)
 {
 	if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, eLevelID))))
 		return E_FAIL;
-	
+
+
+
 	return S_OK;
 }
 
@@ -110,10 +111,6 @@ HRESULT CMainApp::Ready_Prototype_Component()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Default%d.jpg"), 2))))
 		return E_FAIL;
 
-	/*For.Prototype_Component_Texture_Icon*/
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Icon"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Asset2D/Textures/Icon/hinterlandLogo_texture.dds")))))
-		return E_FAIL;
 
 
 	return S_OK;

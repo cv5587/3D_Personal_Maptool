@@ -82,6 +82,15 @@
     <Filter Include="01.Utility\04.PipeLine">
       <UniqueIdentifier>{010ba17c-bd22-4703-ab35-d903330560a0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\03.Components\Carlculator">
+      <UniqueIdentifier>{72a4b565-66a3-49e9-a0ff-66eaa93a0fe4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\03.Components\Model">
+      <UniqueIdentifier>{3c2576fb-9781-4dc9-abcb-41a8f6118325}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\03.Components\Model\Mesh">
+      <UniqueIdentifier>{5894acdc-2a0c-4eef-976c-c47caaf54dcd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -165,6 +174,15 @@
     <ClInclude Include="..\Public\Input_Device.h">
       <Filter>00.System\00.Device\Input</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Calculator.h">
+      <Filter>01.Utility\03.Components\Carlculator</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Model.h">
+      <Filter>01.Utility\03.Components\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Mesh.h">
+      <Filter>01.Utility\03.Components\Model\Mesh</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Base.cpp">
@@ -235,6 +253,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\Input_Device.cpp">
       <Filter>00.System\00.Device\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Calculator.cpp">
+      <Filter>01.Utility\03.Components\Carlculator</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Model.cpp">
+      <Filter>01.Utility\03.Components\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Mesh.cpp">
+      <Filter>01.Utility\03.Components\Model\Mesh</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

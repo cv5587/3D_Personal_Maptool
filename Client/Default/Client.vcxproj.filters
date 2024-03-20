@@ -37,9 +37,6 @@
     <Filter Include="02.GameObjects\00.UI">
       <UniqueIdentifier>{185a50ba-e3c1-4812-addf-6b56e426376e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.Terrain">
-      <UniqueIdentifier>{e95ab7c3-bafd-4b8d-9905-ecc9419e11d5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\99.Cameras">
       <UniqueIdentifier>{55531ab4-895b-47a2-a317-c9d443f2ebed}</UniqueIdentifier>
     </Filter>
@@ -51,6 +48,15 @@
     </Filter>
     <Filter Include="96.Imgui\Sources">
       <UniqueIdentifier>{fa18dab5-a947-4d71-932a-1708f0ed21bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Terrain">
+      <UniqueIdentifier>{e95ab7c3-bafd-4b8d-9905-ecc9419e11d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Terrain\Manager">
+      <UniqueIdentifier>{24e1fcf2-54ef-43cc-bdfd-0faf56de3913}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Monster">
+      <UniqueIdentifier>{68af5566-493b-4fbc-9cfe-a1382693893a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -91,13 +97,25 @@
       <Filter>02.GameObjects\00.UI</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Terrain.h">
-      <Filter>02.GameObjects\02.Terrain</Filter>
+      <Filter>02.GameObjects\01.Terrain</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\FreeCamera.h">
       <Filter>02.GameObjects\99.Cameras\Free</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Gui.h">
       <Filter>96.Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\TerrainManager.h">
+      <Filter>02.GameObjects\01.Terrain\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Imgui\imgui.h">
+      <Filter>96.Imgui\Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Imgui\imgui_impl_dx11.h">
+      <Filter>96.Imgui\Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Imgui\imgui_impl_win32.h">
+      <Filter>96.Imgui\Sources</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Imgui\imgui_internal.h">
       <Filter>96.Imgui\Sources</Filter>
@@ -114,14 +132,8 @@
     <ClInclude Include="..\Public\Imgui\imconfig.h">
       <Filter>96.Imgui\Sources</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Imgui\imgui.h">
-      <Filter>96.Imgui\Sources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Imgui\imgui_impl_dx11.h">
-      <Filter>96.Imgui\Sources</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Imgui\imgui_impl_win32.h">
-      <Filter>96.Imgui\Sources</Filter>
+    <ClInclude Include="..\Public\Monster.h">
+      <Filter>02.GameObjects\02.Monster</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -153,7 +165,7 @@
       <Filter>02.GameObjects\00.UI</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Terrain.cpp">
-      <Filter>02.GameObjects\02.Terrain</Filter>
+      <Filter>02.GameObjects\01.Terrain</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\FreeCamera.cpp">
       <Filter>02.GameObjects\99.Cameras\Free</Filter>
@@ -161,11 +173,8 @@
     <ClCompile Include="..\Private\Gui.cpp">
       <Filter>96.Imgui</Filter>
     </ClCompile>
-    <ClCompile Include="..\Public\Imgui\imgui_tables.cpp">
-      <Filter>96.Imgui\Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Public\Imgui\imgui_widgets.cpp">
-      <Filter>96.Imgui\Sources</Filter>
+    <ClCompile Include="..\Private\TerrainManager.cpp">
+      <Filter>02.GameObjects\01.Terrain\Manager</Filter>
     </ClCompile>
     <ClCompile Include="..\Public\Imgui\imgui.cpp">
       <Filter>96.Imgui\Sources</Filter>
@@ -181,6 +190,15 @@
     </ClCompile>
     <ClCompile Include="..\Public\Imgui\imgui_impl_win32.cpp">
       <Filter>96.Imgui\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Public\Imgui\imgui_tables.cpp">
+      <Filter>96.Imgui\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Public\Imgui\imgui_widgets.cpp">
+      <Filter>96.Imgui\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Monster.cpp">
+      <Filter>02.GameObjects\02.Monster</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -206,6 +224,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNorTex.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMesh.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

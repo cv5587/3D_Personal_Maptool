@@ -12,6 +12,11 @@ namespace Engine
 		unsigned int	iWinSizeY;
 	}ENGINE_DESC;
 
+	typedef struct
+	{
+		class CTexture* MaterialTextures[AI_TEXTURE_TYPE_MAX];
+	}MESH_MATERIAL;
+
 	typedef struct ENGINE_DLL 
 	{
 		XMFLOAT3		vPosition;
@@ -32,6 +37,18 @@ namespace Engine
 		static const D3D11_INPUT_ELEMENT_DESC	Elements[3];
 
 	}VTXNORTEX;
+
+	typedef struct ENGINE_DLL
+	{
+		XMFLOAT3		vPosition;
+		XMFLOAT3		vNormal;
+		XMFLOAT2		vTexcoord;
+		XMFLOAT3		vTangent;  //새로운거임
+
+		static const unsigned int		iNumElements = { 4 };
+		static const D3D11_INPUT_ELEMENT_DESC	Elements[4];
+
+	}VTXMESH;
 
 }
 #endif // Engine_Struct_h__

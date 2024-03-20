@@ -4,7 +4,8 @@
 #include "Texture.h"
 #include "VIBuffer_Rect.h"
 #include "VIBuffer_Terrain.h"
-
+#include "Model.h"
+#include "Calculator.h"
 
 /* 컴포넌트의 원형들을 레벨별로 보관한다. */
 

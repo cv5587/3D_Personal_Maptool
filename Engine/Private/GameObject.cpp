@@ -36,7 +36,7 @@ HRESULT CGameObject::Initialize(void* pArg)
 
 	if (nullptr != pArg)//겜오브젝트 전체가 들고있을 데이터 
 	{
-		// m_iData = ((GAMEOBJECT_DESC*)pArg)->iData;
+		//m_iData = ((GAMEOBJECT_DESC*)pArg)->iData;
 	}
 
 	if (FAILED(m_pTransformCom->Initialize(pArg)))
@@ -62,6 +62,12 @@ void CGameObject::Late_Tick(_float fTimeDelta)
 HRESULT CGameObject::Render()
 {
 	return S_OK;
+}
+
+CComponent* CGameObject::Get_Transform()
+{
+	auto& iter = m_Components.find(m_pTransformTag);
+	return iter->second;
 }
 
 HRESULT CGameObject::Add_Component(_uint iPrototypeLevelIndex, const wstring& strPrototypeTag, const wstring& strComponentTag, CComponent** ppOut, void* pArg)

@@ -21,6 +21,44 @@ HRESULT CLayer::Add_GameObject(CGameObject * pGameObject)
 	return S_OK;
 }
 
+
+HRESULT CLayer::Delete_GameObject( CGameObject* pGameObject)
+{
+	if (nullptr == pGameObject)
+		return S_OK;
+
+	list<CGameObject*>::iterator iter = m_GameObjects.begin();
+	for (iter ; iter == m_GameObjects.end(); iter++)
+	{
+		/*삭제할 옵젝이 있다*/
+		if (pGameObject == *iter)
+		{
+			Safe_Release(*iter);
+			iter = m_GameObjects.erase(iter);
+			return S_OK;
+		}
+	}
+
+}
+
+CGameObject* CLayer::Find_GameObject(CGameObject* pGameObject)
+{
+
+	if (nullptr == pGameObject)
+		return nullptr;
+
+	list<CGameObject*>::iterator iter = m_GameObjects.begin();
+	for (iter; iter == m_GameObjects.end(); iter++)
+	{
+		/*옵젝 반환*/
+		if (pGameObject == *iter)
+			return *iter;
+	}
+	/*옵젝 없으면 실패여*/
+	return nullptr;
+
+}
+
 void CLayer::Priority_Tick(_float fTimeDelta)
 {
 	for (auto& pGameObject : m_GameObjects)

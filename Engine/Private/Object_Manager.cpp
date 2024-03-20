@@ -28,18 +28,31 @@ HRESULT CObject_Manager::Add_Prototype(const wstring & strPrototypeTag, CGameObj
 	return S_OK;
 }
 
-HRESULT CObject_Manager::Add_CloneObject(_uint iLevelIndex, const wstring & strLayerTag, const wstring & strPrototypeTag, void * pArg)
+HRESULT CObject_Manager::Add_CloneObject(_uint iLevelIndex, const wstring & strLayerTag, const wstring & strPrototypeTag, void * pArg, CGameObject** pGameObject)
 {
 	/* 내가 복제해야할 우언형을 검색하낟. */
 	CGameObject*		pPrototype = Find_Prototype(strPrototypeTag);
 	if (nullptr == pPrototype)
 		return E_FAIL;
 
+	CLayer* pLayer = Find_Layer(iLevelIndex, strLayerTag);
+
+
+
 	CGameObject*		pCloneObject = pPrototype->Clone(pArg);
 	if (nullptr == pCloneObject)
 		return E_FAIL;
 
-	CLayer*				pLayer = Find_Layer(iLevelIndex, strLayerTag);
+	//주소공유를 위한 얕은 복사 객체
+	//if (nullptr != *pGameObject)
+	//{
+	//	pLayer->Delete_GameObject(*pGameObject);
+	//	pGameObject = &pCloneObject;
+	//}
+
+
+
+
 
 	/* 아직 추가할려고하는 레이어가 없었따?!! */
 	/* 레이어를 생성해서 추가하믄되겄다. */
@@ -55,6 +68,34 @@ HRESULT CObject_Manager::Add_CloneObject(_uint iLevelIndex, const wstring & strL
 		pLayer->Add_GameObject(pCloneObject);
 
 	return S_OK;
+}
+
+HRESULT CObject_Manager::Delete_CloneObject(_uint iLevelIndex, const wstring& strLayerTag,  CGameObject* pGameObject)
+{
+	CLayer* pLayer = Find_Layer(iLevelIndex, strLayerTag);
+
+/*삭제레이어가 없으면 */
+	if (nullptr == pLayer)
+	{
+		return E_FAIL;
+	}
+	/* 삭제할레이어가 있따.*/
+	else
+		if (FAILED(pLayer->Delete_GameObject(pGameObject)))
+			return E_FAIL;
+
+	return S_OK;
+}
+
+CGameObject* CObject_Manager::Find_CloneObject(_uint iLevelIndex, const wstring& strLayerTag, CGameObject* pGameObject)
+{
+	CLayer* pLayer = Find_Layer(iLevelIndex, strLayerTag);
+
+	/*삭제레이어가 없으면 */
+	if (nullptr == pLayer)
+		return nullptr;
+	else
+		return pLayer->Find_GameObject(pGameObject);
 }
 
 void CObject_Manager::Priority_Tick(_float fTimeDelta)
@@ -107,6 +148,7 @@ CGameObject * CObject_Manager::Find_Prototype(const wstring & strPrototypeTag)
 
 	return iter->second;	
 }
+
 
 CLayer * CObject_Manager::Find_Layer(_uint iLevelIndex, const wstring & strLayerTag)
 {

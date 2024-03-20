@@ -13,10 +13,12 @@ private:
 public:
 	HRESULT Initialize();
 	HRESULT Add_GameObject(class CGameObject* pGameObject);
+	HRESULT Delete_GameObject( class CGameObject* pGameObject);
+	CGameObject* Find_GameObject(class CGameObject* pGameObject);
 	void Priority_Tick(_float fTimeDelta);
 	void Tick(_float fTimeDelta);
 	void Late_Tick(_float fTimeDelta);
-
+	
 private:
 	list<class CGameObject* >		m_GameObjects;
 

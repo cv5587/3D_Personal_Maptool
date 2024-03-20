@@ -1,6 +1,7 @@
 #include "..\Public\Renderer.h"
 #include "GameObject.h"
 
+
 CRenderer::CRenderer(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: m_pDevice { pDevice }
 	, m_pContext { pContext }
@@ -32,6 +33,17 @@ void CRenderer::Draw()
 	Render_NonLight();
 	Render_Blend();
 	Render_UI();
+}
+
+void CRenderer::Clear()
+{
+	for (size_t i = 0; i < RENDER_END; i++)
+	{
+		for (auto& pGameObject : m_RenderGroup[i])
+			Safe_Release(pGameObject);
+
+		m_RenderGroup[i].clear();
+	}
 }
 
 void CRenderer::Render_Priority()

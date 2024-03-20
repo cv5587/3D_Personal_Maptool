@@ -15,6 +15,9 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
+	if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"))))
+		return E_FAIL;
+
 	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
 		return E_FAIL;
 
@@ -32,7 +35,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const wstring& strLayerTag)
 {
 	CFreeCamera::FREE_CAMERA_DESC		CameraDesc{};
 
-	CameraDesc.fSensor = 1.f;
+	CameraDesc.fSensor = 0.05f;
 	CameraDesc.vEye = _float4(0.0f, 30.f, -25.f, 1.f);
 	CameraDesc.vAt = _float4(0.0f, 0.f, 0.f, 1.f);
 	CameraDesc.fFovy = XMConvertToRadians(60.0f);
@@ -51,6 +54,15 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const wstring& strLayerTag)
 HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const wstring& strLayerTag)
 {
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Terrain"))))
+		return E_FAIL;
+	
+
+	return S_OK;
+}
+
+HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring& strLayerTag)
+{
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Monster"))))
 		return E_FAIL;
 
 	return S_OK;

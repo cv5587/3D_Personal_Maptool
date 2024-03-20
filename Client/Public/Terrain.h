@@ -11,6 +11,11 @@ BEGIN(Client)
 class CTerrain :
     public CGameObject
 {
+public:
+	typedef struct :public CGameObject::GAMEOBJECT_DESC
+	{
+
+	}TERRAIN_DESC;
 private:
 	CTerrain(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CTerrain(const CTerrain& rhs);
@@ -33,7 +38,7 @@ private:
 	_float4x4						m_ViewMatrix, m_ProjMatrix;
 
 public:
-	HRESULT Add_Components();
+	HRESULT Add_Components(void* pArg);
 	HRESULT Bind_ShaderResources();
 
 public:

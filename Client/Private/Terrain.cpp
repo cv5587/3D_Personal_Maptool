@@ -19,10 +19,11 @@ HRESULT CTerrain::Initialize_Prototype()
 
 HRESULT CTerrain::Initialize(void* pArg)
 {
-    if (FAILED(__super::Initialize(pArg)))
+    if (FAILED(__super::Initialize(pArg)))//Æ®·»½ºÆû »ý¼º
         return E_FAIL;
 
-    if (FAILED(Add_Components()))
+
+    if (FAILED(Add_Components(pArg)))
         return E_FAIL;
 
     return S_OK;
@@ -53,11 +54,14 @@ HRESULT CTerrain::Render()
     return S_OK;
 }
 
-HRESULT CTerrain::Add_Components()
+HRESULT CTerrain::Add_Components(void* pArg)
 {
     /* For.Com_VIBuffer */
+    //if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Terrain"),
+    //    CVIBuffer_Terrain::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Terrain/Height1.bmp"), pTerrainUV))))
+    //    return E_FAIL;
     if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Terrain"),
-        TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
+        TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom), pArg)))
         return E_FAIL;
 
     /* For.Com_Shader */

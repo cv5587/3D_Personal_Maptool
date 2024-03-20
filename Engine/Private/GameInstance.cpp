@@ -90,17 +90,20 @@ HRESULT CGameInstance::Draw(const _float4 & vClearColor)
 
 	m_pRenderer->Draw();	
 
-	return Present();
+	return S_OK;
 }
 
 
 
 void CGameInstance::Clear_Resources(_uint iLevelIndex)
 {
+	m_pRenderer->Clear();
+
 	m_pObject_Manager->Clear(iLevelIndex);
-	m_pObject_Manager->Clear(iLevelIndex);
+
 	m_pComponent_Manager->Clear(iLevelIndex);
 }
+
 
 HRESULT CGameInstance::Clear_BackBuffer_View(_float4 vClearColor)
 {
@@ -163,12 +166,28 @@ HRESULT CGameInstance::Add_Prototype(const wstring & strPrototypeTag, CGameObjec
 	return m_pObject_Manager->Add_Prototype(strPrototypeTag, pPrototype);	
 }
 
-HRESULT CGameInstance::Add_CloneObject(_uint iLevelIndex, const wstring & strLayerTag, const wstring & strPrototypeTag, void * pArg)
+HRESULT CGameInstance::Add_CloneObject(_uint iLevelIndex, const wstring & strLayerTag, const wstring & strPrototypeTag, void * pArg, CGameObject** pGameObject)
 {
 	if (nullptr == m_pObject_Manager)
 		return E_FAIL;
 
-	return m_pObject_Manager->Add_CloneObject(iLevelIndex, strLayerTag, strPrototypeTag, pArg);	
+	return m_pObject_Manager->Add_CloneObject(iLevelIndex, strLayerTag, strPrototypeTag, pArg, pGameObject);
+}
+
+HRESULT CGameInstance::Delete_CloneObject(_uint iLevelIndex, const wstring& strLayerTag,  CGameObject* pGameObject)
+{
+	if (nullptr == m_pObject_Manager)
+		return E_FAIL;
+
+	return m_pObject_Manager->Delete_CloneObject(iLevelIndex, strLayerTag, pGameObject);
+}
+
+CGameObject* CGameInstance::Find_CloneObject(_uint iLevelIndex, const wstring& strLayerTag, CGameObject* pGameObject)
+{
+	if (nullptr == m_pObject_Manager)
+		return nullptr;
+
+	return m_pObject_Manager->Find_CloneObject(iLevelIndex, strLayerTag, pGameObject);
 }
 
 HRESULT CGameInstance::Add_Prototype(_uint iLevelIndex, const wstring & strPrototypeTag, CComponent * pPrototype)

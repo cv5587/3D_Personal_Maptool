@@ -1,4 +1,3 @@
-#include "stdafx.h"
 // dear imgui: Renderer Backend for DirectX11
 // This needs to be used along with a Platform Backend (e.g. Win32)
 

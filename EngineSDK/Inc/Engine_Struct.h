@@ -50,5 +50,19 @@ namespace Engine
 
 	}VTXMESH;
 
+	typedef struct ENGINE_DLL
+	{
+		XMFLOAT3		vPosition;
+		XMFLOAT3		vNormal;
+		XMFLOAT2		vTexcoord;
+		XMFLOAT3		vTangent;
+
+		XMUINT4			vBlendIndices;
+		XMFLOAT4		vBlendWeights;
+
+		static const unsigned int		iNumElements = { 6 };
+		static const D3D11_INPUT_ELEMENT_DESC	Elements[6];
+
+	}VTXANIMMESH;
 }
 #endif // Engine_Struct_h__

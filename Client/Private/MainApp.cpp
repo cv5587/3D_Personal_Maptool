@@ -49,9 +49,10 @@ HRESULT CMainApp::Initialize()
 
 void CMainApp::Tick(float fTimeDelta)
 {
+	m_pGui->Update_UI();
+	m_pGui->LateUpdate_UI();
 	m_pGameInstance->Tick_Engine(fTimeDelta);
-		m_pGui->Update_UI();
-		m_pGui->LateUpdate_UI();
+
 	
 }
 
@@ -134,7 +135,9 @@ CMainApp * CMainApp::Create()
 
 void CMainApp::Free()
 {
+
 	Safe_Release(m_pGui);
+
 	Safe_Release(m_pContext);
 	Safe_Release(m_pDevice);
 

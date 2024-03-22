@@ -25,8 +25,9 @@ public:
 	virtual void Late_Tick(_float fTimeDelta);
 	virtual HRESULT Render();
 
-protected:
+public:
 	class		CComponent* Get_Transform();
+	class		CComponent* Get_Component(const wstring& strComponentTag);
 
 protected:
 	ID3D11Device* m_pDevice = { nullptr };

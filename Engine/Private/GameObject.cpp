@@ -43,7 +43,7 @@ HRESULT CGameObject::Initialize(void* pArg)
 		return E_FAIL;
 
 	m_Components.emplace(m_pTransformTag, m_pTransformCom);
-
+	Safe_AddRef(m_pTransformCom);	
 	return S_OK;
 }
 
@@ -67,6 +67,12 @@ HRESULT CGameObject::Render()
 CComponent* CGameObject::Get_Transform()
 {
 	auto& iter = m_Components.find(m_pTransformTag);
+	return iter->second;
+}
+
+CComponent* CGameObject::Get_Component(const wstring& strComponentTag)
+{
+	auto& iter = m_Components.find(strComponentTag);
 	return iter->second;
 }
 

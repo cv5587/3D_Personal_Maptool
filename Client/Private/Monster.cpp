@@ -35,6 +35,7 @@ void CMonster::Priority_Tick(_float fTimeDelta)
 
 void CMonster::Tick(_float fTimeDelta)
 {
+    m_pModelCom->Play_Animation(fTimeDelta);
 }
 
 void CMonster::Late_Tick(_float fTimeDelta)
@@ -54,6 +55,8 @@ HRESULT CMonster::Render()
 
     for (size_t i = 0; i < iNumMeshes; i++)
     {
+        m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);  
+
         if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_Texture", i, aiTextureType_DIFFUSE)))
             return E_FAIL;
 
@@ -74,7 +77,7 @@ HRESULT CMonster::Add_Components()
         return E_FAIL;
 
     /* For.Com_Shader */
-    if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxMesh"),
+    if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxAnimMesh"),
         TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
         return E_FAIL;
 

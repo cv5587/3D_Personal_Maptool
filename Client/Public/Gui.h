@@ -27,14 +27,14 @@ private:
 
 private:
 	_bool m_bInputObject = { false };
-
+	_bool	m_bTerrain = { false };
 
 
 
 
 public:
 	HRESULT Add_Components(void* pArg);
-	void Picking_on_Terrain();
+	_vector Picking_on_Terrain();
 public:
 
 	virtual void Free() override;

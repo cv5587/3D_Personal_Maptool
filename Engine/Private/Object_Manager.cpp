@@ -28,10 +28,11 @@ HRESULT CObject_Manager::Add_Prototype(const wstring & strPrototypeTag, CGameObj
 	return S_OK;
 }
 
-HRESULT CObject_Manager::Add_CloneObject(_uint iLevelIndex, const wstring & strLayerTag, const wstring & strPrototypeTag, void * pArg, CGameObject** pGameObject)
+HRESULT CObject_Manager::Add_CloneObject(_uint iLevelIndex, const wstring& strLayerTag, const wstring& strPrototypeTag, void* pArg)
 {
+
 	/* 내가 복제해야할 우언형을 검색하낟. */
-	CGameObject*		pPrototype = Find_Prototype(strPrototypeTag);
+	CGameObject* pPrototype = Find_Prototype(strPrototypeTag);
 	if (nullptr == pPrototype)
 		return E_FAIL;
 
@@ -39,16 +40,42 @@ HRESULT CObject_Manager::Add_CloneObject(_uint iLevelIndex, const wstring & strL
 
 
 
-	CGameObject*		pCloneObject = pPrototype->Clone(pArg);
+	CGameObject* pCloneObject = pPrototype->Clone(pArg);
 	if (nullptr == pCloneObject)
 		return E_FAIL;
 
-	//주소공유를 위한 얕은 복사 객체
-	//if (nullptr != *pGameObject)
-	//{
-	//	pLayer->Delete_GameObject(*pGameObject);
-	//	pGameObject = &pCloneObject;
-	//}
+	/* 아직 추가할려고하는 레이어가 없었따?!! */
+	/* 레이어를 생성해서 추가하믄되겄다. */
+	if (nullptr == pLayer)
+	{
+		pLayer = CLayer::Create();
+		pLayer->Add_GameObject(pCloneObject);
+
+		m_pLayers[iLevelIndex].emplace(strLayerTag, pLayer);
+	}
+	/* 내가 추가할려가하ㅡㄴㄴ 레이어가 있었다!!  */
+	else
+		pLayer->Add_GameObject(pCloneObject);
+
+	return S_OK;
+}
+
+HRESULT CObject_Manager::Add_CloneObject(_uint iLevelIndex, const wstring& strLayerTag, const wstring& strPrototypeTag, CGameObject** pGameObject, void* pArg)
+{
+	/* 내가 복제해야할 우언형을 검색하낟. */
+	CGameObject* pPrototype = Find_Prototype(strPrototypeTag);
+	if (nullptr == pPrototype)
+		return E_FAIL;
+
+	CLayer* pLayer = Find_Layer(iLevelIndex, strLayerTag);
+
+
+
+	CGameObject* pCloneObject = pPrototype->Clone(pArg);
+	if (nullptr == pCloneObject)
+		return E_FAIL;
+
+
 
 
 
@@ -59,7 +86,7 @@ HRESULT CObject_Manager::Add_CloneObject(_uint iLevelIndex, const wstring & strL
 	if (nullptr == pLayer)
 	{
 		pLayer = CLayer::Create();
-		pLayer->Add_GameObject(pCloneObject);	
+		pLayer->Add_GameObject(pCloneObject);
 
 		m_pLayers[iLevelIndex].emplace(strLayerTag, pLayer);
 	}
@@ -67,8 +94,22 @@ HRESULT CObject_Manager::Add_CloneObject(_uint iLevelIndex, const wstring & strL
 	else
 		pLayer->Add_GameObject(pCloneObject);
 
+
+	//주소공유를 위한 얕은 복사 객체
+	//더블 포인터로 터레인객체를 가져오면 nullptr 이 아니기 때문에  
+	// 터레인에 대해서만 delete시킨다.
+	if (nullptr != *pGameObject)
+	{
+		pLayer->Delete_GameObject(*pGameObject);
+		*pGameObject = nullptr;
+	}
+	*pGameObject = pCloneObject;
+	Safe_AddRef(pCloneObject);
+	//TODO:0321누수콸콸
 	return S_OK;
 }
+
+
 
 HRESULT CObject_Manager::Delete_CloneObject(_uint iLevelIndex, const wstring& strLayerTag,  CGameObject* pGameObject)
 {

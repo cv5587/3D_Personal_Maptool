@@ -12,6 +12,9 @@ public:
     HRESULT Initialize();
     HRESULT Clone_Terrain(void* pArg);
 
+    _matrix Get_Terrain_WorldMatrix();
+    _vector* Get_Terrain_VtxPos();
+    _int* Get_Terrain_UV();
 private:
     class CGameInstance* m_pGameInstance = { nullptr };
     class CGameObject* m_pTerrain = { nullptr };

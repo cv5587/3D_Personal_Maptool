@@ -6,8 +6,8 @@ texture2D	g_Texture;
 sampler PointSampler = sampler_state
 {
 	filter = min_mag_mip_Point;
-	aDDRESSu = WRAP;
-	aDDRESSV = WRAP;
+    AddressU = wrap;
+    AddressU = wrap;
 };
 
 
@@ -74,7 +74,8 @@ PS_OUT PS_MAIN(PS_IN In)
 
 	Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
 	
-
+    if (Out.vColor.a < 0.1f)
+        discard;
 	
 
 	

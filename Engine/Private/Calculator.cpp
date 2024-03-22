@@ -24,7 +24,6 @@ _float4 CCalculator::Picking_on_Terrain(HWND hwnd,_matrix _ViewMatrixInverse,_ma
 {
 
 
-
 	return _float4();
 }
 

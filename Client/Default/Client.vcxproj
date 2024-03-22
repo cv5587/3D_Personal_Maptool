@@ -107,7 +107,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../Public/Imgui/;../../EngineSDK/Inc/;../Public/;./;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../EngineSDK/Inc/;../Public/Imgui/;../Public/;./</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -175,6 +175,7 @@
     <ClInclude Include="..\public\CUIObject.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="..\Public\EnvironmentObject.h" />
     <ClInclude Include="..\Public\FreeCamera.h" />
     <ClInclude Include="..\Public\Gui.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
@@ -205,10 +206,18 @@
     <ClCompile Include="..\private\CUIObject.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\Private\EnvironmentObject.cpp" />
     <ClCompile Include="..\Private\FreeCamera.cpp" />
     <ClCompile Include="..\Private\Gui.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\Private\Imgui\imgui.cpp" />
+    <ClCompile Include="..\Private\Imgui\imgui_demo.cpp" />
+    <ClCompile Include="..\Private\Imgui\imgui_draw.cpp" />
+    <ClCompile Include="..\Private\Imgui\imgui_impl_dx11.cpp" />
+    <ClCompile Include="..\Private\Imgui\imgui_impl_win32.cpp" />
+    <ClCompile Include="..\Private\Imgui\imgui_tables.cpp" />
+    <ClCompile Include="..\Private\Imgui\imgui_widgets.cpp" />
     <ClCompile Include="..\Private\Level_GamePlay.cpp" />
     <ClCompile Include="..\Private\Level_Loading.cpp" />
     <ClCompile Include="..\private\Level_Logo.cpp" />
@@ -217,13 +226,6 @@
     <ClCompile Include="..\Private\Monster.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="..\Private\TerrainManager.cpp" />
-    <ClCompile Include="..\Public\Imgui\imgui.cpp" />
-    <ClCompile Include="..\Public\Imgui\imgui_demo.cpp" />
-    <ClCompile Include="..\Public\Imgui\imgui_draw.cpp" />
-    <ClCompile Include="..\Public\Imgui\imgui_impl_dx11.cpp" />
-    <ClCompile Include="..\Public\Imgui\imgui_impl_win32.cpp" />
-    <ClCompile Include="..\Public\Imgui\imgui_tables.cpp" />
-    <ClCompile Include="..\Public\Imgui\imgui_widgets.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -240,6 +242,7 @@
     <Image Include="small.ico" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimMesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNorTex.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPosTex.hlsl" />

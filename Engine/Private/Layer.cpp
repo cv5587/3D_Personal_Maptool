@@ -28,17 +28,21 @@ HRESULT CLayer::Delete_GameObject( CGameObject* pGameObject)
 		return S_OK;
 
 	list<CGameObject*>::iterator iter = m_GameObjects.begin();
-	for (iter ; iter == m_GameObjects.end(); iter++)
+	//auto& iter = m_GameObjects.begin();
+	for (iter ; iter != m_GameObjects.end();)
 	{
 		/*삭제할 옵젝이 있다*/
 		if (pGameObject == *iter)
 		{
+			Safe_Release(pGameObject);
 			Safe_Release(*iter);
 			iter = m_GameObjects.erase(iter);
-			return S_OK;
+			break;
 		}
+		else
+			iter++;
 	}
-
+	return S_OK;
 }
 
 CGameObject* CLayer::Find_GameObject(CGameObject* pGameObject)

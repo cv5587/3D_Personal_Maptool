@@ -91,6 +91,9 @@
     <Filter Include="01.Utility\03.Components\Model\Mesh">
       <UniqueIdentifier>{5894acdc-2a0c-4eef-976c-c47caaf54dcd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\03.Components\Model\Bone">
+      <UniqueIdentifier>{dafad5f8-11a9-449c-93f1-e017ff2237c1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -183,6 +186,9 @@
     <ClInclude Include="..\Public\Mesh.h">
       <Filter>01.Utility\03.Components\Model\Mesh</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Bone.h">
+      <Filter>01.Utility\03.Components\Model\Bone</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Base.cpp">
@@ -262,6 +268,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Mesh.cpp">
       <Filter>01.Utility\03.Components\Model\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Bone.cpp">
+      <Filter>01.Utility\03.Components\Model\Bone</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

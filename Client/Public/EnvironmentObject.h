@@ -7,13 +7,18 @@ class CModel;
 END
 
 BEGIN(Client)
-class EnvironmentObject :
+class CEnvironmentObject :
     public CGameObject
 {
+public:
+	typedef struct : public CGameObject::GAMEOBJECT_DESC
+	{
+		_float4		vPrePosition = { 0.f,0.f,0.f,0.f };
+	}ENVIRONMENT_DESC;
 private:
-	EnvironmentObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	EnvironmentObject(const CGameObject& rhs);
-	virtual ~EnvironmentObject() = default;
+	CEnvironmentObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CEnvironmentObject(const CGameObject& rhs);
+	virtual ~CEnvironmentObject() = default;
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -32,7 +37,7 @@ public:
 	HRESULT Bind_ShaderResources();
 
 public:
-	static EnvironmentObject* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CEnvironmentObject* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 };

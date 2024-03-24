@@ -2,47 +2,51 @@
 
 #include "GameInstance.h"
 
-EnvironmentObject::EnvironmentObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CEnvironmentObject::CEnvironmentObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CGameObject{pDevice,pContext}
 {
 }
 
-EnvironmentObject::EnvironmentObject(const CGameObject& rhs)
+CEnvironmentObject::CEnvironmentObject(const CGameObject& rhs)
     :CGameObject{rhs}
 {
 }
 
-HRESULT EnvironmentObject::Initialize_Prototype()
+HRESULT CEnvironmentObject::Initialize_Prototype()
 {
     return S_OK;
 }
 
-HRESULT EnvironmentObject::Initialize(void* pArg)
+HRESULT CEnvironmentObject::Initialize(void* pArg)
 {
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
 
+    ENVIRONMENT_DESC* pDesc = (ENVIRONMENT_DESC*)pArg;
+    _float4 fPickPoint = pDesc->vPrePosition;
+    _vector vPosition = XMLoadFloat4(&fPickPoint);  
+    m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
     if (FAILED(Add_Components()))
         return E_FAIL;
 
     return S_OK;
 }
 
-void EnvironmentObject::Priority_Tick(_float fTimeDelta)
+void CEnvironmentObject::Priority_Tick(_float fTimeDelta)
 {
 }
 
-void EnvironmentObject::Tick(_float fTimeDelta)
+void CEnvironmentObject::Tick(_float fTimeDelta)
 {
 
 }
 
-void EnvironmentObject::Late_Tick(_float fTimeDelta)
+void CEnvironmentObject::Late_Tick(_float fTimeDelta)
 {
     m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
 }
 
-HRESULT EnvironmentObject::Render()
+HRESULT CEnvironmentObject::Render()
 {
     if (FAILED(Bind_ShaderResources()))
         return E_FAIL;
@@ -65,10 +69,11 @@ HRESULT EnvironmentObject::Render()
     return S_OK;
 }
 
-HRESULT EnvironmentObject::Add_Components()
+HRESULT CEnvironmentObject::Add_Components()
 {
+
     /* For.Com_Model */
-    if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Fiona"),
+    if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Cliff01"),
         TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
         return E_FAIL;
 
@@ -80,7 +85,7 @@ HRESULT EnvironmentObject::Add_Components()
     return S_OK;
 }
 
-HRESULT EnvironmentObject::Bind_ShaderResources()
+HRESULT CEnvironmentObject::Bind_ShaderResources()
 {
     if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
         return E_FAIL;
@@ -93,33 +98,33 @@ HRESULT EnvironmentObject::Bind_ShaderResources()
     return S_OK;
 }
 
-EnvironmentObject* EnvironmentObject::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CEnvironmentObject* CEnvironmentObject::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-    EnvironmentObject* pInstance = new EnvironmentObject(pDevice, pContext);
+    CEnvironmentObject* pInstance = new CEnvironmentObject(pDevice, pContext);
 
     if (FAILED(pInstance->Initialize_Prototype()))
     {
-        MSG_BOX("Failed To Created : EnvironmentObject");
+        MSG_BOX("Failed To Created : CEnvironmentObject");
         Safe_Release(pInstance);
     }
 
     return pInstance;
 }
 
-CGameObject* EnvironmentObject::Clone(void* pArg)
+CGameObject* CEnvironmentObject::Clone(void* pArg)
 {
-    EnvironmentObject* pInstance = new EnvironmentObject(*this);
+    CEnvironmentObject* pInstance = new CEnvironmentObject(*this);
 
     if (FAILED(pInstance->Initialize(pArg)))
     {
-        MSG_BOX("Failed To Cloned : EnvironmentObject");
+        MSG_BOX("Failed To Cloned : CEnvironmentObject");
         Safe_Release(pInstance);
     }
 
     return pInstance;
 }
 
-void EnvironmentObject::Free()
+void CEnvironmentObject::Free()
 {
     __super::Free();
 

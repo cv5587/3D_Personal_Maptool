@@ -4,6 +4,7 @@
 
 
 #include "TerrainManager.h"
+#include "EnvironmentObject.h"
 
 
 CGui::CGui(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -68,7 +69,6 @@ HRESULT CGui::Update_UI()
 	ImGui::SetWindowPos("MapTool", ImVec2(0, 0), ImGuiCond_Always);
 	if (ImGui::TreeNode("MakeTerrain"))
 	{
-		ImGui::Checkbox("LockTerrain", &m_bTerrain);
 		ImGui::InputInt2("TerrainUV", iTerrain);
 		ImGui::SliderInt2("TerrainUV", iTerrain, 3, 1025);
 
@@ -84,13 +84,22 @@ HRESULT CGui::Update_UI()
 	if (ImGui::TreeNode("Object"))
 	{
 
-
-
-		if (ImGui::Button("ObjectCreate") )
 		{
+			const char* items[] = { "CliffA" };
+			static int item_current = 0;
+			ImGui::ListBox("List", &item_current, items, IM_ARRAYSIZE(items));
+			
+		
+		ImGui::NewLine();
+			if (ImGui::Button("ObjectCreate") )
+			{
+				char szProtoname[MAX_PATH] = "Prototype_GameObject_";
+				strcat_s(szProtoname, items[item_current]);
 
+				MultiByteToWideChar(CP_ACP, 0, szProtoname, strlen(szProtoname), szRealFullPath, MAX_PATH);
+				m_bMakeObject = true;
+			}
 		}
-
 
 		ImGui::NewLine();
 		ImGui::TreePop();
@@ -109,8 +118,20 @@ HRESULT CGui::Update_UI()
 		m_bInputObject = !m_bInputObject;
 	}
 
-	if (m_bTerrain&&(m_pGameInstance->Get_DIMouseState(DIM_LB) & 0x80))
-		Picking_on_Terrain();
+	if (m_bMakeObject &&(m_pGameInstance->Get_DIMouseState(DIM_LB) & 0x80))
+	{
+		CEnvironmentObject::ENVIRONMENT_DESC pDesc{};
+		XMStoreFloat4(&pDesc.vPrePosition,Picking_on_Terrain());
+		_float4 p = { 0.f,0.f,0.f,0.f };
+
+		if( !Compare_Float4(p, pDesc.vPrePosition))
+			{
+				if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), szRealFullPath ,& pDesc) ))
+					return E_FAIL;
+		
+				m_bMakeObject = false;
+			}
+	}
 	return S_OK;
 }
 
@@ -128,6 +149,20 @@ HRESULT CGui::Render()
 	ImGui::Render();
 
 	return S_OK;
+}
+_bool CGui::Compare_Float4(_float4 f1, _float4 f2)
+{
+	_vector v1 =XMLoadFloat4(&f1);
+	_vector v2 =XMLoadFloat4(&f2);
+	if (v1.m128_f32[0] != v2.m128_f32[0])
+		return false;
+	if (v1.m128_f32[1] != v2.m128_f32[1])
+		return false;
+	if (v1.m128_f32[2] != v2.m128_f32[2])
+		return false;
+	if (v1.m128_f32[3] != v2.m128_f32[3])
+		return false;
+	return true;
 }
 HRESULT CGui::Add_Components(void* pArg)
 {
@@ -167,6 +202,7 @@ _vector CGui::Picking_on_Terrain()
 	Raypos =XMVector3TransformCoord(Raypos, ViewMatrixInverse);	
 	Raydir =XMVector3TransformNormal(Raydir, ViewMatrixInverse);	
 
+
 	//로컬로 내려줌
 	_matrix TerrainWorldMatrixInverse;
 	
@@ -176,7 +212,7 @@ _vector CGui::Picking_on_Terrain()
 	Raydir = XMVector3TransformNormal(Raydir, TerrainWorldMatrixInverse);
 	Raydir=XMVector3Normalize(Raydir);
 
-	_vector* pVtxPos=m_pTerrainManager->Get_Terrain_VtxPos();
+	_float4* pVtxPos=m_pTerrainManager->Get_Terrain_VtxPos();
 	_int* pTerrainUV=m_pTerrainManager->Get_Terrain_UV();	
 
 
@@ -195,15 +231,12 @@ _vector CGui::Picking_on_Terrain()
 
 			if (TriangleTests::Intersects(
 				(_fvector)Raypos, (_fvector)Raydir, 
-				(_fvector)pVtxPos[VtxIdx[0]], (_gvector)pVtxPos[VtxIdx[1]], 
-				(_hvector)pVtxPos[VtxIdx[2]], fDist)
+				(_fvector)XMLoadFloat4(&pVtxPos[VtxIdx[0]]), (_gvector)XMLoadFloat4(&pVtxPos[VtxIdx[1]]),
+				(_hvector)XMLoadFloat4(&pVtxPos[VtxIdx[2]]), fDist)
 				)
 			{
 				_vector d = {};
-				d.m128_f32[0] = Raydir.m128_f32[0] * fDist;
-				d.m128_f32[1] = Raydir.m128_f32[1] * fDist;
-				d.m128_f32[2] = Raydir.m128_f32[2] * fDist;
-				d.m128_f32[3] = 1.f;
+				d = (Raydir * fDist) + Raypos;
 				return d;
 			}
 			// 왼쪽 아래
@@ -213,15 +246,12 @@ _vector CGui::Picking_on_Terrain()
 
 			if (TriangleTests::Intersects(
 				(_fvector)Raypos, (_fvector)Raydir,
-				(_fvector)pVtxPos[VtxIdx[0]], (_gvector)pVtxPos[VtxIdx[1]],
-				(_hvector)pVtxPos[VtxIdx[2]], fDist)
+				(_fvector)XMLoadFloat4(&pVtxPos[VtxIdx[0]]), (_gvector)XMLoadFloat4(&pVtxPos[VtxIdx[1]]),
+				(_hvector)XMLoadFloat4(&pVtxPos[VtxIdx[2]]), fDist)
 				)
 			{				
 				_vector d = {};
-				d.m128_f32[0]=Raydir.m128_f32[0]* fDist;
-				d.m128_f32[1]=Raydir.m128_f32[1] * fDist;
-				d.m128_f32[2]=Raydir.m128_f32[2]* fDist;
-				d.m128_f32[3] = 1.f;
+				d = (Raydir * fDist)+Raypos;
 				return d;
 			}
 
@@ -229,65 +259,7 @@ _vector CGui::Picking_on_Terrain()
 		}
 	}
 
-	return _vector{ 0,0,0 };
-	//bool XM_CALLCONV Intersects(
-//	FXMVECTOR Origin,
-//	FXMVECTOR Direction,
-//	FXMVECTOR V0,
-//	GXMVECTOR V1,
-//	HXMVECTOR V2,
-//	float& Dist
-//) noexcept;
-
-
-	////터레인의 버텍스 정보는 로컬이다.
-	//const _vec3* pTerrainVtxPos = pTerrainBufferCom->Get_VtxPos();
-
-	//_ulong	dwVtxIdx[3]{};
-	//_float	fU(0.f), fV(0.f), fDist(0.f);
-
-	//for (_ulong i = 0; i < dwCntZ - 1; ++i)
-	//{
-	//	for (_ulong j = 0; j < dwCntX - 1; ++j)
-	//	{
-	//		_ulong	dwIndex = i * dwCntX + j;
-
-	//		// 오른쪽 위
-
-	//		dwVtxIdx[0] = dwIndex + dwCntX;
-	//		dwVtxIdx[1] = dwIndex + dwCntX + 1;
-	//		dwVtxIdx[2] = dwIndex + 1;
-
-	//		if (D3DXIntersectTri(&pTerrainVtxPos[dwVtxIdx[1]],
-	//			&pTerrainVtxPos[dwVtxIdx[0]],
-	//			&pTerrainVtxPos[dwVtxIdx[2]],
-	//			&vRayPos, &vRayDir,
-	//			&fU, &fV, &fDist))
-	//		{
-	//			return _vec3(pTerrainVtxPos[dwVtxIdx[1]].x + fU * (pTerrainVtxPos[dwVtxIdx[0]].x - pTerrainVtxPos[dwVtxIdx[1]].x),
-	//				0.f,
-	//				pTerrainVtxPos[dwVtxIdx[1]].z + fV * (pTerrainVtxPos[dwVtxIdx[2]].z - pTerrainVtxPos[dwVtxIdx[0]].z));
-	//		}
-
-	//		// V1 + U(V2 - V1) + V(V3 - V1)
-
-	//		// 왼쪽 아래
-	//		dwVtxIdx[0] = dwIndex + dwCntX;
-	//		dwVtxIdx[1] = dwIndex + 1;
-	//		dwVtxIdx[2] = dwIndex;
-
-	//		if (D3DXIntersectTri(&pTerrainVtxPos[dwVtxIdx[2]],
-	//			&pTerrainVtxPos[dwVtxIdx[1]],
-	//			&pTerrainVtxPos[dwVtxIdx[0]],
-	//			&vRayPos, &vRayDir,
-	//			&fU, &fV, &fDist))
-	//		{
-	//			return _vec3(pTerrainVtxPos[dwVtxIdx[2]].x + fU * (pTerrainVtxPos[dwVtxIdx[1]].x - pTerrainVtxPos[dwVtxIdx[2]].x),
-	//				0.f,
-	//				pTerrainVtxPos[dwVtxIdx[2]].z + fV * (pTerrainVtxPos[dwVtxIdx[0]].z - pTerrainVtxPos[dwVtxIdx[2]].z));
-	//		}
-	//	}
-	//}
+	return _vector{ 0.f,0.f,0.f,0.f };
 }
 
 void CGui::Free()

@@ -2,6 +2,10 @@
 #include "Client_Defines.h"
 #include "Base.h"
 
+BEGIN(Engine)
+class CCalculator;
+END;
+
 BEGIN(Client)
 class CGui final : public CBase
 {
@@ -27,11 +31,12 @@ private:
 
 private:
 	_bool m_bInputObject = { false };
-	_bool	m_bTerrain = { false };
+	_bool	m_bMakeObject = { false };
 
+	_tchar		szRealFullPath[MAX_PATH] = TEXT("");
 
-
-
+private:
+	_bool Compare_Float4(_float4 f1, _float4 f2);
 public:
 	HRESULT Add_Components(void* pArg);
 	_vector Picking_on_Terrain();

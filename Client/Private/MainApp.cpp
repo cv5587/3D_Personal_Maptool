@@ -61,7 +61,7 @@ HRESULT CMainApp::Render()
 
 	m_pGui->Render();
 	/* ±×¸°´Ù. */
-	if (FAILED(m_pGameInstance->Draw(_float4(0.f, 0.f, 0.f, 1.f))))
+	if (FAILED(m_pGameInstance->Draw(_float4(0.f, 0.f, 1.f, 1.f))))
 		return E_FAIL;
 
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());

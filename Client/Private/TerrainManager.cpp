@@ -29,7 +29,7 @@ _matrix CTerrainManager::Get_Terrain_WorldMatrix()
 	return dynamic_cast<CTransform*>(m_pTerrain->Get_Transform())->Get_WorldMatrix();
 }
 
-_vector* CTerrainManager::Get_Terrain_VtxPos()
+_float4* CTerrainManager::Get_Terrain_VtxPos()
 {
 	return 	dynamic_cast<CVIBuffer_Terrain*>(m_pTerrain->Get_Component(TEXT("Com_VIBuffer")))->Get_Terrain_Vtx();
 }

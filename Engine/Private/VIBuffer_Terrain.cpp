@@ -69,7 +69,7 @@ HRESULT CVIBuffer_Terrain::Initialize(void* pArg)
 
 	m_iIndexStride = 4;
 	m_iNumIndices = (m_iNumVerticesX - 1) * (m_iNumVerticesZ - 1) * 2 * 3;
-	m_VtxPos = new _vector[m_iNumVertices];
+	m_VtxPos = new _float4[m_iNumVertices];
 
 #pragma region VERTEX_BUFFER 
 
@@ -86,8 +86,9 @@ HRESULT CVIBuffer_Terrain::Initialize(void* pArg)
 			pVertices[iIndex].vPosition = _float3(j, (pPixel[heightiIndex] & 0x000000ff) / 10.f, i);
 			pVertices[iIndex].vNormal = _float3(0.0f, 0.f, 0.f);
 			pVertices[iIndex].vTexcoord = _float2(j / (m_iNumVerticesX - 1.f), i / (m_iNumVerticesZ - 1.f));
-			m_VtxPos[iIndex] = XMLoadFloat3(&pVertices[iIndex].vPosition);	
-			m_VtxPos[iIndex].m128_f32[3] = 1.f;
+			_float3 fPos = { 0.f,0.f,0.f };
+			fPos = pVertices[iIndex].vPosition;
+			m_VtxPos[iIndex] = { fPos.x,fPos.y,fPos.z,1.f };	
 		}
 	}
 #pragma endregion

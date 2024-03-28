@@ -7,7 +7,7 @@
 #include "Level_Manager.h"
 #include "Object_Manager.h"
 #include "Renderer.h"
-
+#include "Calculator.h"
 IMPLEMENT_SINGLETON(CGameInstance)
 
 CGameInstance::CGameInstance()
@@ -58,6 +58,11 @@ HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, _uint iNumLevels, cons
 	/* 파이프라인 생성. */
 	m_pPipeLine = CPipeLine::Create();
 	if (nullptr == m_pPipeLine)
+		return E_FAIL;
+
+	/*Calculator 생성*/
+	m_pCalculator = CCalculator::Create();
+	if (nullptr == m_pCalculator)
 		return E_FAIL;
 
 	return S_OK;
@@ -199,6 +204,11 @@ CGameObject* CGameInstance::Find_CloneObject(_uint iLevelIndex, const wstring& s
 	return m_pObject_Manager->Find_CloneObject(iLevelIndex, strLayerTag, pGameObject);
 }
 
+vector< const _float4x4*>* CGameInstance::Get_ObPos(_uint iLevelIndex, const wstring& strLayerTag)
+{
+	return m_pObject_Manager->Get_ObPos(iLevelIndex, strLayerTag);
+}
+
 HRESULT CGameInstance::Add_Prototype(_uint iLevelIndex, const wstring & strPrototypeTag, CComponent * pPrototype)
 {
 	return m_pComponent_Manager->Add_Prototype(iLevelIndex, strPrototypeTag, pPrototype);	
@@ -207,6 +217,11 @@ HRESULT CGameInstance::Add_Prototype(_uint iLevelIndex, const wstring & strProto
 CComponent * CGameInstance::Clone_Component(_uint iLevelIndex, const wstring & strPrototypeTag, void * pArg)
 {
 	return m_pComponent_Manager->Clone_Component(iLevelIndex, strPrototypeTag, pArg);
+}
+
+HRESULT CGameInstance::Save_Binary(_uint iLevelIndex, const wstring& strPrototypeTag, const wstring FilePath)
+{
+	return m_pComponent_Manager->Save_Binary(iLevelIndex, strPrototypeTag, FilePath);
 }
 
 HRESULT CGameInstance::Add_RenderObject(CRenderer::RENDERGROUP eRenderGroup, CGameObject * pRenderObject)
@@ -253,6 +268,16 @@ void CGameInstance::Set_Transform(CPipeLine::TRANSFORMSTATE eState, _fmatrix Tra
 	m_pPipeLine->Set_Transform(eState, TransformMatrix);
 }
 
+_vector CGameInstance::Picking_on_Terrain(HWND hWnd, _matrix TerrainWorldMatrixInverse, _matrix mViewMatrixInverse, _matrix mProjMatrixInverse, _float4* pVtxPos, _int* pTerrainUV, _float* pWinSize)
+{
+	return m_pCalculator->Picking_on_Terrain(hWnd, TerrainWorldMatrixInverse, mViewMatrixInverse, mProjMatrixInverse, pVtxPos, pTerrainUV, pWinSize);
+}
+
+_bool CGameInstance::Compare_Float4(_float4 f1, _float4 f2)
+{
+	return m_pCalculator->Compare_Float4(f1,f2);
+}
+
 void CGameInstance::Release_Engine()
 {	
 	CGameInstance::GetInstance()->Free();
@@ -262,6 +287,7 @@ void CGameInstance::Release_Engine()
 
 void CGameInstance::Free()
 {
+	Safe_Release(m_pCalculator);
 	Safe_Release(m_pPipeLine);
 	Safe_Release(m_pComponent_Manager);
 	Safe_Release(m_pTimer_Manager);

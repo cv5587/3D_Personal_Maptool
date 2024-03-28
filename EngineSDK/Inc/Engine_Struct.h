@@ -17,6 +17,14 @@ namespace Engine
 		class CTexture* MaterialTextures[AI_TEXTURE_TYPE_MAX];
 	}MESH_MATERIAL;
 
+	typedef struct
+	{
+		XMFLOAT3		vScale;
+		XMFLOAT4		vRotation;
+		XMFLOAT3		vPosition;
+		double			Time;
+	}KEYFRAME;
+
 	typedef struct ENGINE_DLL 
 	{
 		XMFLOAT3		vPosition;
@@ -64,5 +72,6 @@ namespace Engine
 		static const D3D11_INPUT_ELEMENT_DESC	Elements[6];
 
 	}VTXANIMMESH;
+
 }
 #endif // Engine_Struct_h__

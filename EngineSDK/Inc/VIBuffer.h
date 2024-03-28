@@ -29,6 +29,9 @@ protected:
 
 protected:
 	D3D11_BUFFER_DESC			m_BufferDesc = {};
+	D3D11_BUFFER_DESC			m_VBufferDesc = {};
+	D3D11_BUFFER_DESC			m_IBufferDesc = {};
+
 	D3D11_SUBRESOURCE_DATA		m_InitialData = {};
 
 	D3D11_PRIMITIVE_TOPOLOGY	m_ePrimitiveTopology = {};

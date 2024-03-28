@@ -20,6 +20,7 @@ private:
 public:
 	HRESULT Initialize(_uint iNumLevels);
 	HRESULT Add_Prototype(_uint iLevelIndex, const wstring& strPrototypeTag, CComponent* pPrototype);
+	HRESULT Save_Binary(_uint iLevelIndex, const wstring& strPrototypeTag, const wstring FilePath);
 	CComponent* Clone_Component(_uint iLevelIndex, const wstring& strPrototypeTag, void* pArg);
 	void Clear(_uint iLevelIndex);
 

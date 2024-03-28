@@ -25,6 +25,8 @@ public:
 	HRESULT Bind_BoneMatrices(class CShader* pShaderCom, const _char* pConstantName, _uint iMeshIndex);
 	void Play_Animation(_float fTimeDelta);
 
+	HRESULT Make_Binary(const wstring FilePath);
+	HRESULT Read_Binary( char* FilePath);
 private:
 	const aiScene* m_pAIScene = { nullptr };
 	Assimp::Importer			m_Importer;
@@ -41,13 +43,18 @@ private:
 
 	vector<class CBone*>	m_Bones;
 
+	_uint						m_iNumAnimations = { 0 };
+
 private:
 	HRESULT Ready_Meshes();
 	HRESULT Ready_Materials(const _char* pModelFilePath);
 	HRESULT Ready_Bones(const aiNode* pAINode, _int iParentIndex);
+	HRESULT Ready_Animations();
+
 
 public:
 	static CModel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MODELTYPE eModelType, const _char* pModelFilePath, _fmatrix PreTransformMatrix);
+	static CModel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,  char* BinaryFilePath);
 	virtual CComponent* Clone(void* pArg) override;
 	virtual void Free() override;
 };

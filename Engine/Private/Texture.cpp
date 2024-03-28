@@ -29,6 +29,8 @@ HRESULT CTexture::Initialize_Prototype(const wstring & strTextureFilePath, _uint
 		/* ..\Bin\Resources\Textures\Default0.jpg */
 		wsprintf(szTextureFilePath, strTextureFilePath.c_str(), i);
 
+		wsprintf(m_szTextureFilePath, szTextureFilePath);
+
 		_wsplitpath_s(szTextureFilePath, nullptr, 0, nullptr, 0, nullptr, 0, szEXT, MAX_PATH);
 
 		ID3D11ShaderResourceView*		pSRV = { nullptr };
@@ -52,6 +54,39 @@ HRESULT CTexture::Initialize_Prototype(const wstring & strTextureFilePath, _uint
 	return S_OK;
 }
 
+HRESULT CTexture::Initialize_Prototype(ifstream* fin)
+{
+	fin->read(reinterpret_cast<char*>(&m_iNumTextures), sizeof(_uint));
+
+	fin->read(reinterpret_cast<char*>(m_szTextureFilePath), sizeof(_tchar)*MAX_PATH);	
+
+	m_Textures.reserve(m_iNumTextures);
+
+	_tchar			szEXT[MAX_PATH] = TEXT("");
+	for (size_t i = 0; i < m_iNumTextures; i++)
+	{
+		_wsplitpath_s(m_szTextureFilePath, nullptr, 0, nullptr, 0, nullptr, 0, szEXT, MAX_PATH);
+
+		ID3D11ShaderResourceView* pSRV = { nullptr };
+
+		HRESULT			hr{};
+
+		if (false == lstrcmp(szEXT, TEXT(".dds")))
+			hr = CreateDDSTextureFromFile(m_pDevice, m_szTextureFilePath, nullptr, &pSRV);
+
+		// else if(false == lstrcmp(szEXT, TEXT(".tga")))
+
+		else
+			hr = CreateWICTextureFromFile(m_pDevice, m_szTextureFilePath, nullptr, &pSRV);
+
+		if (FAILED(hr))
+			return E_FAIL;
+
+		m_Textures.push_back(pSRV);
+	}
+	return S_OK;
+}
+
 HRESULT CTexture::Initialize(void * pArg)
 {
 	return S_OK;
@@ -66,6 +101,15 @@ HRESULT CTexture::Bind_ShaderResource(CShader* pShader, const _char* pConstantNa
 
 }
 
+HRESULT CTexture::Save_Texture(ofstream* fout)
+{
+	fout->write(reinterpret_cast<char*>(&m_iNumTextures), sizeof(_uint));
+
+	fout->write(reinterpret_cast<char*>(m_szTextureFilePath), sizeof(_tchar) * MAX_PATH);
+
+	return S_OK;
+}
+
 CTexture * CTexture::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const wstring & strTextureFilePath, _uint iNumTextures)
 {
 	CTexture*		pInstance = new CTexture(pDevice, pContext);
@@ -73,6 +117,19 @@ CTexture * CTexture::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pConte
 	if (FAILED(pInstance->Initialize_Prototype(strTextureFilePath, iNumTextures)))
 	{
 		MSG_BOX("Failed To Created : CTexture");
+		Safe_Release(pInstance);
+	}
+
+	return pInstance;
+}
+
+CTexture* CTexture::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, ifstream* fin)
+{
+	CTexture* pInstance = new CTexture(pDevice, pContext);
+
+	if (FAILED(pInstance->Initialize_Prototype(fin)))
+	{
+		MSG_BOX("Failed To Load : CTexture");
 		Safe_Release(pInstance);
 	}
 

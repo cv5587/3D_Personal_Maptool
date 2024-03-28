@@ -4,6 +4,7 @@
 #include "Component_Manager.h"
 #include "PipeLine.h"
 
+
 BEGIN(Engine)
 
 class ENGINE_DLL CGameInstance final : public CBase
@@ -43,10 +44,12 @@ public: /* For.Object_Manager */
 	HRESULT Add_CloneObject(_uint iLevelIndex, const wstring& strLayerTag, const wstring& strPrototypeTag,  CGameObject** pGameObject, void* pArg = nullptr);
 	HRESULT Delete_CloneObject(_uint iLevelIndex, const wstring& strLayerTag,  CGameObject* pGameObject);
 	CGameObject* Find_CloneObject(_uint iLevelIndex, const wstring& strLayerTag, CGameObject* pGameObject);
+	vector< const _float4x4*>* Get_ObPos(_uint iLevelIndex, const wstring& strLayerTag);
 
 public: /* For.Component_Manager */
 	HRESULT Add_Prototype(_uint iLevelIndex, const wstring& strPrototypeTag, CComponent* pPrototype);
 	CComponent* Clone_Component(_uint iLevelIndex, const wstring& strPrototypeTag, void* pArg = nullptr);
+	HRESULT Save_Binary(_uint iLevelIndex, const wstring& strPrototypeTag, const wstring FilePath);
 
 public: /* For.Renderer */
 	HRESULT Add_RenderObject(CRenderer::RENDERGROUP eRenderGroup, class CGameObject* pRenderObject);
@@ -60,6 +63,10 @@ public: /* For.PipeLine */
 	_vector Get_CamPosition();
 	void Set_Transform(CPipeLine::TRANSFORMSTATE eState, _fmatrix TransformMatrix);
 
+public:/*For.Calculator*/
+	_vector Picking_on_Terrain(HWND hWnd, _matrix TerrainWorldMatrixInverse, _matrix mViewMatrixInverse, _matrix mProjMatrixInverse, _float4* pVtxPos, _int* pTerrainUV, _float* pWinSize);
+	_bool Compare_Float4(_float4 f1, _float4 f2);
+
 private:
 	class CGraphic_Device*				m_pGraphic_Device = { nullptr };
 	class CInput_Device*					m_pInput_Device = { nullptr };
@@ -69,6 +76,7 @@ private:
 	class CComponent_Manager*		m_pComponent_Manager = { nullptr };
 	class CRenderer*							m_pRenderer = { nullptr };
 	class CPipeLine*							m_pPipeLine = { nullptr };
+	class CCalculator*						m_pCalculator = { nullptr };
 
 public:	
 	static void Release_Engine();

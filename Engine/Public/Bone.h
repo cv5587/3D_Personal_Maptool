@@ -25,7 +25,9 @@ public:
 
 public:
 	HRESULT Initialize(const aiNode* pBoneNode, _int iParentIndex);
-	void Update_CombinedTransformationMatrix(const vector<CBone*>& Bones);
+	HRESULT Initialize(ifstream* fin);
+	void Update_CombinedTransformationMatrix(const vector<CBone*>& Bones, _fmatrix PreTransformMatrix);
+	HRESULT Save_Bone(ofstream* fout);
 
 private:
 	_char				m_szName[MAX_PATH] = "";
@@ -36,6 +38,7 @@ private:
 
 public:
 	static CBone* Create(const aiNode* pBoneNode, _int iParentIndex);
+	static CBone* Create(ifstream* fin);
 	virtual void Free() override;
 };
 

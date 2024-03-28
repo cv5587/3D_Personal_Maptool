@@ -1,28 +1,27 @@
 #pragma once
-#include "Component.h"
+#include "Base.h"
 
 BEGIN(Engine)
 class ENGINE_DLL CCalculator :
-    public CComponent
+    public CBase
 {
+	enum {FS_NEAR,FS_FAR, FS_LEFT, FS_RIGHT , FS_TOP,FS_BOT,FS_END};
 private:
-	CCalculator(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CCalculator(const CCalculator& rhs);
+	CCalculator();
 	virtual ~CCalculator() = default;
 
 public:
-	virtual HRESULT Initialize_Prototype() override;
-	virtual HRESULT Initialize(void* pArg) override;
+	 HRESULT Initialize();
+	_vector Picking_on_Terrain(HWND hWnd, _matrix TerrainWorldMatrixInverse, _matrix mViewMatrixInverse, _matrix mProjMatrixInverse,_float4* pVtxPos,_int* pTerrainUV, _float* pWinSize);
+	 _bool Pick_Object(_matrix InverseView, _matrix InverseProj,  vector< const _float4x4*>* ObPos, _float radius);
+public:
+	 _bool Compare_Float4(_float4 f1, _float4 f2);	
 
+private:
+	 _float3 m_FrustumPoints[8] = {  };
+	 //XMPlaneFromPoints();
 public:
-	 _float4 Picking_on_Terrain(HWND hwnd, _matrix _ViewMatrixInverse, _matrix ProjMatrixInverse);
-	 class CGameObject* Pick_Object();
-	
-public:
-	//_float4 Picking_on_Terrain(_vector _vposition)
-public:
-	static CCalculator* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	virtual CComponent* Clone(void* pArg) override;
+	static CCalculator* Create();
 	virtual void Free() override;
 };
 END

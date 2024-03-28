@@ -15,6 +15,7 @@ public:
 	{
 		_float4		vPrePosition = { 0.f,0.f,0.f,0.f };
 	}ENVIRONMENT_DESC;
+
 private:
 	CEnvironmentObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CEnvironmentObject(const CGameObject& rhs);

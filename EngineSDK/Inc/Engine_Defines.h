@@ -23,6 +23,7 @@ using namespace DirectX;
 #include <list>
 #include <map>
 #include <algorithm>
+#include <fstream>
 
 namespace Engine
 {
@@ -34,12 +35,7 @@ namespace Engine
 #include "Engine_Function.h"
 #include "Engine_Macro.h"
 #include "Engine_Struct.h"
-//누수 체크하려면 use_imgui 주석처리하기
-//#ifdef _DEBUG
-//#define USE_IMGUI
-//#endif
-//
-//#if !defined(USE_IMGUI)
+
 #ifdef _DEBUG
 
 #define _CRTDBG_MAP_ALLOC
@@ -54,7 +50,7 @@ namespace Engine
 #endif
 
 #endif // _DEBUG
-//#endif//!defined(USE_IMGUI)
+
 
 using namespace Engine;
 using namespace std;

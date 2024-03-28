@@ -18,6 +18,8 @@ CModel::CModel(const CModel& rhs)
     ,m_Materials{rhs.m_Materials }
     , m_eModelType{ rhs.m_eModelType }
     , m_Bones{ rhs.m_Bones }
+    , m_PreTransformMatrix{ rhs.m_PreTransformMatrix }
+    , m_iNumAnimations{ rhs.m_iNumAnimations }
 {
     //이건 얕은 복사라 문제 생김(동시 움직임)
     for (auto& pBone : m_Bones)
@@ -40,6 +42,11 @@ HRESULT CModel::Initialize_Prototype(MODELTYPE eModelType, const _char* pModelFi
     if (TYPE_NONANIM == eModelType)
         iFlag |= aiProcess_PreTransformVertices;
 
+    //if (TYPE_NONANIM == eModelType)
+    //    iFlag = aiProcess_PreTransformVertices | aiProcess_ConvertToLeftHanded | aiProcess_GenNormals | aiProcess_CalcTangentSpace;
+    //else
+    //    iFlag = aiProcess_ConvertToLeftHanded | aiProcess_GenNormals | aiProcess_CalcTangentSpace;
+
     /* assimp 열거체 aiProcess_PreTransformVertices
     메시들을 적당한뼈의 위치에 미리 다 배치시킨다.  정적물체는 괜찮지만 동적물체
     즉 애니메이션 값을 가진 모델이 이 열거값을 가지면 애니메이션값이 다 삭제됨*/
@@ -59,6 +66,10 @@ HRESULT CModel::Initialize_Prototype(MODELTYPE eModelType, const _char* pModelFi
 
     if (FAILED(Ready_Materials(pModelFilePath)))
         return E_FAIL;
+
+    if (FAILED(Ready_Animations()))
+        return E_FAIL;
+
 
     return S_OK;
 }
@@ -97,7 +108,109 @@ void CModel::Play_Animation(_float fTimeDelta)
 
     /* 전체뼈를 순회하면서 모든 뼈의 CombinedTransformationMatrix를 갱신한다. */
     for (auto& pBone : m_Bones)
-        pBone->Update_CombinedTransformationMatrix(m_Bones);
+        pBone->Update_CombinedTransformationMatrix(m_Bones, XMLoadFloat4x4(&m_PreTransformMatrix));
+}
+
+HRESULT CModel::Make_Binary(const wstring FilePath)
+{
+    ofstream fout;
+    fout.open(FilePath, ios::out    |   ios::binary);
+
+    if (!fout.fail())
+    {
+        fout.write(reinterpret_cast<char*>(&m_eModelType), sizeof(MODELTYPE));
+        fout.write(reinterpret_cast<char*>(&m_iNumMeshes), sizeof(_uint));
+
+        for (auto& SaveMesh : m_Meshes)
+            SaveMesh->Save_Meshes(&fout,m_eModelType);
+
+        fout.write(reinterpret_cast<char*>(&m_iNumMaterials), sizeof(_uint));
+        for (auto& SaveMaterial : m_Materials)
+        {
+            for (size_t i = 1; i < AI_TEXTURE_TYPE_MAX; i++)
+            {
+                if(nullptr!= SaveMaterial.MaterialTextures[i])
+                {
+                    _uint check = 1;
+                    fout.write(reinterpret_cast<char*>(&check), sizeof(_uint));
+                    SaveMaterial.MaterialTextures[i]->Save_Texture(&fout);
+                }
+                else
+                {
+                    _uint check = 0;
+                    fout.write(reinterpret_cast<char*>(&check), sizeof(_uint));
+                }
+            }
+        }
+
+       _uint iBoneSize= m_Bones.size();
+        fout.write(reinterpret_cast<char*>(&iBoneSize), sizeof(_uint));
+
+        for (auto& SaveBone : m_Bones)
+            SaveBone->Save_Bone(&fout);
+
+    }
+    fout.close();
+
+    return S_OK;
+}
+
+HRESULT CModel::Read_Binary( char* FilePath)
+{
+    ifstream fin(FilePath, ios::binary);
+
+    if(fin.is_open())
+    { 
+    //부모뼈 인덱스가 -1인 뼈가 존재해서 -2 로 하기
+
+        fin.read(reinterpret_cast<char*>(&m_eModelType), sizeof(MODELTYPE));
+
+        fin.read(reinterpret_cast<char*>(&m_iNumMeshes), sizeof(_uint));
+
+        m_Meshes.reserve(m_iNumMeshes);
+
+            for (size_t i = 0; i < m_iNumMeshes; i++)
+            {
+
+                    CMesh* pMesh = CMesh::Create(m_pDevice, m_pContext, m_eModelType, &fin);
+                    if (nullptr == pMesh)
+                        return E_FAIL;
+
+                    m_Meshes.emplace_back(pMesh);
+                
+            }
+
+        fin.read(reinterpret_cast<char*>(&m_iNumMaterials), sizeof(_uint));
+        for (size_t i = 0; i < m_iNumMaterials; i++)
+        {
+            MESH_MATERIAL pMt{};    
+            for (size_t j = 1; j < AI_TEXTURE_TYPE_MAX; j++)
+            {
+                _uint check;
+                fin.read(reinterpret_cast<char*>(&check), sizeof(_uint));
+                if (1 == check)
+                {
+                    pMt.MaterialTextures[j] = CTexture::Create(m_pDevice, m_pContext, &fin);
+                    if (nullptr == pMt.MaterialTextures[j])
+                        return E_FAIL;
+                }
+            }
+            m_Materials.emplace_back(pMt);
+        }
+
+        _uint iBoneSize=0;
+        fin.read(reinterpret_cast<char*>(&iBoneSize), sizeof(_uint));
+        for (size_t i = 0; i < iBoneSize; i++)
+        {
+            CBone* pBone = CBone::Create(&fin);
+            if (nullptr == pBone)
+                return E_FAIL;
+            m_Bones.emplace_back(pBone);    
+        }
+    }
+    fin.close();
+
+    return S_OK;
 }
 
 HRESULT CModel::Ready_Meshes()
@@ -189,11 +302,42 @@ HRESULT CModel::Ready_Bones(const aiNode* pAINode, _int iParentIndex)
     return S_OK;
 }
 
+HRESULT CModel::Ready_Animations()
+{
+
+    /* 어떤 애니메이션을 재생했을 때, 이 애니메이션에서 사용하고 있는 뼈들의 각각의 변환 상태(행렬)들을 로드한다.  */
+    m_iNumAnimations = m_pAIScene->mNumAnimations;
+
+    for (size_t i = 0; i < m_iNumAnimations; i++)
+    {
+        aiAnimation* pAIAnimation = m_pAIScene->mAnimations[i];
+    }
+
+
+
+
+
+    return S_OK;
+}
+
 CModel* CModel::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MODELTYPE eModelType, const _char* pModelFilePath, _fmatrix PreTransformMatrix)
 {
     CModel* pInstance = new CModel(pDevice, pContext);
 
     if (FAILED(pInstance->Initialize_Prototype(eModelType, pModelFilePath, PreTransformMatrix)))
+    {
+        MSG_BOX("Failed To Created : CModel");
+        Safe_Release(pInstance);
+    }
+
+    return pInstance;
+}
+
+CModel* CModel::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,  char* BinaryFilePath)
+{
+    CModel* pInstance = new CModel(pDevice, pContext);
+
+    if (FAILED(pInstance->Read_Binary(BinaryFilePath)))
     {
         MSG_BOX("Failed To Created : CModel");
         Safe_Release(pInstance);

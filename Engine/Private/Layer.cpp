@@ -15,7 +15,9 @@ HRESULT CLayer::Add_GameObject(CGameObject * pGameObject)
 {
 	if (nullptr == pGameObject)
 		return E_FAIL;
-
+	const _float4x4* pTransMatrix=dynamic_cast<CTransform*>(pGameObject->Get_Transform())->Get_WorldFloat4x4();
+	
+	m_ObPosition.push_back(pTransMatrix);
 	m_GameObjects.push_back(pGameObject);
 
 	return S_OK;
@@ -96,6 +98,9 @@ CLayer * CLayer::Create()
 
 void CLayer::Free()
 {
+	//for (auto& pPos : m_ObPosition)
+	//	Safe_Delete(pPos);
+
 	for (auto& pGameObject : m_GameObjects)
 		Safe_Release(pGameObject);
 

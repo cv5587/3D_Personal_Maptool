@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Base.h"
+#include <Layer.h>
 
 /* 원형객체들을 보관한다. */
 /* 특정 원형객체를 검색하여 복제하고, 복제한 객체(사본)를 레벨(동적할당)별로 그룹(Layer)지어 보관한다. */
@@ -18,6 +19,7 @@ public:
 	HRESULT Initialize(_uint iNumLevels);
 	HRESULT Add_Prototype(const wstring& strPrototypeTag, class CGameObject* pPrototype);
 	HRESULT Add_CloneObject(_uint iLevelIndex, const wstring& strLayerTag, const wstring& strPrototypeTag, void* pArg);
+	//터레인 용
 	HRESULT Add_CloneObject(_uint iLevelIndex, const wstring& strLayerTag, const wstring& strPrototypeTag, CGameObject** pGameObject, void* pArg);
 	HRESULT Delete_CloneObject(_uint iLevelIndex, const wstring& strLayerTag, CGameObject* pGameObject);
 	CGameObject* Find_CloneObject(_uint iLevelIndex, const wstring& strLayerTag, CGameObject* pGameObject);
@@ -25,8 +27,7 @@ public:
 	void Tick(_float fTimeDelta);
 	void Late_Tick(_float fTimeDelta);
 	void Clear(_uint iLevelIndex);
-
-
+	vector< const _float4x4*>* Get_ObPos(_uint iLevelIndex, const wstring& strLayerTag);
 
 private:
 	map<const wstring, class CGameObject*>				m_Prototypes;

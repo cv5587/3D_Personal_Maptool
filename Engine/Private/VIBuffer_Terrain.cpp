@@ -39,7 +39,6 @@ HRESULT CVIBuffer_Terrain::Initialize(void* pArg)
 	BITMAPFILEHEADER		fh;
 	ReadFile(hFile, &fh, sizeof fh, &dwByte, nullptr);
 
-
 	BITMAPINFOHEADER		ih;
 	ReadFile(hFile, &ih, sizeof ih, &dwByte, nullptr);
 
@@ -83,7 +82,7 @@ HRESULT CVIBuffer_Terrain::Initialize(void* pArg)
 		{
 			_uint		iIndex = i * m_iNumVerticesX + j;
 			_uint		heightiIndex = i * ih.biWidth + j;	
-			pVertices[iIndex].vPosition = _float3(j, (pPixel[heightiIndex] & 0x000000ff) / 10.f, i);
+			pVertices[iIndex].vPosition = _float3(j, ((pPixel[heightiIndex] & 0x000000ff) - 125.f) , i);
 			pVertices[iIndex].vNormal = _float3(0.0f, 0.f, 0.f);
 			pVertices[iIndex].vTexcoord = _float2(j / (m_iNumVerticesX - 1.f), i / (m_iNumVerticesZ - 1.f));
 			_float3 fPos = { 0.f,0.f,0.f };

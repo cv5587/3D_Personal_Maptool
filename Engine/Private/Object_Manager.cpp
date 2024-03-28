@@ -105,7 +105,7 @@ HRESULT CObject_Manager::Add_CloneObject(_uint iLevelIndex, const wstring& strLa
 	}
 	*pGameObject = pCloneObject;
 	Safe_AddRef(pCloneObject);
-	//TODO:0321´©¼öÄåÄå
+
 	return S_OK;
 }
 
@@ -178,6 +178,19 @@ void CObject_Manager::Clear(_uint iLevelIndex)
 		Safe_Release(Pair.second);
 	}
 	m_pLayers[iLevelIndex].clear();
+}
+
+vector< const _float4x4*>* CObject_Manager::Get_ObPos(_uint iLevelIndex, const wstring& strLayerTag)
+{
+	if (iLevelIndex >= m_iNumLevels)
+		return nullptr;
+
+	auto	iter = m_pLayers[iLevelIndex].find(strLayerTag);
+
+	if (iter == m_pLayers[iLevelIndex].end())
+		return nullptr;
+
+	return iter->second->Get_ObPos();
 }
 
 CGameObject * CObject_Manager::Find_Prototype(const wstring & strPrototypeTag)

@@ -24,6 +24,7 @@ struct VS_OUT
 {
     float4 vPosition : SV_POSITION;
     float2 vTexcoord : TEXCOORD0;
+    float4 vProjPos : TEXCOORD1;
 };
 
 /* ¡§¡° ºŒ¿Ã¥ı :  /* 
@@ -40,7 +41,8 @@ VS_OUT VS_MAIN(VS_IN In)
 
     Out.vPosition = mul(float4(In.vPosition, 1.f), matWVP);
     Out.vTexcoord = In.vTexcoord;
-
+    Out.vProjPos = Out.vPosition;
+    
     return Out;
 }
 
@@ -53,11 +55,13 @@ struct PS_IN
 {
     float4 vPosition : SV_POSITION;
     float2 vTexcoord : TEXCOORD0;
+    float4 vProjPos : TEXCOORD1;
 };
 
 struct PS_OUT
 {
     vector vColor : SV_TARGET0;
+    float vHitScreenZ : SV_TARGET1;
 };
 
 PS_OUT PS_MAIN(PS_IN In)
@@ -65,7 +69,8 @@ PS_OUT PS_MAIN(PS_IN In)
     PS_OUT Out = (PS_OUT) 0;
 
     Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord*30.f);
-
+    
+    Out.vHitScreenZ = In.vProjPos.z / In.vProjPos.w;
 	
 
 	// Out.vColor = tex2D(DefaultSampler, In.vTexcoord);

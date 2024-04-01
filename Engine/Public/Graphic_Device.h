@@ -24,11 +24,17 @@ public:
 	/* 백버퍼를 지운다. */
 	HRESULT Clear_BackBuffer_View(_float4 vClearColor);
 
+	/* HitScreen을 지운다. */
+	HRESULT Clear_HitScreenBuffer_View();
+
 	/* 깊이버퍼 + 스텐실버퍼를 지운다. */
 	HRESULT Clear_DepthStencil_View();
 	
 	/* 후면 버퍼를 전면버퍼로 교체한다.(백버퍼를 화면에 직접 보여준다.) */
 	HRESULT Present();
+
+public:
+	_float Compute_ProjZ(const POINT& ptWindowPos, ID3D11Texture2D* pHitScreenTexture);
 
 private:	
 	// IDirect3DDevice9* == LPDIRECT3DDEVICE9 == ID3D11Device + ID3D11DeviceContext 
@@ -43,6 +49,9 @@ private:
 	/* 후면버퍼와 전면버퍼를 교체해가면서 화면에 보여주는 역할 */
 	IDXGISwapChain*				m_pSwapChain = { nullptr };
 
+	ID3D11Texture2D* m_pHitScreenTexture = { nullptr };
+
+
 
 	/* IDirect3DTexture9 */
 	/* ID3D11Texture2D : 텍스쳐를 표현하는 사전객체 타입이다.
@@ -52,13 +61,15 @@ private:
 	/* ID3D11RenderTargetView : 렌더타겟용으로 사용될 수 있는 텍스처 타입. */
 	/* ID3D11DepthStencilView : 깊이스텐실 버퍼로서 사용될 수 있는 타입.  */
 	ID3D11RenderTargetView*		m_pBackBufferRTV = { nullptr };
+	ID3D11RenderTargetView*		m_pHitScreenRTV = { nullptr };
 	ID3D11DepthStencilView*		m_pDepthStencilView = { nullptr };
-
+	D3D11_TEXTURE2D_DESC		m_HitTextureDesc{};
 private:
 	/* 스왑체인에게 필수적으로 필요한 데이터는 백버퍼가 필요하여 백버퍼를 생성하기위한 정보를 던져준다. */
 	/* 스왑체인을 만들었다 == 백버퍼(텍스쳐)가 생성된다. */
 	HRESULT Ready_SwapChain(HWND hWnd, _bool isWindowed, _uint iWinCX, _uint iWinCY);
 	HRESULT Ready_BackBufferRenderTargetView();
+	HRESULT Ready_HitScreenRenderTargetView(_uint iWinCX, _uint iWinCY);
 	HRESULT Ready_DepthStencilRenderTargetView(_uint iWinCX, _uint iWinCY);
 
 public:

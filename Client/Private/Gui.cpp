@@ -182,12 +182,14 @@ HRESULT CGui::Update_UI()
 		m_bInputObject = !m_bInputObject;
 	}
 
-	if (m_bMakeObject &&(m_pGameInstance->Get_DIMouseState(DIM_LB) & 0x80))
+	if (m_bMakeObject &&(m_pGameInstance->Get_DIMouseState(DIM_LB) & 0x80)&&(m_pGameInstance->Get_DIKeyState(DIK_LCONTROL) & 0x80))	
 	{
 		
-		CEnvironmentObject::ENVIRONMENT_DESC pDesc{};
-		XMStoreFloat4(&pDesc.vPrePosition,Picking_on_Terrain());
-		_float4 p = { 0.f,0.f,0.f,0.f };
+		CGameObject::GAMEOBJECT_DESC pDesc{};
+
+		XMStoreFloat4(&pDesc.vPrePosition, Picking_HitScreen());
+
+		_float4 p = { -1.f,-1.f,-1.f,-1.f };
 
 		pDesc.ComponentTag = m_ComponentTag;
 
@@ -229,7 +231,12 @@ _vector CGui::Picking_on_Terrain()
 	_matrix TerrainWorldMatrixInverse= XMMatrixInverse(nullptr, m_pTerrainManager->Get_Terrain_WorldMatrix());
 
 	return m_pGameInstance->Picking_on_Terrain(g_hWnd, TerrainWorldMatrixInverse,
-		ViewMatrixInverse, ProjMatrixInverse, pVtxPos, pTerrainUV, pWinSize);
+					ViewMatrixInverse, ProjMatrixInverse, pVtxPos, pTerrainUV, pWinSize);
+}
+
+_vector CGui::Picking_HitScreen()
+{
+	return m_pGameInstance->Picking_HitScreen();
 }
 
 

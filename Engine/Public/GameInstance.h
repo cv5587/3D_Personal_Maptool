@@ -22,8 +22,10 @@ public:
 
 public: /* For.Graphic_Device */	
 	HRESULT Clear_BackBuffer_View(_float4 vClearColor);
+	HRESULT Clear_HitScreenBuffer_View();	
 	HRESULT Clear_DepthStencil_View();
 	HRESULT Present();
+	_float Compute_ProjZ(const POINT& ptWindowPos, ID3D11Texture2D* pHitScreenTexture);
 
 public: /* For.Input_Device */
 	_byte	Get_DIKeyState(_ubyte byKeyID);
@@ -67,6 +69,7 @@ public: /* For.PipeLine */
 
 public:/*For.Calculator*/
 	_vector Picking_on_Terrain(HWND hWnd, _matrix TerrainWorldMatrixInverse, _matrix mViewMatrixInverse, _matrix mProjMatrixInverse, _float4* pVtxPos, _int* pTerrainUV, _float* pWinSize);
+	_vector Picking_HitScreen();
 	_bool Compare_Float4(_float4 f1, _float4 f2);
 
 private:

@@ -61,7 +61,7 @@ HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, _uint iNumLevels, cons
 		return E_FAIL;
 
 	/*Calculator »ý¼º*/
-	m_pCalculator = CCalculator::Create();
+	m_pCalculator = CCalculator::Create(*ppDevice, *ppContext, EngineDesc.hWnd, EngineDesc.iWinSizeX, EngineDesc.iWinSizeY);
 	if (nullptr == m_pCalculator)
 		return E_FAIL;
 
@@ -90,6 +90,8 @@ HRESULT CGameInstance::Draw(const _float4 & vClearColor)
 {
 	if (FAILED(Clear_BackBuffer_View(vClearColor)))
 		return E_FAIL;
+	if (FAILED(Clear_HitScreenBuffer_View()))
+		return E_FAIL;
 	if (FAILED(Clear_DepthStencil_View()))
 		return E_FAIL;
 
@@ -115,6 +117,11 @@ HRESULT CGameInstance::Clear_BackBuffer_View(_float4 vClearColor)
 	return m_pGraphic_Device->Clear_BackBuffer_View(vClearColor);
 }
 
+HRESULT CGameInstance::Clear_HitScreenBuffer_View()
+{
+	return m_pGraphic_Device->Clear_HitScreenBuffer_View();
+}
+
 HRESULT CGameInstance::Clear_DepthStencil_View()
 {
 	return m_pGraphic_Device->Clear_DepthStencil_View();
@@ -123,6 +130,11 @@ HRESULT CGameInstance::Clear_DepthStencil_View()
 HRESULT CGameInstance::Present()
 {
 	return m_pGraphic_Device->Present();
+}
+
+_float CGameInstance::Compute_ProjZ(const POINT& ptWindowPos, ID3D11Texture2D* pHitScreenTexture)
+{
+	return m_pGraphic_Device->Compute_ProjZ(ptWindowPos, pHitScreenTexture);
 }
 
 _byte CGameInstance::Get_DIKeyState(_ubyte byKeyID)
@@ -271,6 +283,11 @@ void CGameInstance::Set_Transform(CPipeLine::TRANSFORMSTATE eState, _fmatrix Tra
 _vector CGameInstance::Picking_on_Terrain(HWND hWnd, _matrix TerrainWorldMatrixInverse, _matrix mViewMatrixInverse, _matrix mProjMatrixInverse, _float4* pVtxPos, _int* pTerrainUV, _float* pWinSize)
 {
 	return m_pCalculator->Picking_on_Terrain(hWnd, TerrainWorldMatrixInverse, mViewMatrixInverse, mProjMatrixInverse, pVtxPos, pTerrainUV, pWinSize);
+}
+
+_vector CGameInstance::Picking_HitScreen()
+{
+	return m_pCalculator->Picking_HitScreen();
 }
 
 _bool CGameInstance::Compare_Float4(_float4 f1, _float4 f2)

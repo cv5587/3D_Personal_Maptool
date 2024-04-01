@@ -22,10 +22,6 @@ HRESULT CEnvironmentObject::Initialize(void* pArg)
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
 
-    ENVIRONMENT_DESC* pDesc = (ENVIRONMENT_DESC*)pArg;
-    //컴포넌트 변경(모델) 테그에 따라 옵젝에 안넣는이유는 필요없는 옵젝도 생김
-    m_ComponentTag=pDesc->ComponentTag;
-
     if (FAILED(Add_Components()))
         return E_FAIL;
 

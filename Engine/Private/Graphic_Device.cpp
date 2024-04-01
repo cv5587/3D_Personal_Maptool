@@ -30,16 +30,20 @@ HRESULT CGraphic_Device::Initialize(const ENGINE_DESC& EngineDesc, _Inout_ ID3D1
 	if (FAILED(Ready_BackBufferRenderTargetView()))
 		return E_FAIL;
 
+	if (FAILED(Ready_HitScreenRenderTargetView(EngineDesc.iWinSizeX, EngineDesc.iWinSizeY)))
+		return E_FAIL;
+
 	if (FAILED(Ready_DepthStencilRenderTargetView(EngineDesc.iWinSizeX, EngineDesc.iWinSizeY)))
 		return E_FAIL;
 
 	/* 장치에 바인드해놓을 렌더타겟들과 뎁스스텐실뷰를 세팅한다. */
 	/* 장치는 동시에 최대 8개의 렌더타겟을 들고 있을 수 있다. */
-	ID3D11RenderTargetView*		pRTVs[1] = {
+	ID3D11RenderTargetView*		pRTVs[2] = {
 		m_pBackBufferRTV, 
+		m_pHitScreenRTV
 	};
 
-	m_pDeviceContext->OMSetRenderTargets(1, pRTVs,
+	m_pDeviceContext->OMSetRenderTargets(2, pRTVs,
 		m_pDepthStencilView);		
 	
 	D3D11_VIEWPORT			ViewPortDesc;
@@ -77,6 +81,18 @@ HRESULT CGraphic_Device::Clear_BackBuffer_View(_float4 vClearColor)
  	return S_OK;
 }
 
+HRESULT CGraphic_Device::Clear_HitScreenBuffer_View()
+{
+	if (nullptr == m_pDeviceContext)
+		return E_FAIL;
+
+	_float4 vClearValue = { 0.f,0.f,1.f,1.f };
+
+	m_pDeviceContext->ClearRenderTargetView(m_pBackBufferRTV, (_float*)&vClearValue);
+
+	return S_OK;
+}
+
 HRESULT CGraphic_Device::Clear_DepthStencil_View()
 {
 	if (nullptr == m_pDeviceContext)
@@ -97,6 +113,35 @@ HRESULT CGraphic_Device::Present()
 	/* 전면 버퍼와 후면 버퍼를 교체하여 후면 버퍼를 전면으로 보여주는 역할을 한다. */
 	/* 후면 버퍼를 직접 화면에 보여줄게. */	
 	return m_pSwapChain->Present(0, 0);	
+}
+
+_float CGraphic_Device::Compute_ProjZ(const POINT& ptWindowPos, ID3D11Texture2D* pHitScreenTexture)
+{
+	D3D11_VIEWPORT			ViewPortDesc;	
+	_uint numViewport(1);
+
+	m_pDeviceContext->RSGetViewports(&numViewport, &ViewPortDesc);
+
+	D3D11_MAPPED_SUBRESOURCE		SubResources{};	
+
+	m_pDeviceContext->CopyResource(pHitScreenTexture, m_pHitScreenTexture);	
+
+	//lock 같은 개념
+	if (FAILED(m_pDeviceContext->Map(pHitScreenTexture, 0, D3D11_MAP_READ, 0, &SubResources)))
+		return E_FAIL;
+
+	_float fProjZ(-1.f);
+
+	_uint		iIndex = ptWindowPos.y * ViewPortDesc.Width + ptWindowPos.x;
+
+	if (ptWindowPos.x >= 0 && ptWindowPos.x < ViewPortDesc.Width && ptWindowPos.y >= 0 && ptWindowPos.y < ViewPortDesc.Height)
+	{
+		fProjZ = ((_float*)SubResources.pData)[iIndex];	
+	}
+	//unlock 같은 개념
+	m_pDeviceContext->Unmap(pHitScreenTexture, 0);	
+
+	return fProjZ;	
 }
 
 
@@ -173,6 +218,37 @@ HRESULT CGraphic_Device::Ready_BackBufferRenderTargetView()
 	return S_OK;
 }
 
+HRESULT CGraphic_Device::Ready_HitScreenRenderTargetView(_uint iWinCX, _uint iWinCY)
+{
+	if (nullptr == m_pDevice)
+		return E_FAIL;
+
+	ZeroMemory(&m_HitTextureDesc, sizeof(D3D11_TEXTURE2D_DESC));
+
+	m_HitTextureDesc.Width = iWinCX;
+	m_HitTextureDesc.Height = iWinCY;
+	m_HitTextureDesc.MipLevels = 1;
+	m_HitTextureDesc.ArraySize = 1;
+	m_HitTextureDesc.Format = DXGI_FORMAT_R32_FLOAT;
+
+	m_HitTextureDesc.SampleDesc.Quality = 0;
+	m_HitTextureDesc.SampleDesc.Count = 1;
+
+	m_HitTextureDesc.Usage = D3D11_USAGE_DEFAULT;
+	m_HitTextureDesc.BindFlags = D3D11_BIND_RENDER_TARGET /*| D3D11_BIND_SHADER_RESOURCE*/;
+	/*| D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE*/
+	m_HitTextureDesc.CPUAccessFlags = 0;
+	m_HitTextureDesc.MiscFlags = 0;
+
+	if (FAILED(m_pDevice->CreateTexture2D(&m_HitTextureDesc, nullptr, &m_pHitScreenTexture)))
+		return E_FAIL;
+
+	if (FAILED(m_pDevice->CreateRenderTargetView(m_pHitScreenTexture, nullptr, &m_pHitScreenRTV)))
+		return E_FAIL;	
+
+	return S_OK;
+}
+
 HRESULT CGraphic_Device::Ready_DepthStencilRenderTargetView(_uint iWinCX, _uint iWinCY)
 {
 	if (nullptr == m_pDevice)
@@ -230,6 +306,7 @@ void CGraphic_Device::Free()
 {
 	Safe_Release(m_pSwapChain);
 	Safe_Release(m_pDepthStencilView);
+	Safe_Release(m_pHitScreenRTV);
 	Safe_Release(m_pBackBufferRTV);
 	Safe_Release(m_pDeviceContext);
 

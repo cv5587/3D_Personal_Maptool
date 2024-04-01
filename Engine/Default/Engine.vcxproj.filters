@@ -91,9 +91,6 @@
     <Filter Include="01.Utility\03.Components\Model\Bone">
       <UniqueIdentifier>{dafad5f8-11a9-449c-93f1-e017ff2237c1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Utility\03.Components\Calculator">
-      <UniqueIdentifier>{72a4b565-66a3-49e9-a0ff-66eaa93a0fe4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Utility\03.Components\Model\Animation">
       <UniqueIdentifier>{8b61a4ee-7c35-4d54-a08c-cf17dfc5b2a2}</UniqueIdentifier>
     </Filter>
@@ -102,6 +99,9 @@
     </Filter>
     <Filter Include="01.Utility\05.FbxBinaryConverter">
       <UniqueIdentifier>{690dac7b-0f8b-4844-932c-ed9dcdbc2f70}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\97.Calculator">
+      <UniqueIdentifier>{72a4b565-66a3-49e9-a0ff-66eaa93a0fe4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -187,7 +187,7 @@
       <Filter>00.System\00.Device\Input</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Calculator.h">
-      <Filter>01.Utility\03.Components\Calculator</Filter>
+      <Filter>01.Utility\97.Calculator</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Model.h">
       <Filter>01.Utility\03.Components\Model</Filter>
@@ -279,7 +279,7 @@
       <Filter>00.System\00.Device\Input</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Calculator.cpp">
-      <Filter>01.Utility\03.Components\Calculator</Filter>
+      <Filter>01.Utility\97.Calculator</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Model.cpp">
       <Filter>01.Utility\03.Components\Model</Filter>

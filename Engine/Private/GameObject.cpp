@@ -40,6 +40,7 @@ HRESULT CGameObject::Initialize(void* pArg)
 	if (nullptr != pArg)//겜오브젝트 전체가 들고있을 데이터 
 	{
 		GAMEOBJECT_DESC* pDesc = (GAMEOBJECT_DESC*)pArg;
+		m_ComponentTag = pDesc->ComponentTag;
 		_float4 fPickPoint = pDesc->vPrePosition;
 		_vector vPosition = XMLoadFloat4(&fPickPoint);
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);

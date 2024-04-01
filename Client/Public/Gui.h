@@ -30,6 +30,7 @@ private:
 	wstring		m_ComponentTag;
 private:
 	_vector Picking_on_Terrain();
+	_vector Picking_HitScreen();
 
 public:
 	virtual void Free() override;

@@ -10,12 +10,6 @@ BEGIN(Client)
 class CEnvironmentObject :
     public CGameObject
 {
-public:
-	typedef struct : public CGameObject::GAMEOBJECT_DESC
-	{
-		wstring		ComponentTag;
-	}ENVIRONMENT_DESC;
-
 private:
 	CEnvironmentObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CEnvironmentObject(const CGameObject& rhs);
@@ -32,7 +26,7 @@ public:
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
-	wstring m_ComponentTag;
+
 public:
 	HRESULT Add_Components();
 	HRESULT Bind_ShaderResources();

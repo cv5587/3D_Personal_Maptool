@@ -73,8 +73,11 @@ HRESULT CLevel_GamePlay::Ready_Layer_Environment(const wstring& strLayerTag)
 
 HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring& strLayerTag)
 {
+	CGameObject::GAMEOBJECT_DESC pDesc{};
 
-		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Monster"))))
+	pDesc.ComponentTag = TEXT("Prototype_Component_Model_Rabbit");
+	pDesc.vPrePosition = _float4{ 0.f,0.f,0.f,1.f };
+		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Monster"),&pDesc)))
 			return E_FAIL;
 
 	return S_OK;

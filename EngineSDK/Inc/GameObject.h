@@ -9,6 +9,7 @@ class ENGINE_DLL CGameObject abstract : public CBase
 public:
 	typedef struct : public CTransform::TRANSFORM_DESC
 	{
+		wstring		ComponentTag;
 		_float4		vPrePosition ;
 	}GAMEOBJECT_DESC;
 
@@ -37,6 +38,7 @@ protected:
 	class CGameInstance* m_pGameInstance = { nullptr };
 	class CTransform* m_pTransformCom = { nullptr };
 	static const _tchar* m_pTransformTag;
+	wstring m_ComponentTag;
 
 protected:
 	map<const wstring, class CComponent*>		m_Components;

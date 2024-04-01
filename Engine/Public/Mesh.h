@@ -22,7 +22,7 @@ public:
 	HRESULT Initialize(CModel::MODELTYPE eModelType, ifstream* fin);
 	void Fill_Matrices(vector<class CBone*>& Bones, _float4x4* pMeshBoneMatrices);
 	HRESULT Save_Meshes(ofstream* fout, CModel::MODELTYPE eModelType);
-	HRESULT Load_Meshes(ifstream* fin);
+	//HRESULT Load_Meshes(ifstream* fin);
 
 private:
 	_char				m_szName[MAX_PATH] = "";
@@ -32,6 +32,7 @@ private:
 	vector<_float4x4>	m_OffsetMatrices;
 
 	VTXMESH*	m_SaveVertices;
+	VTXANIMMESH*	m_SaveAnimVertices;
 	_uint*			m_SaveIndices;
 
 private:

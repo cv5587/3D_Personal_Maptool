@@ -26,6 +26,11 @@ HRESULT CMonster::Initialize(void* pArg)
     if (FAILED(Add_Components()))
         return E_FAIL;
 
+
+    m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC(m_AnimationIdx, true));
+
+    //m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(rand() % 20, 3.f, rand() % 20, 1.f));
+
     return S_OK;
 }
 
@@ -35,6 +40,15 @@ void CMonster::Priority_Tick(_float fTimeDelta)
 
 void CMonster::Tick(_float fTimeDelta)
 {
+    if (m_pGameInstance->Get_DIKeyState(DIK_E))
+    {
+            m_AnimationIdx++;
+
+    if (m_AnimationIdx >= 9)
+        m_AnimationIdx = 0;
+
+        m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC(m_AnimationIdx, true));
+    }
     m_pModelCom->Play_Animation(fTimeDelta);
 }
 
@@ -72,7 +86,7 @@ HRESULT CMonster::Render()
 HRESULT CMonster::Add_Components()
 {
     /* For.Com_Model */
-    if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Fiona"),
+    if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Rabbit"),
         TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
         return E_FAIL;
 

@@ -23,9 +23,9 @@ HRESULT CEnvironmentObject::Initialize(void* pArg)
         return E_FAIL;
 
     ENVIRONMENT_DESC* pDesc = (ENVIRONMENT_DESC*)pArg;
-    _float4 fPickPoint = pDesc->vPrePosition;
-    _vector vPosition = XMLoadFloat4(&fPickPoint);  
-    m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
+    //컴포넌트 변경(모델) 테그에 따라 옵젝에 안넣는이유는 필요없는 옵젝도 생김
+    m_ComponentTag=pDesc->ComponentTag;
+
     if (FAILED(Add_Components()))
         return E_FAIL;
 
@@ -71,9 +71,8 @@ HRESULT CEnvironmentObject::Render()
 
 HRESULT CEnvironmentObject::Add_Components()
 {
-
     /* For.Com_Model */
-    if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_CliffA"),
+    if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, m_ComponentTag,
         TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
         return E_FAIL;
 

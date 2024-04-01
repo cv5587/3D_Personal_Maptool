@@ -13,7 +13,7 @@ class CEnvironmentObject :
 public:
 	typedef struct : public CGameObject::GAMEOBJECT_DESC
 	{
-		_float4		vPrePosition = { 0.f,0.f,0.f,0.f };
+		wstring		ComponentTag;
 	}ENVIRONMENT_DESC;
 
 private:
@@ -32,7 +32,7 @@ public:
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
-
+	wstring m_ComponentTag;
 public:
 	HRESULT Add_Components();
 	HRESULT Bind_ShaderResources();

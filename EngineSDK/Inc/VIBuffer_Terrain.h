@@ -4,6 +4,7 @@ BEGIN(Engine)
 class ENGINE_DLL CVIBuffer_Terrain final:
     public CVIBuffer
 {
+
 private:
 	CVIBuffer_Terrain(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CVIBuffer_Terrain(const CVIBuffer_Terrain& rhs);
@@ -19,7 +20,7 @@ public:
 private:
 	_uint				m_iNumVerticesX = { 0 };
 	_uint				m_iNumVerticesZ = { 0 };
-	_int*				 m_pTerrainUV = { nullptr };
+	_int*				 m_pTerrainUV = {nullptr};
 	 _tchar			m_strHeightMapFilePath[MAX_PATH] = TEXT("");
 	 _float4*		m_VtxPos = { nullptr };
 

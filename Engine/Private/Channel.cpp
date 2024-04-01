@@ -58,6 +58,73 @@ HRESULT CChannel::Initialize(const aiNodeAnim* pAIChannel, const vector<class CB
 	return S_OK;
 }
 
+HRESULT CChannel::Initialize(ifstream* fin)
+{
+	fin->read(reinterpret_cast<char*>(m_szName), MAX_PATH);
+	fin->read(reinterpret_cast<char*>(&m_iBoneIndex), sizeof(_uint));
+	fin->read(reinterpret_cast<char*>(&m_iNumKeyFrames), sizeof(_uint));
+
+	m_KeyFrames.reserve(m_iNumKeyFrames);
+	for (size_t i = 0; i < m_iNumKeyFrames; i++)
+	{
+		KEYFRAME  KeyFrame{};
+		fin->read(reinterpret_cast<char*>(&KeyFrame), sizeof(KEYFRAME));
+		m_KeyFrames.emplace_back(KeyFrame);
+	}
+
+	return S_OK;
+}
+
+void CChannel::Update_TransformationMatrix(_double CurrentPosition, const vector<class CBone*>& Bones, _uint* pCurrentKeyFrameIndex)
+{
+	if (0.0 == CurrentPosition)
+		*pCurrentKeyFrameIndex = 0;
+
+
+	KEYFRAME		LastKeyFrame = m_KeyFrames.back();
+
+	_vector			vScale, vRotation, vTranslation;
+
+	/* 현재 재생위치가 마지막 키프레임의 위치를 넘어가게되면 무조건 마지막 키프레임의 상태를 취한다.  */
+	if (CurrentPosition >= LastKeyFrame.Time)
+	{
+		vScale = XMLoadFloat3(&LastKeyFrame.vScale);
+		vRotation = XMLoadFloat4(&LastKeyFrame.vRotation);
+		vTranslation = XMVectorSetW(XMLoadFloat3(&LastKeyFrame.vPosition), 1.f);
+	}
+	/* 특정 키프레임들 사이에 있을거다!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */
+	else
+	{
+		if (CurrentPosition >= m_KeyFrames[*pCurrentKeyFrameIndex + 1].Time)
+			++*pCurrentKeyFrameIndex;
+
+		/* 현재 위치에서 왼쪽에 있는 키프렝미의 위치를 뺀다. / 내 오른쪽 키르렝미의 위치 - 내 왼쪽 키프렝밍의 위치. */
+		_float		fRatio = (CurrentPosition - m_KeyFrames[*pCurrentKeyFrameIndex].Time) / (m_KeyFrames[*pCurrentKeyFrameIndex + 1].Time - m_KeyFrames[*pCurrentKeyFrameIndex].Time);
+
+		vScale = XMVectorLerp(XMLoadFloat3(&m_KeyFrames[*pCurrentKeyFrameIndex].vScale), XMLoadFloat3(&m_KeyFrames[*pCurrentKeyFrameIndex + 1].vScale), fRatio);
+		vRotation = XMQuaternionSlerp(XMLoadFloat4(&m_KeyFrames[*pCurrentKeyFrameIndex].vRotation), XMLoadFloat4(&m_KeyFrames[*pCurrentKeyFrameIndex + 1].vRotation), fRatio);
+		vTranslation = XMVectorLerp(XMLoadFloat3(&m_KeyFrames[*pCurrentKeyFrameIndex].vPosition), XMLoadFloat3(&m_KeyFrames[*pCurrentKeyFrameIndex + 1].vPosition), fRatio);
+		vTranslation = XMVectorSetW(vTranslation, 1.f);
+	}
+
+	_matrix		TransformationMatrix = XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRotation, vTranslation);
+
+	Bones[m_iBoneIndex]->Set_TransformationMatrix(TransformationMatrix);
+}
+
+HRESULT CChannel::Save_Channel( ofstream* fout)
+{
+	fout->write(reinterpret_cast<char*>(m_szName), MAX_PATH);
+	fout->write(reinterpret_cast<char*>(&m_iBoneIndex), sizeof(_uint));
+	fout->write(reinterpret_cast<char*>(&m_iNumKeyFrames), sizeof(_uint));
+
+	for (auto& KeyFrame:m_KeyFrames)
+		fout->write(reinterpret_cast<char*>(&KeyFrame), sizeof(KEYFRAME));
+		
+
+	return S_OK;
+}
+
 CChannel* CChannel::Create(const aiNodeAnim* pAIChannel, const vector<class CBone*>& Bones)
 {
 	CChannel* pInstance = new CChannel();
@@ -68,6 +135,19 @@ CChannel* CChannel::Create(const aiNodeAnim* pAIChannel, const vector<class CBon
 		Safe_Release(pInstance);
 	}
 
+	return pInstance;
+}
+
+CChannel* CChannel::Create(ifstream* fin)
+{
+	CChannel* pInstance = new CChannel();
+
+	if (FAILED(pInstance->Initialize(fin)))
+	{
+		MSG_BOX("Failed To Load : CChannel");
+		Safe_Release(pInstance);
+	}
+	
 	return pInstance;
 }
 

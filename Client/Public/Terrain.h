@@ -14,7 +14,7 @@ class CTerrain :
 public:
 	typedef struct :public CGameObject::GAMEOBJECT_DESC
 	{
-
+		_int TerrainUV[2];
 	}TERRAIN_DESC;
 private:
 	CTerrain(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -34,11 +34,11 @@ private:
 	CTexture* m_pTextureCom = { nullptr };
 	CVIBuffer_Terrain* m_pVIBufferCom = { nullptr };
 
-private:
-	_float4x4						m_ViewMatrix, m_ProjMatrix;
+	_int* m_TerrainUV = { nullptr };
+
 
 public:
-	HRESULT Add_Components(void* pArg);
+	HRESULT Add_Components();
 	HRESULT Bind_ShaderResources();
 
 public:

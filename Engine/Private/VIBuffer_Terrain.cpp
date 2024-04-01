@@ -26,7 +26,14 @@ HRESULT CVIBuffer_Terrain::Initialize(void* pArg)
 	
 
 	if (nullptr != pArg)
-		m_pTerrainUV = (_int*)pArg;
+	{
+		m_pTerrainUV = new _int[2];	
+
+		_int* sTerrainUV = (_int*)pArg;
+		m_pTerrainUV[0] = sTerrainUV[0];
+		m_pTerrainUV[1] = sTerrainUV[1];
+	
+	}
 	
 
 	_ulong			dwByte = { 0 };
@@ -207,5 +214,6 @@ void CVIBuffer_Terrain::Free()
 {
 
 	Safe_Delete_Array(m_VtxPos);
+	Safe_Delete_Array(m_pTerrainUV);
 	__super::Free();
 }

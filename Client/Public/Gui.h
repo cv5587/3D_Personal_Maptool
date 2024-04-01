@@ -27,7 +27,7 @@ private:
 	_bool		m_bInputObject = { false };
 	_bool		m_bMakeObject = { false };
 	_tchar		m_szRealFullPath[MAX_PATH] = TEXT("");
-
+	wstring		m_ComponentTag;
 private:
 	_vector Picking_on_Terrain();
 

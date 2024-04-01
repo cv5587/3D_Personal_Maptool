@@ -29,6 +29,8 @@ private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 
+private:
+	_uint m_AnimationIdx = { 0 };
 public:
 	HRESULT Add_Components();
 	HRESULT Bind_ShaderResources();

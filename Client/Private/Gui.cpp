@@ -74,35 +74,92 @@ HRESULT CGui::Update_UI()
 		ImGui::NewLine();
 		ImGui::TreePop();
 	}
-	if (ImGui::TreeNode("Object"))
+
+
+
+	const char* szObject = "EnvironmentObject";
+	if (ImGui::TreeNode(szObject))
 	{
 
 		{
-			const char* items[] = { "CliffA" };
-			static int item_current = 0;
-			ImGui::ListBox("List", &item_current, items, IM_ARRAYSIZE(items));
+			const char* objects[] = { "CliffA" };
+			static int object_current = 0;
+			ImGui::ListBox("List", &object_current, objects, IM_ARRAYSIZE(objects));
 			
-		
 		ImGui::NewLine();
 			if (ImGui::Button("ObjectCreate") )
 			{
-				char szProtoname[MAX_PATH] = "Prototype_GameObject_";
-				strcat_s(szProtoname, items[item_current]);
+				char szObjectname[MAX_PATH] = "Prototype_GameObject_";
+				strcat_s(szObjectname, szObject);
+				wcsset(m_szRealFullPath, L'\0');
+				MultiByteToWideChar(CP_ACP, 0, szObjectname, strlen(szObjectname), m_szRealFullPath, MAX_PATH);
+				
+				char szComponentname[MAX_PATH] = "Prototype_Component_Model_";
+				strcat_s(szComponentname, objects[object_current]);	
+				wstring wstr(szComponentname, szComponentname + strlen(szComponentname));
+				m_ComponentTag = wstr;
 
-				MultiByteToWideChar(CP_ACP, 0, szProtoname, strlen(szProtoname), m_szRealFullPath, MAX_PATH);
 				m_bMakeObject = true;
 			}
 
 			if (ImGui::Button("ObjectBinary"))
 			{
 				char szProtoname[MAX_PATH] = "Prototype_Component_Model_";
-				strcat_s(szProtoname, items[item_current]);
+				strcat_s(szProtoname, objects[object_current]);
 
 				wstring wstr(szProtoname, szProtoname + strlen(szProtoname));
 				wstring filepath = TEXT("../Bin/bin/");
 				wstring Ext = TEXT(".bin");
 				filepath=filepath + wstr+Ext;
+				m_ComponentTag = wstr;
+				if (FAILED(m_pGameInstance->Save_Binary(LEVEL_GAMEPLAY, wstr, filepath)))
+					return E_FAIL;
+			}
+		}
 
+		ImGui::NewLine();
+		ImGui::TreePop();
+	}
+
+
+
+	const char* szMoster = "Monster";
+	if (ImGui::TreeNode(szMoster))
+	{
+
+		{
+			const char* Monsters[] = { "Fiona","Rabbit"};
+			static int Monster_current = 0;
+			ImGui::ListBox("List", &Monster_current, Monsters, IM_ARRAYSIZE(Monsters));
+
+
+			ImGui::NewLine();
+			if (ImGui::Button("MonsterCreate"))
+			{
+
+				char szMonstername[MAX_PATH] = "Prototype_GameObject_";
+				strcat_s(szMonstername, szMoster);
+				wcsset(m_szRealFullPath, L'\0');
+				MultiByteToWideChar(CP_ACP, 0, szMonstername, strlen(szMonstername), m_szRealFullPath, MAX_PATH);
+
+				char szComponentname[MAX_PATH] = "Prototype_Component_Model_";
+				strcat_s(szComponentname, Monsters[Monster_current]);
+				wstring wstr(szComponentname, szComponentname + strlen(szComponentname));
+				m_ComponentTag = wstr;
+
+				m_bMakeObject = true;
+			}
+
+			if (ImGui::Button("ObjectBinary"))
+			{
+				char szProtoname[MAX_PATH] = "Prototype_Component_Model_";
+				strcat_s(szProtoname, Monsters[Monster_current]);
+
+				wstring wstr(szProtoname, szProtoname + strlen(szProtoname));
+				wstring filepath = TEXT("../Bin/bin/");
+				wstring Ext = TEXT(".bin");
+				filepath = filepath + wstr + Ext;
+				m_ComponentTag = wstr;
 				if (FAILED(m_pGameInstance->Save_Binary(LEVEL_GAMEPLAY, wstr, filepath)))
 					return E_FAIL;
 			}
@@ -112,7 +169,6 @@ HRESULT CGui::Update_UI()
 		ImGui::TreePop();
 	}
 	ImGui::End();
-
 	if (0 == iTerrain[0] % 2)
 		iTerrain[0]++;
 	else if (0 == iTerrain[1] % 2)
@@ -120,6 +176,7 @@ HRESULT CGui::Update_UI()
 
 	if (m_bInputObject)
 	{
+
 		m_pTerrainManager->Clone_Terrain(iTerrain);
 		
 		m_bInputObject = !m_bInputObject;
@@ -127,12 +184,16 @@ HRESULT CGui::Update_UI()
 
 	if (m_bMakeObject &&(m_pGameInstance->Get_DIMouseState(DIM_LB) & 0x80))
 	{
+		
 		CEnvironmentObject::ENVIRONMENT_DESC pDesc{};
 		XMStoreFloat4(&pDesc.vPrePosition,Picking_on_Terrain());
 		_float4 p = { 0.f,0.f,0.f,0.f };
 
+		pDesc.ComponentTag = m_ComponentTag;
+
 		if( !m_pGameInstance->Compare_Float4(p, pDesc.vPrePosition))
 			{
+			//참고할 클래스,참고할 모델컴퍼넌트 테그 가져가기.
 				if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), m_szRealFullPath,& pDesc) ))
 					return E_FAIL;
 		

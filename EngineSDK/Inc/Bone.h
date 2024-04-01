@@ -19,6 +19,10 @@ public:
 	}
 
 public:
+	void Set_TransformationMatrix(_fmatrix TransformationMatrix) {
+		XMStoreFloat4x4(&m_TransformationMatrix, TransformationMatrix);
+	}
+
 	_bool Compare_Name(const _char* pName) {
 		return !strcmp(m_szName, pName);
 	}
@@ -31,7 +35,7 @@ public:
 
 private:
 	_char				m_szName[MAX_PATH] = "";
-	_int				m_iParentBoneIndex = { 0 };
+	_int					m_iParentBoneIndex = { 0 };
 	_float4x4			m_TransformationMatrix;
 	_float4x4			m_CombinedTransformationMatrix;
 
@@ -39,6 +43,7 @@ private:
 public:
 	static CBone* Create(const aiNode* pBoneNode, _int iParentIndex);
 	static CBone* Create(ifstream* fin);
+	CBone* Clone();
 	virtual void Free() override;
 };
 

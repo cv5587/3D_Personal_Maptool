@@ -1,11 +1,23 @@
 #pragma once
 #include "Component.h"
+#include "Animation.h"
+
 BEGIN(Engine)
+
 class ENGINE_DLL CModel final:
     public CComponent
 {
 public :
 	enum MODELTYPE{TYPE_NONANIM,TYPE_ANIM,TYPE_END};
+	
+	typedef struct tagAnimationDesc
+	{
+		tagAnimationDesc(_uint iAnimIndex, _bool isLoop)
+			: iAnimIndex{ iAnimIndex }, isLoop{ isLoop } {}
+		_uint		iAnimIndex = { 0 };
+		_bool		isLoop = { false };
+	}ANIMATION_DESC;
+
 private:
 	CModel(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CModel(const CModel& rhs);
@@ -16,6 +28,10 @@ public:
 		return m_iNumMeshes;
 	}
 
+	_bool Get_AnimFinished() const {
+		return m_Animations[m_AnimDesc.iAnimIndex]->Get_Finished();
+	}
+
 public:
 	virtual HRESULT	Initialize_Prototype(MODELTYPE eModelType, const _char* pModelFilePath, _fmatrix PreTransformMatrix);
 	virtual HRESULT	Initialize(void* pArg) override;
@@ -24,6 +40,10 @@ public:
 	HRESULT Bind_Material(class CShader* pShaderCom, const _char* pConstantName, _uint iMeshIndex, aiTextureType eMaterialType);
 	HRESULT Bind_BoneMatrices(class CShader* pShaderCom, const _char* pConstantName, _uint iMeshIndex);
 	void Play_Animation(_float fTimeDelta);
+	void Set_AnimationIndex(const ANIMATION_DESC& AnimDesc) {
+		m_AnimDesc = AnimDesc;
+		m_Animations[m_AnimDesc.iAnimIndex]->CAnimation::Reset();
+	}
 
 	HRESULT Make_Binary(const wstring FilePath);
 	HRESULT Read_Binary( char* FilePath);
@@ -44,6 +64,8 @@ private:
 	vector<class CBone*>	m_Bones;
 
 	_uint						m_iNumAnimations = { 0 };
+	ANIMATION_DESC				m_AnimDesc{ 0, false };
+	vector<class CAnimation*>	m_Animations;
 
 private:
 	HRESULT Ready_Meshes();

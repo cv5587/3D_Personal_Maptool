@@ -12,18 +12,21 @@ CModel::CModel(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 CModel::CModel(const CModel& rhs)
     :CComponent{rhs}
-    ,m_iNumMeshes{rhs.m_iNumMeshes}
-    ,m_Meshes{rhs.m_Meshes}
-    ,m_iNumMaterials{rhs.m_iNumMaterials}
-    ,m_Materials{rhs.m_Materials }
+    , m_iNumMeshes{ rhs.m_iNumMeshes }
+    , m_Meshes{ rhs.m_Meshes }
+    , m_iNumMaterials{ rhs.m_iNumMaterials }
+    , m_Materials{ rhs.m_Materials }
     , m_eModelType{ rhs.m_eModelType }
-    , m_Bones{ rhs.m_Bones }
+    /*, m_Bones{ rhs.m_Bones }*/
     , m_PreTransformMatrix{ rhs.m_PreTransformMatrix }
     , m_iNumAnimations{ rhs.m_iNumAnimations }
+    /*, m_Animations{ rhs.m_Animations }	*/
 {
-    //이건 얕은 복사라 문제 생김(동시 움직임)
-    for (auto& pBone : m_Bones)
-        Safe_AddRef(pBone);
+    for (auto& pPrototypeAnimation : rhs.m_Animations)
+        m_Animations.emplace_back(pPrototypeAnimation->Clone());
+
+    for (auto& pPrototypeBone : rhs.m_Bones)
+        m_Bones.emplace_back(pPrototypeBone->Clone());
 
     for (auto& MaterialDesc : m_Materials)
     {
@@ -37,15 +40,18 @@ CModel::CModel(const CModel& rhs)
 
 HRESULT CModel::Initialize_Prototype(MODELTYPE eModelType, const _char* pModelFilePath, _fmatrix PreTransformMatrix)
 {
-    _uint		iFlag = aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_Fast;
-
-    if (TYPE_NONANIM == eModelType)
-        iFlag |= aiProcess_PreTransformVertices;
+    /*_uint		iFlag = aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_Fast;*/
 
     //if (TYPE_NONANIM == eModelType)
-    //    iFlag = aiProcess_PreTransformVertices | aiProcess_ConvertToLeftHanded | aiProcess_GenNormals | aiProcess_CalcTangentSpace;
-    //else
-    //    iFlag = aiProcess_ConvertToLeftHanded | aiProcess_GenNormals | aiProcess_CalcTangentSpace;
+    //    iFlag |= aiProcess_PreTransformVertices;
+
+    _uint		iFlag;
+    if (TYPE_NONANIM == eModelType)
+        iFlag = aiProcess_PreTransformVertices | aiProcess_ConvertToLeftHanded | aiProcess_GenNormals | aiProcess_CalcTangentSpace;
+    else
+        iFlag = aiProcess_ConvertToLeftHanded | aiProcess_GenNormals | aiProcess_CalcTangentSpace| aiProcess_ValidateDataStructure;
+       // iFlag = aiProcess_ConvertToLeftHanded | aiProcess_GenNormals | aiProcess_CalcTangentSpace;
+     
 
     /* assimp 열거체 aiProcess_PreTransformVertices
     메시들을 적당한뼈의 위치에 미리 다 배치시킨다.  정적물체는 괜찮지만 동적물체
@@ -90,7 +96,6 @@ HRESULT CModel::Render(_uint iMeshIndex)
 HRESULT CModel::Bind_Material(CShader* pShaderCom, const _char* pConstantName, _uint iMeshIndex, aiTextureType eMaterialType)
 {
     return m_Materials[m_Meshes[iMeshIndex]->Get_MaterialIndex()].MaterialTextures[eMaterialType]->Bind_ShaderResource(pShaderCom, pConstantName, 0);
-
 }
 
 HRESULT CModel::Bind_BoneMatrices(CShader* pShaderCom, const _char* pConstantName, _uint iMeshIndex)
@@ -105,6 +110,9 @@ HRESULT CModel::Bind_BoneMatrices(CShader* pShaderCom, const _char* pConstantNam
 void CModel::Play_Animation(_float fTimeDelta)
 {	
     /* 특정 애니메이션을 재생한다. == 특정 애니메이션에서 사용하는 뼈들의 TransformationMatrix를 갱신해준다. */
+    /* 현재 애니메이션의 상태에 맞도록 뼈들의 상태행렬(TransformationMatrix)을 만들고 갱신해준다. */
+    /* m_Animations[m_iCurrentAnimIndex] : 이 애니메이션에서 사용ㅇ하는 뼈들의 상태정보다 */
+    m_Animations[m_AnimDesc.iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, m_AnimDesc.isLoop);
 
     /* 전체뼈를 순회하면서 모든 뼈의 CombinedTransformationMatrix를 갱신한다. */
     for (auto& pBone : m_Bones)
@@ -118,6 +126,15 @@ HRESULT CModel::Make_Binary(const wstring FilePath)
 
     if (!fout.fail())
     {
+        fout.write(reinterpret_cast<char*>(&m_PreTransformMatrix), sizeof(_float4x4));
+        fout.write(reinterpret_cast<char*>(&m_AnimDesc), sizeof(ANIMATION_DESC));
+       
+        _uint iBoneSize = m_Bones.size();
+        fout.write(reinterpret_cast<char*>(&iBoneSize), sizeof(_uint));
+
+        for (auto& SaveBone : m_Bones)
+            SaveBone->Save_Bone(&fout);
+
         fout.write(reinterpret_cast<char*>(&m_eModelType), sizeof(MODELTYPE));
         fout.write(reinterpret_cast<char*>(&m_iNumMeshes), sizeof(_uint));
 
@@ -143,12 +160,17 @@ HRESULT CModel::Make_Binary(const wstring FilePath)
             }
         }
 
-       _uint iBoneSize= m_Bones.size();
-        fout.write(reinterpret_cast<char*>(&iBoneSize), sizeof(_uint));
 
-        for (auto& SaveBone : m_Bones)
-            SaveBone->Save_Bone(&fout);
 
+        //일단 뼈가 영향 주는지 안주는지 모르지만 일단 뼈는 가져가보기
+        if(TYPE_ANIM== m_eModelType)
+        {
+            fout.write(reinterpret_cast<char*>(&m_iNumAnimations), sizeof(_uint));
+
+            for (auto& SaveAni : m_Animations)
+                SaveAni->Save_Animation(&fout);
+        }
+        
     }
     fout.close();
 
@@ -162,6 +184,18 @@ HRESULT CModel::Read_Binary( char* FilePath)
     if(fin.is_open())
     { 
     //부모뼈 인덱스가 -1인 뼈가 존재해서 -2 로 하기
+        fin.read(reinterpret_cast<char*>(&m_PreTransformMatrix), sizeof(_float4x4));
+        fin.read(reinterpret_cast<char*>(&m_AnimDesc), sizeof(ANIMATION_DESC));
+
+        _uint iBoneSize = 0;
+        fin.read(reinterpret_cast<char*>(&iBoneSize), sizeof(_uint));
+        for (size_t i = 0; i < iBoneSize; i++)
+        {
+            CBone* pBone = CBone::Create(&fin);
+            if (nullptr == pBone)
+                return E_FAIL;
+            m_Bones.emplace_back(pBone);
+        }
 
         fin.read(reinterpret_cast<char*>(&m_eModelType), sizeof(MODELTYPE));
 
@@ -171,13 +205,11 @@ HRESULT CModel::Read_Binary( char* FilePath)
 
             for (size_t i = 0; i < m_iNumMeshes; i++)
             {
-
                     CMesh* pMesh = CMesh::Create(m_pDevice, m_pContext, m_eModelType, &fin);
                     if (nullptr == pMesh)
                         return E_FAIL;
 
                     m_Meshes.emplace_back(pMesh);
-                
             }
 
         fin.read(reinterpret_cast<char*>(&m_iNumMaterials), sizeof(_uint));
@@ -198,14 +230,21 @@ HRESULT CModel::Read_Binary( char* FilePath)
             m_Materials.emplace_back(pMt);
         }
 
-        _uint iBoneSize=0;
-        fin.read(reinterpret_cast<char*>(&iBoneSize), sizeof(_uint));
-        for (size_t i = 0; i < iBoneSize; i++)
+
+
+        if (TYPE_ANIM == m_eModelType)
         {
-            CBone* pBone = CBone::Create(&fin);
-            if (nullptr == pBone)
-                return E_FAIL;
-            m_Bones.emplace_back(pBone);    
+            fin.read(reinterpret_cast<char*>(&m_iNumAnimations), sizeof(_uint));
+
+            for (size_t i = 0; i < m_iNumAnimations; i++)
+            {
+                CAnimation* pAnimation = CAnimation::Create(&fin);
+                if (nullptr == pAnimation)
+                    return E_FAIL;
+
+                m_Animations.emplace_back(pAnimation);
+            }
+
         }
     }
     fin.close();
@@ -241,6 +280,8 @@ HRESULT CModel::Ready_Materials(const _char* pModelFilePath)
     for (size_t i = 0; i < m_iNumMaterials; i++)
     {
         aiMaterial* pAIMaterial = m_pAIScene->mMaterials[i];
+        aiString		TextureFilePath;
+        TextureFilePath=pAIMaterial->GetName();
 
         MESH_MATERIAL		MeshMaterial{};
 
@@ -310,12 +351,12 @@ HRESULT CModel::Ready_Animations()
 
     for (size_t i = 0; i < m_iNumAnimations; i++)
     {
-        aiAnimation* pAIAnimation = m_pAIScene->mAnimations[i];
+        CAnimation* pAnimation = CAnimation::Create(m_pAIScene->mAnimations[i], m_Bones);
+        if (nullptr == pAnimation)
+            return E_FAIL;
+
+        m_Animations.emplace_back(pAnimation);
     }
-
-
-
-
 
     return S_OK;
 }
@@ -364,8 +405,15 @@ void CModel::Free()
 {
     __super::Free();
 
+    for (auto& pAnimation : m_Animations)
+        Safe_Release(pAnimation);
+
+    m_Animations.clear();
+
     for (auto& pBone : m_Bones)
         Safe_Release(pBone);
+
+    m_Bones.clear();
 
     for (auto& MaterialDesc : m_Materials)
     {

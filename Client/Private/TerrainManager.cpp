@@ -15,9 +15,14 @@ HRESULT CTerrainManager::Initialize()
 
 HRESULT CTerrainManager::Clone_Terrain(void* pArg)	
 {
+	_int* sTerrainUV=(_int*)pArg;	
+	CTerrain::TERRAIN_DESC pDesc{};
+	pDesc.TerrainUV[0] = sTerrainUV[0];
+	pDesc.TerrainUV[1] = sTerrainUV[1];
+	pDesc.vPrePosition = _float4{ 0.f,0.f,0.f,1.f };
 
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), 
-		TEXT("Prototype_GameObject_Terrain"), &m_pTerrain,pArg)))
+		TEXT("Prototype_GameObject_Terrain"), &m_pTerrain, &pDesc)))
 		return E_FAIL;
 	
 	return S_OK;

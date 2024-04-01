@@ -34,13 +34,16 @@ HRESULT CGameObject::Initialize(void* pArg)
 	if (nullptr == m_pTransformCom)
 		return E_FAIL;
 
-	if (nullptr != pArg)//겜오브젝트 전체가 들고있을 데이터 
-	{
-		//m_iData = ((GAMEOBJECT_DESC*)pArg)->iData;
-	}
-
 	if (FAILED(m_pTransformCom->Initialize(pArg)))
 		return E_FAIL;
+
+	if (nullptr != pArg)//겜오브젝트 전체가 들고있을 데이터 
+	{
+		GAMEOBJECT_DESC* pDesc = (GAMEOBJECT_DESC*)pArg;
+		_float4 fPickPoint = pDesc->vPrePosition;
+		_vector vPosition = XMLoadFloat4(&fPickPoint);
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
+	}
 
 	m_Components.emplace(m_pTransformTag, m_pTransformCom);
 	Safe_AddRef(m_pTransformCom);	

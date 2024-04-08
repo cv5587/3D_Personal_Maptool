@@ -24,7 +24,6 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring& strHeightMapFileP
 HRESULT CVIBuffer_Terrain::Initialize(void* pArg)
 {
 	
-
 	if (nullptr != pArg)
 	{
 		m_pTerrainUV = new _int[2];	
@@ -35,9 +34,7 @@ HRESULT CVIBuffer_Terrain::Initialize(void* pArg)
 	
 	}
 	
-
 	_ulong			dwByte = { 0 };
-
 
 	HANDLE			hFile = CreateFile(m_strHeightMapFilePath, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 	if (0 == hFile)
@@ -100,7 +97,6 @@ HRESULT CVIBuffer_Terrain::Initialize(void* pArg)
 #pragma endregion
 
 #pragma region INDEX_BUFFER 
-
 
 	_uint* pIndices = new _uint[m_iNumIndices];
 	ZeroMemory(pIndices, sizeof(_uint) * m_iNumIndices);

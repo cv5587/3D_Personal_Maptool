@@ -19,13 +19,18 @@ public:
 	void Tick_Engine(_float fTimeDelta);
 	HRESULT Draw(const _float4& vClearColor);
 	void Clear_Resources(_uint iLevelIndex);
+	void Clear_CloneData(_uint iLevelIndex);
 
 public: /* For.Graphic_Device */	
 	HRESULT Clear_BackBuffer_View(_float4 vClearColor);
 	HRESULT Clear_HitScreenBuffer_View();	
+	HRESULT Clear_IDScreenBuffer_View();
 	HRESULT Clear_DepthStencil_View();
 	HRESULT Present();
 	_float Compute_ProjZ(const POINT& ptWindowPos, ID3D11Texture2D* pHitScreenTexture);
+	_int	Compute_ID(const POINT& ptWindowPos, ID3D11Texture2D* pIDScreenTexture);
+	template<typename T>
+	HRESULT Clear_Texture(TextureType eTextureType, T* data);
 
 public: /* For.Input_Device */
 	_byte	Get_DIKeyState(_ubyte byKeyID);
@@ -46,9 +51,14 @@ public: /* For.Object_Manager */
 	HRESULT Add_CloneObject(_uint iLevelIndex, const wstring& strLayerTag, const wstring& strPrototypeTag, void* pArg = nullptr);
 	//터레인 변경생성
 	HRESULT Add_CloneObject(_uint iLevelIndex, const wstring& strLayerTag, const wstring& strPrototypeTag,  CGameObject** pGameObject, void* pArg = nullptr);
-	HRESULT Delete_CloneObject(_uint iLevelIndex, const wstring& strLayerTag,  CGameObject* pGameObject);
+	HRESULT Delete_CloneObject(_uint iLevelIndex,  CGameObject* pGameObject);
 	CGameObject* Find_CloneObject(_uint iLevelIndex, const wstring& strLayerTag, CGameObject* pGameObject);
+	CGameObject* FindID_CloneObject(_uint iLevelIndex, const _int& ID);
 	vector< const _float4x4*>* Get_ObPos(_uint iLevelIndex, const wstring& strLayerTag);
+	//파츠오브젝트용
+	class CGameObject* Clone_Object(const wstring& strPrototypeTag, void* pArg);
+	//데이터 파싱
+	HRESULT Save_Level(_uint iLevelIndex);
 
 public: /* For.Component_Manager */
 	HRESULT Add_Prototype(_uint iLevelIndex, const wstring& strPrototypeTag, CComponent* pPrototype);
@@ -70,6 +80,7 @@ public: /* For.PipeLine */
 public:/*For.Calculator*/
 	_vector Picking_on_Terrain(HWND hWnd, _matrix TerrainWorldMatrixInverse, _matrix mViewMatrixInverse, _matrix mProjMatrixInverse, _float4* pVtxPos, _int* pTerrainUV, _float* pWinSize);
 	_vector Picking_HitScreen();
+	_int Picking_IDScreen();
 	_bool Compare_Float4(_float4 f1, _float4 f2);
 
 private:
@@ -89,3 +100,9 @@ public:
 };
 
 END
+
+template<typename T>
+inline HRESULT CGameInstance::Clear_Texture(TextureType eTextureType, T* data)
+{
+	return m_pGraphic_Device->Clear_Texture(eTextureType, data);
+}

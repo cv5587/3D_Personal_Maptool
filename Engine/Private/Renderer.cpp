@@ -64,7 +64,7 @@ void  CRenderer::Render_NonBlend()
 	{
 		if (nullptr != pGameObject)
 			pGameObject->Render();
-
+		
 		Safe_Release(pGameObject);
 	}
 	m_RenderGroup[RENDER_NONBLEND].clear();

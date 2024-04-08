@@ -16,7 +16,7 @@ HRESULT CLayer::Add_GameObject(CGameObject * pGameObject)
 	if (nullptr == pGameObject)
 		return E_FAIL;
 	const _float4x4* pTransMatrix=dynamic_cast<CTransform*>(pGameObject->Get_Transform())->Get_WorldFloat4x4();
-	
+
 	m_ObPosition.push_back(pTransMatrix);
 	m_GameObjects.push_back(pGameObject);
 
@@ -65,6 +65,24 @@ CGameObject* CLayer::Find_GameObject(CGameObject* pGameObject)
 
 }
 
+CGameObject* CLayer::Find_GameObject(const _int& ID)
+{
+	if (-1 == ID)
+		return nullptr;
+
+	for (auto& pGameObject : m_GameObjects)
+		if (pGameObject->Compare_ID(ID))
+			return pGameObject;
+	//list<CGameObject*>::iterator iter = m_GameObjects.begin();
+	//for (iter; iter == m_GameObjects.end(); iter++)
+	//{
+	//	if((*iter)->Compare_ID(ID))
+	//		return (*iter);
+	//}
+	/*옵젝 없으면 실패여*/
+	return nullptr;
+}
+
 void CLayer::Priority_Tick(_float fTimeDelta)
 {
 	for (auto& pGameObject : m_GameObjects)
@@ -81,6 +99,24 @@ void CLayer::Late_Tick(_float fTimeDelta)
 {
 	for (auto& pGameObject : m_GameObjects)
 		pGameObject->Late_Tick(fTimeDelta);
+}
+
+HRESULT CLayer::Save_Data(ofstream* fout)
+{
+
+
+	if (!fout->fail())
+	{
+		_uint iObjectSize = m_GameObjects.size();
+		fout->write((char*)&iObjectSize, sizeof(_uint));
+
+		for (auto& pGameObject : m_GameObjects)
+			pGameObject->Save_Data(fout);
+	}
+	else
+		return E_FAIL;
+
+	return S_OK;
 }
 
 CLayer * CLayer::Create()

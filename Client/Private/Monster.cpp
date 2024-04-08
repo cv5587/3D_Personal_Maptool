@@ -28,7 +28,9 @@ HRESULT CMonster::Initialize(void* pArg)
 
 
     m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC(m_AnimationIdx, true));
-
+    m_vecCheckAnim.push_back(351);
+    m_vecCheckAnim.push_back(383);
+    m_vecCheckAnim.push_back(297);
     //m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(rand() % 20, 3.f, rand() % 20, 1.f));
 
     return S_OK;
@@ -44,10 +46,10 @@ void CMonster::Tick(_float fTimeDelta)
     {
             m_AnimationIdx++;
 
-    if (m_AnimationIdx >= 9)
+    if (m_AnimationIdx >= 10)
         m_AnimationIdx = 0;
 
-        m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC(m_AnimationIdx, true));
+    m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC(m_AnimationIdx, true));
     }
     m_pModelCom->Play_Animation(fTimeDelta);
 }
@@ -86,7 +88,7 @@ HRESULT CMonster::Render()
 HRESULT CMonster::Add_Components()
 {
     /* For.Com_Model */
-    if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, m_ComponentTag,
+    if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, m_ModelTag,
         TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
         return E_FAIL;
 
@@ -106,7 +108,8 @@ HRESULT CMonster::Bind_ShaderResources()
         return E_FAIL;
     if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::TS_PROJ))))
         return E_FAIL;
-
+    if (FAILED(m_pShaderCom->Bind_ID("g_ID", m_iRenderID)))
+        return E_FAIL;
 
     return S_OK;
 }

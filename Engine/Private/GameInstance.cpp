@@ -92,7 +92,15 @@ HRESULT CGameInstance::Draw(const _float4 & vClearColor)
 		return E_FAIL;
 	if (FAILED(Clear_HitScreenBuffer_View()))
 		return E_FAIL;
+	if (FAILED(Clear_IDScreenBuffer_View()))
+		return E_FAIL;
 	if (FAILED(Clear_DepthStencil_View()))
+		return E_FAIL;
+	_float pfloat = -1.f;
+	if (FAILED(Clear_Texture(TextureType::HitPosTexture,&pfloat)))
+		return E_FAIL;
+	_int pint = -1;
+	if (FAILED(Clear_Texture(TextureType::HitIDTexture, &pint)))
 		return E_FAIL;
 
 	m_pRenderer->Draw();	
@@ -111,6 +119,13 @@ void CGameInstance::Clear_Resources(_uint iLevelIndex)
 	m_pComponent_Manager->Clear(iLevelIndex);
 }
 
+void CGameInstance::Clear_CloneData(_uint iLevelIndex)
+{
+	m_pRenderer->Clear();
+
+	m_pObject_Manager->Clear(iLevelIndex);
+}
+
 
 HRESULT CGameInstance::Clear_BackBuffer_View(_float4 vClearColor)
 {
@@ -120,6 +135,11 @@ HRESULT CGameInstance::Clear_BackBuffer_View(_float4 vClearColor)
 HRESULT CGameInstance::Clear_HitScreenBuffer_View()
 {
 	return m_pGraphic_Device->Clear_HitScreenBuffer_View();
+}
+
+HRESULT CGameInstance::Clear_IDScreenBuffer_View()
+{ 
+	return m_pGraphic_Device->Clear_IDScreenBuffer_View();
 }
 
 HRESULT CGameInstance::Clear_DepthStencil_View()
@@ -135,6 +155,11 @@ HRESULT CGameInstance::Present()
 _float CGameInstance::Compute_ProjZ(const POINT& ptWindowPos, ID3D11Texture2D* pHitScreenTexture)
 {
 	return m_pGraphic_Device->Compute_ProjZ(ptWindowPos, pHitScreenTexture);
+}
+
+_int CGameInstance::Compute_ID(const POINT& ptWindowPos, ID3D11Texture2D* pIDScreenTexture)
+{
+	return m_pGraphic_Device->Compute_ID(ptWindowPos, pIDScreenTexture);
 }
 
 _byte CGameInstance::Get_DIKeyState(_ubyte byKeyID)
@@ -200,12 +225,12 @@ HRESULT CGameInstance::Add_CloneObject(_uint iLevelIndex, const wstring& strLaye
 
 }
 
-HRESULT CGameInstance::Delete_CloneObject(_uint iLevelIndex, const wstring& strLayerTag,  CGameObject* pGameObject)
+HRESULT CGameInstance::Delete_CloneObject(_uint iLevelIndex,  CGameObject* pGameObject)
 {
 	if (nullptr == m_pObject_Manager)
 		return E_FAIL;
 
-	return m_pObject_Manager->Delete_CloneObject(iLevelIndex, strLayerTag, pGameObject);
+	return m_pObject_Manager->Delete_CloneObject(iLevelIndex,  pGameObject);
 }
 
 CGameObject* CGameInstance::Find_CloneObject(_uint iLevelIndex, const wstring& strLayerTag, CGameObject* pGameObject)
@@ -216,9 +241,33 @@ CGameObject* CGameInstance::Find_CloneObject(_uint iLevelIndex, const wstring& s
 	return m_pObject_Manager->Find_CloneObject(iLevelIndex, strLayerTag, pGameObject);
 }
 
+CGameObject* CGameInstance::FindID_CloneObject(_uint iLevelIndex,const _int& ID)
+{
+	if (nullptr == m_pObject_Manager)
+		return nullptr;
+
+	return m_pObject_Manager->FindID_CloneObject(iLevelIndex, ID);
+}
+
 vector< const _float4x4*>* CGameInstance::Get_ObPos(_uint iLevelIndex, const wstring& strLayerTag)
 {
 	return m_pObject_Manager->Get_ObPos(iLevelIndex, strLayerTag);
+}
+
+CGameObject* CGameInstance::Clone_Object(const wstring& strPrototypeTag, void* pArg)
+{
+	if (nullptr == m_pObject_Manager)
+		return nullptr;
+
+	return m_pObject_Manager->Clone_Object(strPrototypeTag, pArg);
+}
+
+HRESULT CGameInstance::Save_Level(_uint iLevelIndex)
+{
+	if (nullptr == m_pObject_Manager)
+		return E_FAIL;
+
+	return m_pObject_Manager->Save_Level(iLevelIndex);
 }
 
 HRESULT CGameInstance::Add_Prototype(_uint iLevelIndex, const wstring & strPrototypeTag, CComponent * pPrototype)
@@ -280,6 +329,7 @@ void CGameInstance::Set_Transform(CPipeLine::TRANSFORMSTATE eState, _fmatrix Tra
 	m_pPipeLine->Set_Transform(eState, TransformMatrix);
 }
 
+
 _vector CGameInstance::Picking_on_Terrain(HWND hWnd, _matrix TerrainWorldMatrixInverse, _matrix mViewMatrixInverse, _matrix mProjMatrixInverse, _float4* pVtxPos, _int* pTerrainUV, _float* pWinSize)
 {
 	return m_pCalculator->Picking_on_Terrain(hWnd, TerrainWorldMatrixInverse, mViewMatrixInverse, mProjMatrixInverse, pVtxPos, pTerrainUV, pWinSize);
@@ -288,6 +338,11 @@ _vector CGameInstance::Picking_on_Terrain(HWND hWnd, _matrix TerrainWorldMatrixI
 _vector CGameInstance::Picking_HitScreen()
 {
 	return m_pCalculator->Picking_HitScreen();
+}
+
+_int CGameInstance::Picking_IDScreen()
+{
+	return m_pCalculator->Picking_IDScreen();
 }
 
 _bool CGameInstance::Compare_Float4(_float4 f1, _float4 f2)

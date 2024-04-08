@@ -105,9 +105,9 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../../EngineSDK/Inc/;../Public/Imgui/;../Public/;./</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../EngineSDK/Inc/;../Public/Imguizmo/;../Public/Imgui/;../Public/;./</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -147,9 +147,9 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>./;../Public/Imgui/;../../EngineSDK/Inc/;../Public/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../Public/Imguizmo/;./;../Public/Imgui/;../../EngineSDK/Inc/;../Public/</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -171,15 +171,23 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\BackGround.h" />
+    <ClInclude Include="..\Public\Body_Player.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
     <ClInclude Include="..\public\CUIObject.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="..\Public\Data_Manager.h" />
     <ClInclude Include="..\Public\EnvironmentObject.h" />
     <ClInclude Include="..\Public\FreeCamera.h" />
     <ClInclude Include="..\Public\Gui.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="..\Public\Imguizmo\GraphEditor.h" />
+    <ClInclude Include="..\Public\Imguizmo\ImCurveEdit.h" />
+    <ClInclude Include="..\Public\Imguizmo\ImGradient.h" />
+    <ClInclude Include="..\Public\Imguizmo\ImGuizmo.h" />
+    <ClInclude Include="..\Public\Imguizmo\ImSequencer.h" />
+    <ClInclude Include="..\Public\Imguizmo\ImZoomSlider.h" />
     <ClInclude Include="..\Public\Imgui\imconfig.h" />
     <ClInclude Include="..\Public\Imgui\imgui.h" />
     <ClInclude Include="..\Public\Imgui\imgui_impl_dx11.h" />
@@ -194,6 +202,8 @@
     <ClInclude Include="..\public\Loader.h" />
     <ClInclude Include="..\public\MainApp.h" />
     <ClInclude Include="..\Public\Monster.h" />
+    <ClInclude Include="..\Public\PartObject.h" />
+    <ClInclude Include="..\Public\Player.h" />
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\Public\TerrainManager.h" />
     <ClInclude Include="Client.h" />
@@ -203,9 +213,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\BackGround.cpp" />
+    <ClCompile Include="..\Private\Body_Player.cpp" />
     <ClCompile Include="..\private\CUIObject.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\Private\Data_Manager.cpp" />
     <ClCompile Include="..\Private\EnvironmentObject.cpp" />
     <ClCompile Include="..\Private\FreeCamera.cpp" />
     <ClCompile Include="..\Private\Gui.cpp">
@@ -224,8 +236,15 @@
     <ClCompile Include="..\private\Loader.cpp" />
     <ClCompile Include="..\private\MainApp.cpp" />
     <ClCompile Include="..\Private\Monster.cpp" />
+    <ClCompile Include="..\Private\PartObject.cpp" />
+    <ClCompile Include="..\Private\Player.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="..\Private\TerrainManager.cpp" />
+    <ClCompile Include="..\Public\Imguizmo\GraphEditor.cpp" />
+    <ClCompile Include="..\Public\Imguizmo\ImCurveEdit.cpp" />
+    <ClCompile Include="..\Public\Imguizmo\ImGradient.cpp" />
+    <ClCompile Include="..\Public\Imguizmo\ImGuizmo.cpp" />
+    <ClCompile Include="..\Public\Imguizmo\ImSequencer.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -244,6 +263,7 @@
   <ItemGroup>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimMesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMesh.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMeshID.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNorTex.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPosTex.hlsl" />
   </ItemGroup>

@@ -40,7 +40,8 @@ HRESULT CGameObject::Initialize(void* pArg)
 	if (nullptr != pArg)//겜오브젝트 전체가 들고있을 데이터 
 	{
 		GAMEOBJECT_DESC* pDesc = (GAMEOBJECT_DESC*)pArg;
-		m_ComponentTag = pDesc->ComponentTag;
+		m_ModelTag = pDesc->ModelTag;
+		m_ProtoTypeTag = pDesc->ProtoTypeTag;
 		_float4 fPickPoint = pDesc->vPrePosition;
 		_vector vPosition = XMLoadFloat4(&fPickPoint);
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
@@ -77,7 +78,39 @@ CComponent* CGameObject::Get_Transform()
 CComponent* CGameObject::Get_Component(const wstring& strComponentTag)
 {
 	auto& iter = m_Components.find(strComponentTag);
+	if (iter == m_Components.end())
+		return nullptr;
+
 	return iter->second;
+}
+
+HRESULT CGameObject::Save_Data(ofstream* fout)
+{
+	if (!fout->fail())
+	{
+		_tchar ProtoTag[MAX_PATH] = TEXT("");
+		_tchar ModelTag[MAX_PATH] = TEXT("");
+
+		wsprintf(ProtoTag, m_ProtoTypeTag.c_str());
+		wsprintf(ModelTag, m_ModelTag.c_str());
+
+		fout->write((char*)ProtoTag, sizeof(_tchar) * MAX_PATH);
+		fout->write((char*)ModelTag, sizeof(_tchar) * MAX_PATH);
+
+		_float4 pPosition{};
+		XMStoreFloat4(&pPosition , m_pTransformCom->Get_State(CTransform::STATE::STATE_POSITION));	
+		fout->write((char*)&pPosition, sizeof(_float4));
+
+		if (TEXT("Prototype_Component_VIBuffer_Terrain") == m_ModelTag)
+		{
+			fout->write((char*)dynamic_cast<CVIBuffer_Terrain*>(Get_Component(TEXT("Com_VIBuffer")))
+				->Get_Terrain_UV(), sizeof(_int) * 2);
+		}
+	}
+	else
+		return E_FAIL;
+
+	return S_OK;
 }
 
 HRESULT CGameObject::Add_Component(_uint iPrototypeLevelIndex, const wstring& strPrototypeTag, const wstring& strComponentTag, CComponent** ppOut, void* pArg)

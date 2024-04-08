@@ -40,9 +40,7 @@ private:
 private:
 	HRESULT Loading_For_LogoLevel();
 	HRESULT Loading_For_GamePlayLevel();
-
-
-
+	//클라에서  로드 클래스 만들자
 public:
 	static CLoader* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, LEVEL eNextLevel);
 	virtual void Free() override;

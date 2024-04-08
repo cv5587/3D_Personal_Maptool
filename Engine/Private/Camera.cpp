@@ -39,13 +39,14 @@ HRESULT CCamera::Initialize(void* pArg)
 
 void CCamera::Priority_Tick(_float fTimeDelta)
 {
+	m_pTransformCom->Set_State_Matrix(m_pGameInstance->Get_Transform_Matrix(CPipeLine::TS_CAMWORLD));
 }
 
 void CCamera::Tick(_float fTimeDelta)
 {
+	m_pGameInstance->Set_Transform(CPipeLine::TS_CAMWORLD,m_pTransformCom->Get_WorldMatrix());
 	m_pGameInstance->Set_Transform(CPipeLine::TS_VIEW, XMMatrixInverse(nullptr, m_pTransformCom->Get_WorldMatrix()));
 	m_pGameInstance->Set_Transform(CPipeLine::TS_PROJ, XMMatrixPerspectiveFovLH(m_fFovy, m_fAspect, m_fNear, m_fFar));
-
 }
 
 void CCamera::Late_Tick(_float fTimeDelta)

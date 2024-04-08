@@ -34,6 +34,11 @@ _vector CPipeLine::Get_CamPosition()
 	return XMLoadFloat4(&m_vCamPosition);
 }
 
+void CPipeLine::Set_CamWorld_Pointer(_float4x4* CamWorld)
+{
+	m_CamWorldMatrix = CamWorld;
+}
+
 HRESULT CPipeLine::Initialize()
 {
 	for (size_t i = 0; i < TS_END; i++)
@@ -50,7 +55,7 @@ HRESULT CPipeLine::Initialize()
 
 void CPipeLine::Tick()
 {
-	for (size_t i = 0; i < TS_END; i++)
+	for (size_t i = TS_CAMWORLD; i < TS_END; i++)
 	{
 		XMStoreFloat4x4(&m_TransformStateMatrixInverse[i], XMMatrixInverse(nullptr, Get_Transform_Matrix(TRANSFORMSTATE(i))));
 	}

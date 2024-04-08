@@ -1,6 +1,6 @@
 #pragma once
 #include "Base.h"
-class CFbxBinaryConverter final:
+class CDataControl final:
     public CBase
 {
     typedef struct{
@@ -41,15 +41,15 @@ class CFbxBinaryConverter final:
     }NONANIM_DATA;
 
 private:
-    CFbxBinaryConverter();
-    virtual ~CFbxBinaryConverter() = default;
+    CDataControl();
+    virtual ~CDataControl() = default;
 
 public:
     HRESULT Initialize();
-    HRESULT Save_Binary(void* pArg);
-    HRESULT Load_Binary();
+    HRESULT Save_Data(void* pArg);
+    HRESULT Load_Data();
 public:
-    static CFbxBinaryConverter* Create();
+    static CDataControl* Create();
     virtual void Free()override;
 };
 

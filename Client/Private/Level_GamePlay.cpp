@@ -15,14 +15,19 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
+	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
+		return E_FAIL;
+
 	if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"))))
 		return E_FAIL;
 
 	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
 		return E_FAIL;
 
-	if (FAILED(Ready_Layer_Environment(TEXT("Layer_BackGround"))))
+	if (FAILED(Ready_Layer_Environment(TEXT("Layer_Environment"))))
 		return E_FAIL;
+
+
 
 	return S_OK;
 }
@@ -59,7 +64,6 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const wstring& strLayerTag)
 	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Terrain"))))
 	//	return E_FAIL;
 	
-
 	return S_OK;
 }
 
@@ -75,10 +79,24 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring& strLayerTag)
 {
 	CGameObject::GAMEOBJECT_DESC pDesc{};
 
-	pDesc.ComponentTag = TEXT("Prototype_Component_Model_Rabbit");
-	pDesc.vPrePosition = _float4{ 0.f,0.f,0.f,1.f };
+	pDesc.ModelTag = TEXT("Prototype_Component_Model_Fiona");
+	pDesc.ProtoTypeTag = TEXT("Prototype_GameObject_Monster");
+	pDesc.vPrePosition = _float4{ 0.f, 0.f, 0.f, 1.f };
 		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Monster"),&pDesc)))
 			return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLevel_GamePlay::Ready_Layer_Player(const wstring& strLayerTag)
+{
+	CGameObject::GAMEOBJECT_DESC pDesc{};
+	pDesc.ModelTag = TEXT("Prototype_Component_Model_Fiona");
+	pDesc.ProtoTypeTag = TEXT("Prototype_GameObject_Player");
+	pDesc.vPrePosition = _float4{ 0.f, 0.f, 0.f, 1.f };
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Player"),&pDesc)))
+		return E_FAIL;
+
 
 	return S_OK;
 }

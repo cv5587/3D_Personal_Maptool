@@ -5,7 +5,7 @@ texture2D g_Texture;
 
 /* 이 메시에게 영향을 주는 뼈들. */
 matrix g_BoneMatrices[512];
-
+int g_ID;
 sampler PointSampler = sampler_state
 {
     filter = min_mag_mip_Point;
@@ -81,6 +81,7 @@ struct PS_IN
 struct PS_OUT
 {
     vector vColor : SV_TARGET0;
+    int iID : SV_TARGET2;
 };
 
 PS_OUT PS_MAIN(PS_IN In)
@@ -91,7 +92,7 @@ PS_OUT PS_MAIN(PS_IN In)
 
     if (Out.vColor.a < 0.1f)
         discard;
-
+    Out.iID = g_ID;
     return Out;
 }
 

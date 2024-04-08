@@ -204,7 +204,7 @@
     <ClInclude Include="..\Public\Channel.h">
       <Filter>01.Utility\03.Components\Model\Animation\Channel</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\FbxBinaryConverter.h">
+    <ClInclude Include="..\Public\DataControl.h">
       <Filter>01.Utility\05.FbxBinaryConverter</Filter>
     </ClInclude>
   </ItemGroup>
@@ -296,7 +296,7 @@
     <ClCompile Include="..\Private\Channel.cpp">
       <Filter>01.Utility\03.Components\Model\Animation\Channel</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\FbxBinaryConverter.cpp">
+    <ClCompile Include="..\Private\DataControl.cpp">
       <Filter>01.Utility\05.FbxBinaryConverter</Filter>
     </ClCompile>
   </ItemGroup>

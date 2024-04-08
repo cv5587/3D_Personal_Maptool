@@ -49,6 +49,31 @@ HRESULT CCalculator::Initialize(HWND hWnd)
 	 if (FAILED(m_pDevice->CreateTexture2D(&textureDesc, nullptr, &m_pHitScreenTexture)))
 		 return E_FAIL;
 
+	 textureDesc;
+	 ZeroMemory(&textureDesc, sizeof(D3D11_TEXTURE2D_DESC));
+
+	 m_hWnd = hWnd;
+
+	 textureDesc.Width = m_iWinSizeX;
+	 textureDesc.Height = m_iWinSizeY;
+	 textureDesc.MipLevels = 1;
+	 textureDesc.ArraySize = 1;
+	 //DXGI_FORMAT_R32_FLOAT : GPU에서 CPU로의 데이터 전송(복사)을 지원하는 리소스입니다.
+	 textureDesc.Format = DXGI_FORMAT_R32_SINT;
+
+
+	 textureDesc.SampleDesc.Quality = 0;
+	 textureDesc.SampleDesc.Count = 1;
+
+	 textureDesc.Usage = D3D11_USAGE_STAGING;
+	 textureDesc.BindFlags = 0;
+	 textureDesc.CPUAccessFlags = D3D10_CPU_ACCESS_READ;
+	 textureDesc.MiscFlags = 0;
+
+
+	 if (FAILED(m_pDevice->CreateTexture2D(&textureDesc, nullptr, &m_pIDScreenTexture)))
+		 return E_FAIL;
+
 	return S_OK;
 }
 
@@ -217,6 +242,25 @@ _vector CCalculator::Picking_HitScreen()
 	return MousePos;
 }
 
+_int CCalculator::Picking_IDScreen()
+{
+	POINT ptMouse = {};
+	GetCursorPos(&ptMouse);
+	ScreenToClient(m_hWnd, &ptMouse);
+
+
+	//뷰포트-투영-뷰스페이스-월드
+	_vector	MousePos = {};
+
+	//투영으로 내림
+	MousePos = XMVectorSetX(MousePos, ptMouse.x / (m_iWinSizeX * 0.5f) - 1.f);
+	MousePos = XMVectorSetY(MousePos, ptMouse.y / -(m_iWinSizeY * 0.5f) + 1.f);
+
+	_int iID = m_pGameInstance->Compute_ID(ptMouse, m_pIDScreenTexture);	
+
+	return iID;
+}
+
 _bool CCalculator::Compare_Float4(_float4 f1, _float4 f2)
 {
 	_vector v1 = XMLoadFloat4(&f1);
@@ -247,6 +291,8 @@ CCalculator* CCalculator::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 
 void CCalculator::Free()
 {
+	Safe_Release(m_pHitScreenTexture);
+	Safe_Release(m_pIDScreenTexture);
 	Safe_Release(m_pGameInstance);
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pContext);

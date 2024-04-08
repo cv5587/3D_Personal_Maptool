@@ -34,7 +34,7 @@ public:
 								XMVector3Length(Get_State(STATE_UP)).m128_f32[0],
 								XMVector3Length(Get_State(STATE_LOOK)).m128_f32[0]);
 	}
-	const _float4x4* Get_WorldFloat4x4() {
+	_float4x4* Get_WorldFloat4x4() {
 		return &m_WorldMatrix;
 	}
 	_matrix Get_WorldMatrix() {
@@ -43,6 +43,7 @@ public:
 
 public:
 	void Set_State(STATE eState, _fvector vState);
+	void Set_State_Matrix(_fmatrix mState);
 	void Set_DeltaValue(_float _fSpeedPerSec, _float _fRotationPerSec) {
 		m_fSpeedPerSec = _fSpeedPerSec;
 		m_fRotationPerSec = _fRotationPerSec;
@@ -68,7 +69,6 @@ public:
 
 public:
 	HRESULT Bind_ShaderResource(class CShader* pShader, const _char* pConstantName);
-
 
 private:
 	/* row major */

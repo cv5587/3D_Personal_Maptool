@@ -44,6 +44,7 @@ HRESULT CObject_Manager::Add_CloneObject(_uint iLevelIndex, const wstring& strLa
 	if (nullptr == pCloneObject)
 		return E_FAIL;
 
+	pCloneObject->Set_ID(m_ObjectID++);
 	/* 아직 추가할려고하는 레이어가 없었따?!! */
 	/* 레이어를 생성해서 추가하믄되겄다. */
 	if (nullptr == pLayer)
@@ -75,12 +76,6 @@ HRESULT CObject_Manager::Add_CloneObject(_uint iLevelIndex, const wstring& strLa
 	if (nullptr == pCloneObject)
 		return E_FAIL;
 
-
-
-
-
-
-
 	/* 아직 추가할려고하는 레이어가 없었따?!! */
 	/* 레이어를 생성해서 추가하믄되겄다. */
 	if (nullptr == pLayer)
@@ -111,19 +106,12 @@ HRESULT CObject_Manager::Add_CloneObject(_uint iLevelIndex, const wstring& strLa
 
 
 
-HRESULT CObject_Manager::Delete_CloneObject(_uint iLevelIndex, const wstring& strLayerTag,  CGameObject* pGameObject)
+HRESULT CObject_Manager::Delete_CloneObject(_uint iLevelIndex,  CGameObject* pGameObject)
 {
-	CLayer* pLayer = Find_Layer(iLevelIndex, strLayerTag);
-
-/*삭제레이어가 없으면 */
-	if (nullptr == pLayer)
+	for (auto& pLayer : m_pLayers[iLevelIndex])
 	{
-		return E_FAIL;
+		pLayer.second->Delete_GameObject(pGameObject);
 	}
-	/* 삭제할레이어가 있따.*/
-	else
-		if (FAILED(pLayer->Delete_GameObject(pGameObject)))
-			return E_FAIL;
 
 	return S_OK;
 }
@@ -137,6 +125,17 @@ CGameObject* CObject_Manager::Find_CloneObject(_uint iLevelIndex, const wstring&
 		return nullptr;
 	else
 		return pLayer->Find_GameObject(pGameObject);
+}
+
+CGameObject* CObject_Manager::FindID_CloneObject(_uint iLevelIndex, const _int& ID)
+{
+	for(auto& pLayer : m_pLayers[iLevelIndex])
+	{
+		CGameObject* pGameObject= pLayer.second->Find_GameObject(ID);
+		if (nullptr != pGameObject)
+			return pGameObject;
+	}
+	return nullptr;
 }
 
 void CObject_Manager::Priority_Tick(_float fTimeDelta)
@@ -191,6 +190,81 @@ vector< const _float4x4*>* CObject_Manager::Get_ObPos(_uint iLevelIndex, const w
 		return nullptr;
 
 	return iter->second->Get_ObPos();
+}
+
+CGameObject* CObject_Manager::Clone_Object(const wstring& strPrototypeTag, void* pArg)
+{
+	CGameObject* pPrototype = Find_Prototype(strPrototypeTag);
+	if (nullptr == pPrototype)
+		return nullptr;
+
+	CGameObject* pCloneObject = pPrototype->Clone(pArg);
+	if (nullptr == pCloneObject)
+		return nullptr;
+
+	return pCloneObject;
+}
+
+HRESULT CObject_Manager::Save_Level(_uint iLevelIndex)
+{
+	char FileRoute[MAX_PATH] = "../Bin/bin/Save_Data/";
+	char FilePath[MAX_PATH] = "";
+
+	switch (iLevelIndex)
+	{
+		//클라 에서 이중작업해줘야됨
+	case 0 :
+		strcpy_s(FilePath, "LEVEL_STATIC_GAMEDATA");
+		break;
+	case 1:
+		strcpy_s(FilePath, "LEVEL_LOADING_GAMEDATA");
+		break;
+	case 2:
+		strcpy_s(FilePath, "LEVEL_LOGO_GAMEDATA");
+		break;
+	case 3:
+		strcpy_s(FilePath, "LEVEL_GAMEPLAY_GAMEDATA");
+		break;
+	default:
+		return E_FAIL;
+	}
+
+	strcat_s(FileRoute, FilePath);
+
+	_tchar Layer[MAX_PATH] = TEXT("");
+
+
+
+	ofstream fout;
+	fout.open(FileRoute, ios::out | ios::binary);
+
+	if (!fout.fail())
+	{
+		fout.write((char*)&iLevelIndex,  sizeof(_uint));
+
+		//레벨에 레이어 갯수를 내보냄
+		_uint Layersize = m_pLayers[iLevelIndex].size();
+
+		fout.write((char*)&Layersize, sizeof(_uint));
+
+		for (auto& pLayer : m_pLayers[iLevelIndex])
+		{
+			ZeroMemory(Layer, sizeof(_tchar) * MAX_PATH);
+			wsprintf(Layer, pLayer.first.c_str());
+			wstring wLayer(Layer);
+			if (TEXT("Layer_Camera") != wLayer && TEXT("Layer_Player") != wLayer)
+			{
+
+				fout.write((char*)Layer, sizeof(_tchar) * MAX_PATH);
+				if (FAILED(pLayer.second->Save_Data(&fout)))	
+					return E_FAIL;
+			}
+		}
+	}
+
+	fout.close();
+
+	return S_OK;
 }
 
 CGameObject * CObject_Manager::Find_Prototype(const wstring & strPrototypeTag)

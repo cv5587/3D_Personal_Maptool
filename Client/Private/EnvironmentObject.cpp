@@ -68,12 +68,12 @@ HRESULT CEnvironmentObject::Render()
 HRESULT CEnvironmentObject::Add_Components()
 {
     /* For.Com_Model */
-    if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, m_ComponentTag,
+    if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, m_ModelTag,
         TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
         return E_FAIL;
 
     /* For.Com_Shader */
-    if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxMesh"),
+    if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxMeshID"),
         TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
         return E_FAIL;
 
@@ -88,7 +88,8 @@ HRESULT CEnvironmentObject::Bind_ShaderResources()
         return E_FAIL;
     if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::TS_PROJ))))
         return E_FAIL;
-
+    if (FAILED(m_pShaderCom->Bind_ID("g_ID",m_iRenderID )))
+        return E_FAIL;
 
     return S_OK;
 }

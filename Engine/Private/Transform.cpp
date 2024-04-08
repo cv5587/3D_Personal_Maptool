@@ -22,6 +22,15 @@ void CTransform::Set_State(STATE eState, _fvector vState)
 	XMStoreFloat4x4(&m_WorldMatrix, WorldMatrix);
 }
 
+void CTransform::Set_State_Matrix( _fmatrix mState)
+{
+	_matrix		WorldMatrix = XMLoadFloat4x4(&m_WorldMatrix);
+
+	WorldMatrix= mState;	
+
+	XMStoreFloat4x4(&m_WorldMatrix, WorldMatrix);
+}
+
 HRESULT CTransform::Initialize_Prototype()
 {
 	XMStoreFloat4x4(&m_WorldMatrix, XMMatrixIdentity());

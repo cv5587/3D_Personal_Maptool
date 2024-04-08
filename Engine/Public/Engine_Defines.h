@@ -29,6 +29,11 @@ namespace Engine
 {
 	enum MOUSEKEYSTATE { DIM_LB, DIM_RB, DIM_MB, DIM_END };
 	enum MOUSEMOVESTATE { DIMS_X, DIMS_Y, DIMS_Z, DIMS_END };
+	enum class TextureType
+	{
+		HitPosTexture=0,
+		HitIDTexture=1,
+	};
 }
 
 #include "Engine_Typedef.h"

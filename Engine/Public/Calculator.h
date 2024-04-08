@@ -15,6 +15,7 @@ public:
 	_vector Picking_on_Terrain(HWND hWnd, _matrix TerrainWorldMatrixInverse, _matrix mViewMatrixInverse, _matrix mProjMatrixInverse,_float4* pVtxPos,_int* pTerrainUV, _float* pWinSize);
 	 _bool Pick_Object(_matrix InverseView, _matrix InverseProj,  vector< const _float4x4*>* ObPos, _float radius);
 	 _vector Picking_HitScreen();
+	 _int Picking_IDScreen();
 
 public:
 	 _bool Compare_Float4(_float4 f1, _float4 f2);	
@@ -29,6 +30,7 @@ private:
 
 	//비워져있는 텍스처
 	ID3D11Texture2D* m_pHitScreenTexture = { nullptr };
+	ID3D11Texture2D* m_pIDScreenTexture = { nullptr };
 
 
 

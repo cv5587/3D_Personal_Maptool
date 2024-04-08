@@ -47,10 +47,11 @@ HRESULT CModel::Initialize_Prototype(MODELTYPE eModelType, const _char* pModelFi
 
     _uint		iFlag;
     if (TYPE_NONANIM == eModelType)
-        iFlag = aiProcess_PreTransformVertices | aiProcess_ConvertToLeftHanded | aiProcess_GenNormals | aiProcess_CalcTangentSpace;
+        iFlag = aiProcess_PreTransformVertices | aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_Fast;
+      //  iFlag = aiProcess_PreTransformVertices | aiProcess_ConvertToLeftHanded | aiProcess_GenNormals | aiProcess_CalcTangentSpace;
     else
-        iFlag = aiProcess_ConvertToLeftHanded | aiProcess_GenNormals | aiProcess_CalcTangentSpace| aiProcess_ValidateDataStructure;
-       // iFlag = aiProcess_ConvertToLeftHanded | aiProcess_GenNormals | aiProcess_CalcTangentSpace;
+        iFlag = aiProcess_ConvertToLeftHanded | aiProcess_GenNormals | aiProcess_CalcTangentSpace;
+       // iFlag = aiProcess_ConvertToLeftHanded | aiProcess_GenNormals | aiProcess_CalcTangentSpace| aiProcess_ValidateDataStructure;
      
 
     /* assimp ¿­°ÅÃ¼ aiProcess_PreTransformVertices
@@ -67,10 +68,10 @@ HRESULT CModel::Initialize_Prototype(MODELTYPE eModelType, const _char* pModelFi
     if (FAILED(Ready_Bones(m_pAIScene->mRootNode,-1)))
         return E_FAIL;
 
-    if (FAILED(Ready_Meshes()))
+    if (FAILED(Ready_Materials(pModelFilePath)))
         return E_FAIL;
 
-    if (FAILED(Ready_Materials(pModelFilePath)))
+    if (FAILED(Ready_Meshes()))
         return E_FAIL;
 
     if (FAILED(Ready_Animations()))
@@ -95,6 +96,8 @@ HRESULT CModel::Render(_uint iMeshIndex)
 
 HRESULT CModel::Bind_Material(CShader* pShaderCom, const _char* pConstantName, _uint iMeshIndex, aiTextureType eMaterialType)
 {
+    if (false == m_Materials[m_Meshes[iMeshIndex]->Get_MaterialIndex()].isTextured)
+        return S_OK;
     return m_Materials[m_Meshes[iMeshIndex]->Get_MaterialIndex()].MaterialTextures[eMaterialType]->Bind_ShaderResource(pShaderCom, pConstantName, 0);
 }
 
@@ -144,18 +147,22 @@ HRESULT CModel::Make_Binary(const wstring FilePath)
         fout.write(reinterpret_cast<char*>(&m_iNumMaterials), sizeof(_uint));
         for (auto& SaveMaterial : m_Materials)
         {
-            for (size_t i = 1; i < AI_TEXTURE_TYPE_MAX; i++)
+            fout.write(reinterpret_cast<char*>(&SaveMaterial.isTextured), sizeof(_bool));
+            if(SaveMaterial.isTextured)
             {
-                if(nullptr!= SaveMaterial.MaterialTextures[i])
+                for (size_t i = 1; i < AI_TEXTURE_TYPE_MAX; i++)
                 {
-                    _uint check = 1;
-                    fout.write(reinterpret_cast<char*>(&check), sizeof(_uint));
-                    SaveMaterial.MaterialTextures[i]->Save_Texture(&fout);
-                }
-                else
-                {
-                    _uint check = 0;
-                    fout.write(reinterpret_cast<char*>(&check), sizeof(_uint));
+                    if (nullptr != SaveMaterial.MaterialTextures[i])
+                    {
+                        _uint check = 1;
+                        fout.write(reinterpret_cast<char*>(&check), sizeof(_uint));
+                        SaveMaterial.MaterialTextures[i]->Save_Texture(&fout);
+                    }
+                    else
+                    {
+                        _uint check = 0;
+                        fout.write(reinterpret_cast<char*>(&check), sizeof(_uint));
+                    }
                 }
             }
         }
@@ -216,15 +223,19 @@ HRESULT CModel::Read_Binary( char* FilePath)
         for (size_t i = 0; i < m_iNumMaterials; i++)
         {
             MESH_MATERIAL pMt{};    
-            for (size_t j = 1; j < AI_TEXTURE_TYPE_MAX; j++)
+            fin.read(reinterpret_cast<char*>(&pMt.isTextured), sizeof(_bool));
+            if(pMt.isTextured)
             {
-                _uint check;
-                fin.read(reinterpret_cast<char*>(&check), sizeof(_uint));
-                if (1 == check)
+                for (size_t j = 1; j < AI_TEXTURE_TYPE_MAX; j++)
                 {
-                    pMt.MaterialTextures[j] = CTexture::Create(m_pDevice, m_pContext, &fin);
-                    if (nullptr == pMt.MaterialTextures[j])
-                        return E_FAIL;
+                    _uint check;
+                    fin.read(reinterpret_cast<char*>(&check), sizeof(_uint));
+                    if (1 == check)
+                    {
+                        pMt.MaterialTextures[j] = CTexture::Create(m_pDevice, m_pContext, &fin);
+                        if (nullptr == pMt.MaterialTextures[j])
+                            return E_FAIL;
+                    }
                 }
             }
             m_Materials.emplace_back(pMt);
@@ -246,6 +257,7 @@ HRESULT CModel::Read_Binary( char* FilePath)
             }
 
         }
+        int a = 1;
     }
     fin.close();
 
@@ -285,12 +297,16 @@ HRESULT CModel::Ready_Materials(const _char* pModelFilePath)
 
         MESH_MATERIAL		MeshMaterial{};
 
-        for (size_t j = aiTextureType_DIFFUSE; j < AI_TEXTURE_TYPE_MAX; j++)
+        MeshMaterial.isTextured = false;
+
+        for (size_t j = aiTextureType_NONE; j < AI_TEXTURE_TYPE_MAX; j++)
         {
             aiString		strTextureFilePath;
             //pAIMaterial->GetTextureCount();
             if (FAILED(pAIMaterial->GetTexture(aiTextureType(j), 0, &strTextureFilePath)))
                 continue;
+
+            MeshMaterial.isTextured = true;
 
             _char		szFileName[MAX_PATH] = "";
             _char		szExt[MAX_PATH] = "";

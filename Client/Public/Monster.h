@@ -31,6 +31,7 @@ private:
 
 private:
 	_uint m_AnimationIdx = { 0 };
+	vector<_uint> m_vecCheckAnim;
 public:
 	HRESULT Add_Components();
 	HRESULT Bind_ShaderResources();

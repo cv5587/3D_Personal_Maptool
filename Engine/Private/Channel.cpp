@@ -95,7 +95,7 @@ void CChannel::Update_TransformationMatrix(_double CurrentPosition, const vector
 	/* 특정 키프레임들 사이에 있을거다!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */
 	else
 	{
-		if (CurrentPosition >= m_KeyFrames[*pCurrentKeyFrameIndex + 1].Time)
+		while (CurrentPosition >= m_KeyFrames[*pCurrentKeyFrameIndex + 1].Time)
 			++*pCurrentKeyFrameIndex;
 
 		/* 현재 위치에서 왼쪽에 있는 키프렝미의 위치를 뺀다. / 내 오른쪽 키르렝미의 위치 - 내 왼쪽 키프렝밍의 위치. */

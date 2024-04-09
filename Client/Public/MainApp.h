@@ -25,7 +25,7 @@ private:
 	ID3D11DeviceContext*	m_pContext = { nullptr };
 
 	CGameInstance*			m_pGameInstance = { nullptr };
-	class CGui* m_pGui = { nullptr };
+	class CImGuiManager* m_pGuiManager = { nullptr };
 public:
 	HRESULT Open_Level(LEVEL eLevelID);
 	HRESULT Ready_Prototype_GameObject();

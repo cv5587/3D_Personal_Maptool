@@ -26,12 +26,8 @@ public:
 	virtual HRESULT Render() override;
 
 private:
-	CShader*						m_pShaderCom = { nullptr };
-	CModel*							m_pModelCom = { nullptr };
-
-private:
-	
-	_float4x4						m_WorldMatrix;
+	CShader* m_pShaderCom = { nullptr };
+	CModel* m_pModelCom = { nullptr };
 
 public:
 	HRESULT Add_Components();

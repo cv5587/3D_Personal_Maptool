@@ -8,8 +8,7 @@ CVIBuffer_Terrain::CVIBuffer_Terrain(ID3D11Device* pDevice, ID3D11DeviceContext*
 CVIBuffer_Terrain::CVIBuffer_Terrain(const CVIBuffer_Terrain& rhs)
     :CVIBuffer{rhs},
     m_iNumVerticesX{rhs.m_iNumVerticesX},
-     m_iNumVerticesZ{rhs.m_iNumVerticesZ},
-	m_VtxPos{rhs.m_VtxPos }
+     m_iNumVerticesZ{rhs.m_iNumVerticesZ}
 {
 	lstrcpy(m_strHeightMapFilePath, rhs.m_strHeightMapFilePath);
 }
@@ -72,13 +71,16 @@ HRESULT CVIBuffer_Terrain::Initialize(void* pArg)
 
 	m_iIndexStride = 4;
 	m_iNumIndices = (m_iNumVerticesX - 1) * (m_iNumVerticesZ - 1) * 2 * 3;
-	m_VtxPos = new _float4[m_iNumVertices];
+
 
 #pragma region VERTEX_BUFFER 
 
 	VTXNORTEX* pVertices = new VTXNORTEX[m_iNumVertices];
 
 	ZeroMemory(pVertices, sizeof(VTXNORTEX) * m_iNumVertices);
+
+	m_pVertexPositions = new _float4[m_iNumVertices];
+	ZeroMemory(m_pVertexPositions, sizeof(_float4) * m_iNumVertices);
 
 	for (size_t i = 0; i < m_iNumVerticesZ; i++)
 	{
@@ -89,9 +91,7 @@ HRESULT CVIBuffer_Terrain::Initialize(void* pArg)
 			pVertices[iIndex].vPosition = _float3(j, ((pPixel[heightiIndex] & 0x000000ff) - 125.f) , i);
 			pVertices[iIndex].vNormal = _float3(0.0f, 0.f, 0.f);
 			pVertices[iIndex].vTexcoord = _float2(j / (m_iNumVerticesX - 1.f), i / (m_iNumVerticesZ - 1.f));
-			_float3 fPos = { 0.f,0.f,0.f };
-			fPos = pVertices[iIndex].vPosition;
-			m_VtxPos[iIndex] = { fPos.x,fPos.y,fPos.z,1.f };	
+			m_pVertexPositions[iIndex] = _float4(pVertices[iIndex].vPosition.x, pVertices[iIndex].vPosition.y, pVertices[iIndex].vPosition.z, 1.f);
 		}
 	}
 #pragma endregion
@@ -180,6 +180,49 @@ HRESULT CVIBuffer_Terrain::Initialize(void* pArg)
 	return S_OK;
 }
 
+_float CVIBuffer_Terrain::Compute_Height(const _float3& vLocalPos)
+{
+	_uint			iIndex = _uint(vLocalPos.z) * m_iNumVerticesX + _uint(vLocalPos.x);
+
+	_uint			iIndices[] = {
+		iIndex + m_iNumVerticesX,
+		iIndex + m_iNumVerticesX + 1,
+		iIndex + 1,
+		iIndex
+	};
+
+	_float		fWidth = vLocalPos.x - m_pVertexPositions[iIndices[0]].x;
+	_float		fDepth = m_pVertexPositions[iIndices[0]].z - vLocalPos.z;
+
+	_vector		vPlane = XMVectorZero();
+
+	/* ¿À¸¥ÂÊ À§ »ï°¢Çü ¾È. */
+	if (fWidth > fDepth)
+	{
+		vPlane = XMPlaneFromPoints(XMLoadFloat4(&m_pVertexPositions[iIndices[0]]),
+			XMLoadFloat4(&m_pVertexPositions[iIndices[1]]),
+			XMLoadFloat4(&m_pVertexPositions[iIndices[2]]));
+	}
+	/* ¿ÞÂÊ ¾Æ·¡ »ï°¢Çü ¾È. */
+	else
+	{
+		vPlane = XMPlaneFromPoints(XMLoadFloat4(&m_pVertexPositions[iIndices[0]]),
+			XMLoadFloat4(&m_pVertexPositions[iIndices[2]]),
+			XMLoadFloat4(&m_pVertexPositions[iIndices[3]]));
+	}
+
+	/*
+	ax + by + cz + d = 0
+	y = (-ax - cz - d) / b
+	*/
+	return (-XMVectorGetX(vPlane) * vLocalPos.x - XMVectorGetZ(vPlane) * vLocalPos.z - XMVectorGetW(vPlane)) / XMVectorGetY(vPlane);
+}
+
+void CVIBuffer_Terrain::Save_Terrain_UV(ofstream* fout)
+{
+	fout->write((char*)m_pTerrainUV, sizeof(_int) * 2);
+}
+
 CVIBuffer_Terrain* CVIBuffer_Terrain::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strHeightMapFilePath)
 {
 	CVIBuffer_Terrain* pInstance = new CVIBuffer_Terrain(pDevice, pContext);
@@ -209,7 +252,6 @@ CComponent* CVIBuffer_Terrain::Clone(void* pArg)
 void CVIBuffer_Terrain::Free()
 {
 
-	Safe_Delete_Array(m_VtxPos);
 	Safe_Delete_Array(m_pTerrainUV);
 	__super::Free();
 }

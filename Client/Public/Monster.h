@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Client_Defines.h"
-#include "GameObject.h"
+#include "LandObject.h"
 
 BEGIN(Engine)
 class CShader;
@@ -10,7 +10,7 @@ END
 
 BEGIN(Client)
 class CMonster final:
-    public CGameObject
+    public CLandObject
 {
 private:
 	CMonster(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -31,7 +31,7 @@ private:
 
 private:
 	_uint m_AnimationIdx = { 0 };
-	vector<_uint> m_vecCheckAnim;
+
 public:
 	HRESULT Add_Components();
 	HRESULT Bind_ShaderResources();

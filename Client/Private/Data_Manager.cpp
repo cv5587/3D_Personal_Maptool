@@ -51,7 +51,7 @@ HRESULT CData_Manager::Load_Data(_uint iLevelIndex)
 		_tchar Layer[MAX_PATH] = TEXT("");
 		_tchar szProtoTag[MAX_PATH] = TEXT("");
 		_tchar szModelTag[MAX_PATH] = TEXT("");
-		_float4 fWorldPosition{};
+		_float4x4 fWorldPosition{};
 
 		_uint Layersize =0;
 		fin.read((char*)&Layersize, sizeof(_uint));
@@ -67,7 +67,7 @@ HRESULT CData_Manager::Load_Data(_uint iLevelIndex)
 			{
 				fin.read((char*)szProtoTag, sizeof(_tchar) * MAX_PATH);
 				fin.read((char*)szModelTag, sizeof(_tchar) * MAX_PATH);
-				fin.read((char*)&fWorldPosition, sizeof(_float4));
+				fin.read((char*)&fWorldPosition, sizeof(_float4x4));
 
 
 				wstring wLayer(Layer);
@@ -103,7 +103,6 @@ HRESULT CData_Manager::Load_Data(_uint iLevelIndex)
 
 HRESULT CData_Manager::Initialize()
 {
-	m_pTerrainMgr->Create();
 	return S_OK;
 }
 

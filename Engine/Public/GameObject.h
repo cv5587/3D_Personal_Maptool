@@ -11,7 +11,7 @@ public:
 	{
 		wstring ProtoTypeTag;
 		wstring		ModelTag;
-		_float4		vPrePosition ;
+		_float4x4		vPrePosition ;
 	}GAMEOBJECT_DESC;
 
 protected:

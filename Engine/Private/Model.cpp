@@ -38,6 +38,20 @@ CModel::CModel(const CModel& rhs)
         Safe_AddRef(pMesh);
 }
 
+const _float4x4* CModel::Get_BoneCombinedTransformationMatrix(const _char* pBoneName) const
+{
+
+	auto	iter = find_if(m_Bones.begin(), m_Bones.end(), [&](CBone* pBone)->_bool
+	{
+		return pBone->Compare_Name(pBoneName);
+	});
+
+	if (iter == m_Bones.end())
+		return nullptr;
+
+	return (*iter)->Get_CombinedTransformationMatrix();	
+}
+
 HRESULT CModel::Initialize_Prototype(MODELTYPE eModelType, const _char* pModelFilePath, _fmatrix PreTransformMatrix)
 {
     /*_uint		iFlag = aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_Fast;*/

@@ -19,8 +19,11 @@ HRESULT CEnvironmentObject::Initialize_Prototype()
 
 HRESULT CEnvironmentObject::Initialize(void* pArg)
 {
+    GAMEOBJECT_DESC* pDesc = (GAMEOBJECT_DESC*)pArg;
+
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
+    m_pTransformCom->Set_State_Matrix(XMLoadFloat4x4(&pDesc->vPrePosition));
 
     if (FAILED(Add_Components()))
         return E_FAIL;

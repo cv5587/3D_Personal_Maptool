@@ -16,8 +16,8 @@ class CPartObject abstract : public CGameObject
 public:
 	typedef struct : public CGameObject::GAMEOBJECT_DESC
 	{
-		const _float4x4*		pParentMatrix;
-		const _uint*			pState;
+		const _float4x4* pParentMatrix;
+		const _uint* pState;
 	}PARTOBJ_DESC;
 
 protected:
@@ -34,10 +34,11 @@ public:
 	virtual HRESULT Render() override;
 
 protected:
-	const _float4x4*		m_pParentMatrix = { nullptr };
-	const _uint*			m_pState = { nullptr };
+	_float4x4				m_WorldMatrix;
+	const _float4x4* m_pParentMatrix = { nullptr };
+	const _uint* m_pState = { nullptr };
 
-public:	
+public:
 	virtual CGameObject* Clone(void* pArg) = 0;
 	virtual void Free() override;
 };

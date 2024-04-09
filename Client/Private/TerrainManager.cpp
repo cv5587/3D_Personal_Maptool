@@ -19,7 +19,7 @@ HRESULT CTerrainManager::Clone_Terrain(void* pArg)
 	CTerrain::TERRAIN_DESC pDesc{};
 	pDesc.TerrainUV[0] = sTerrainUV[0];
 	pDesc.TerrainUV[1] = sTerrainUV[1];
-	pDesc.vPrePosition = _float4{ 0.f, 0.f, 0.f, 1.f };	
+	XMStoreFloat4x4(&pDesc.vPrePosition, XMMatrixIdentity());
 	pDesc.ProtoTypeTag = TEXT("Prototype_GameObject_Terrain");	
 	pDesc.ModelTag = TEXT("Prototype_Component_VIBuffer_Terrain");
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), 
@@ -27,21 +27,6 @@ HRESULT CTerrainManager::Clone_Terrain(void* pArg)
 		return E_FAIL;
 	
 	return S_OK;
-}
-
-_matrix CTerrainManager::Get_Terrain_WorldMatrix()
-{
-	return dynamic_cast<CTransform*>(m_pTerrain->Get_Transform())->Get_WorldMatrix();
-}
-
-_float4* CTerrainManager::Get_Terrain_VtxPos()
-{
-	return 	dynamic_cast<CVIBuffer_Terrain*>(m_pTerrain->Get_Component(TEXT("Com_VIBuffer")))->Get_Terrain_Vtx();
-}
-
-_int* CTerrainManager::Get_Terrain_UV()
-{
-	return 	dynamic_cast<CVIBuffer_Terrain*>(m_pTerrain->Get_Component(TEXT("Com_VIBuffer")))->Get_Terrain_UV();
 }
 
 CTerrainManager* CTerrainManager::Create()

@@ -4,12 +4,12 @@
 #include "GameInstance.h"
 
 CMonster::CMonster(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-    :CGameObject{pDevice,pContext}
+    :CLandObject{pDevice,pContext}
 {
 }
 
 CMonster::CMonster(const CMonster& rhs)
-    :CGameObject{rhs}
+    :CLandObject{rhs}
 {
 }
 
@@ -20,18 +20,17 @@ HRESULT CMonster::Initialize_Prototype()
 
 HRESULT CMonster::Initialize(void* pArg)
 {
+    CLandObject::LANDOBJ_DESC* pDesc = (CLandObject::LANDOBJ_DESC*)pArg;
+
+    pDesc->fSpeedPerSec = 10.f;
+    pDesc->fRotationPerSec = XMConvertToRadians(90.0f);
+
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
+    m_pTransformCom->Set_State_Matrix(XMLoadFloat4x4(&pDesc->vPrePosition));
 
     if (FAILED(Add_Components()))
         return E_FAIL;
-
-
-    m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC(m_AnimationIdx, true));
-    m_vecCheckAnim.push_back(351);
-    m_vecCheckAnim.push_back(383);
-    m_vecCheckAnim.push_back(297);
-    //m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(rand() % 20, 3.f, rand() % 20, 1.f));
 
     return S_OK;
 }
@@ -46,7 +45,7 @@ void CMonster::Tick(_float fTimeDelta)
     {
             m_AnimationIdx++;
 
-    if (m_AnimationIdx >= 10)
+    if (m_AnimationIdx >= 9)
         m_AnimationIdx = 0;
 
     m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC(m_AnimationIdx, true));

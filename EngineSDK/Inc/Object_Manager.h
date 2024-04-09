@@ -22,6 +22,9 @@ private:
 	CObject_Manager();
 	virtual ~CObject_Manager() = default;
 
+public:
+	class CComponent* Get_Component(_uint iLevelIndex, const wstring& strLayerTag, const wstring& strComponentTag, _uint iIndex);
+
 public:	
 	HRESULT Initialize(_uint iNumLevels);
 	HRESULT Add_Prototype(const wstring& strPrototypeTag, class CGameObject* pPrototype);

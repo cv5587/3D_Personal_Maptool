@@ -3,6 +3,8 @@
 #include "GameInstance.h"
 
 #include "FreeCamera.h"
+#include "LandObject.h"	
+#include "ImGuiManager.h"
 
 
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -15,19 +17,14 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
-	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
-		return E_FAIL;
-
-	if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"))))
-		return E_FAIL;
-
 	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
 		return E_FAIL;
 
 	if (FAILED(Ready_Layer_Environment(TEXT("Layer_Environment"))))
 		return E_FAIL;
 
-
+	if (FAILED(Ready_LandObjects()))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -52,7 +49,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const wstring& strLayerTag)
 	CameraDesc.fFar = 3000.f;
 	CameraDesc.fSpeedPerSec = 50.f;
 	CameraDesc.fRotationPerSec = XMConvertToRadians(90.f);
-
+	XMStoreFloat4x4(&CameraDesc.vPrePosition, XMMatrixIdentity());
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_FreeCamera"), &CameraDesc)))
 		return E_FAIL;
 
@@ -61,6 +58,9 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const wstring& strLayerTag)
 
 HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const wstring& strLayerTag)
 {
+	_int sTerrainUV[2] = { 51,53 };
+	CImGuiManager::GetInstance()->Make_Terrain(sTerrainUV);
+
 	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Terrain"))))
 	//	return E_FAIL;
 	
@@ -75,26 +75,42 @@ HRESULT CLevel_GamePlay::Ready_Layer_Environment(const wstring& strLayerTag)
 	return S_OK;
 }
 
-HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring& strLayerTag)
+HRESULT CLevel_GamePlay::Ready_LandObjects()
 {
-	CGameObject::GAMEOBJECT_DESC pDesc{};
+	CLandObject::LANDOBJ_DESC		LandObjDesc{};
 
-	pDesc.ModelTag = TEXT("Prototype_Component_Model_Fiona");
-	pDesc.ProtoTypeTag = TEXT("Prototype_GameObject_Monster");
-	pDesc.vPrePosition = _float4{ 0.f, 0.f, 0.f, 1.f };
-		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Monster"),&pDesc)))
+	LandObjDesc.pTerrainTransform = dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), TEXT("Com_Transform")));
+	LandObjDesc.pTerrainVIBuffer = dynamic_cast<CVIBuffer*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), TEXT("Com_VIBuffer")));
+
+
+	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"), &LandObjDesc)))
+		return E_FAIL;
+
+	if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"), &LandObjDesc)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring& strLayerTag, CLandObject::LANDOBJ_DESC* pLandObjDesc)
+{
+	pLandObjDesc->ModelTag = TEXT("Prototype_Component_Model_Rabbit");
+	pLandObjDesc->ProtoTypeTag = TEXT("Prototype_GameObject_Monster");
+	XMStoreFloat4x4(&pLandObjDesc->vPrePosition,XMMatrixIdentity());
+
+		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Monster"), pLandObjDesc)))
 			return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT CLevel_GamePlay::Ready_Layer_Player(const wstring& strLayerTag)
+HRESULT CLevel_GamePlay::Ready_Layer_Player(const wstring& strLayerTag, CLandObject::LANDOBJ_DESC* pLandObjDesc)
 {
-	CGameObject::GAMEOBJECT_DESC pDesc{};
-	pDesc.ModelTag = TEXT("Prototype_Component_Model_Fiona");
-	pDesc.ProtoTypeTag = TEXT("Prototype_GameObject_Player");
-	pDesc.vPrePosition = _float4{ 0.f, 0.f, 0.f, 1.f };
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Player"),&pDesc)))
+	pLandObjDesc->ModelTag = TEXT("Prototype_Component_Model_Player");
+	pLandObjDesc->ProtoTypeTag = TEXT("Prototype_GameObject_Player");
+	XMStoreFloat4x4(&pLandObjDesc->vPrePosition, XMMatrixIdentity());
+
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Player"), pLandObjDesc)))
 		return E_FAIL;
 
 

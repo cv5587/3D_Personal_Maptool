@@ -59,6 +59,8 @@ public: /* For.Object_Manager */
 	class CGameObject* Clone_Object(const wstring& strPrototypeTag, void* pArg);
 	//데이터 파싱
 	HRESULT Save_Level(_uint iLevelIndex);
+	class CComponent* Get_Component(_uint iLevelIndex, const wstring& strLayerTag, const wstring& strComponentTag, _uint iIndex = 0);
+
 
 public: /* For.Component_Manager */
 	HRESULT Add_Prototype(_uint iLevelIndex, const wstring& strPrototypeTag, CComponent* pPrototype);

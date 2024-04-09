@@ -11,6 +11,10 @@ private:
 	virtual ~CLayer() = default;
 
 public:
+	class CComponent* Get_Component(const wstring& strComponentTag, _uint iIndex);
+
+
+public:
 	HRESULT Initialize();
 	HRESULT Add_GameObject(class CGameObject* pGameObject);
 	HRESULT Delete_GameObject( class CGameObject* pGameObject);

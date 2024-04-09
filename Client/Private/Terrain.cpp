@@ -24,6 +24,7 @@ HRESULT CTerrain::Initialize(void* pArg)
   
     if (FAILED(__super::Initialize(pArg)))//Æ®·»½ºÆû »ý¼º
         return E_FAIL;
+    m_pTransformCom->Set_State_Matrix(XMLoadFloat4x4(&pDesc->vPrePosition));
 
 
     if (FAILED(Add_Components()))

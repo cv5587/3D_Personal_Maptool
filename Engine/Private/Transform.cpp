@@ -155,7 +155,7 @@ HRESULT CTransform::Turn(_fvector vAxis, _float fTimeDelta)
 	_vector		vUp = Get_State(STATE_UP);
 	_vector		vLook = Get_State(STATE_LOOK);
 
-	_matrix		RotationMatrix = XMMatrixRotationAxis(vAxis, m_fRotationPerSec * fTimeDelta);
+	_matrix		RotationMatrix =  XMMatrixRotationAxis(vAxis, m_fRotationPerSec * fTimeDelta);
 
 	vRight = XMVector3TransformNormal(vRight, RotationMatrix);
 	vUp = XMVector3TransformNormal(vUp, RotationMatrix);

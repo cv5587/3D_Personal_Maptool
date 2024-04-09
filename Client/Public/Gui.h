@@ -23,6 +23,7 @@ private:
 	class CGameInstance* m_pGameInstance = { nullptr }; 
 	class CTerrainManager* m_pTerrainManager = { nullptr };
 	class CData_Manager* m_pData_Manager = { nullptr };
+
 private:
 	_bool		m_bInputObject = { false };
 	_bool		m_bMakeObject = { false };
@@ -36,12 +37,13 @@ private:
 	_int m_iObjectID = { 0 };
 
 private:
-	_vector Picking_on_Terrain();
 	_vector Picking_HitScreen();
 	void EditTransform(_float* cameraView, _float* cameraProjection, _float* matrix);
 	void TestGuizmo(_float fTimeDelta);
 	_matrix CameraStateChange(_fmatrix CamWorld,_cmatrix ObjWorld, _float fTimeDelta);
 
+public:
+	void Make_Terrain(void* pArg);
 public:
 	virtual void Free() override;
 };

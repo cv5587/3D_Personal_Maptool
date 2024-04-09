@@ -31,6 +31,7 @@ public:
 	_bool Get_AnimFinished() const {
 		return m_Animations[m_AnimDesc.iAnimIndex]->Get_Finished();
 	}
+	const _float4x4* Get_BoneCombinedTransformationMatrix(const _char* pBoneName) const;
 
 public:
 	virtual HRESULT	Initialize_Prototype(MODELTYPE eModelType, const _char* pModelFilePath, _fmatrix PreTransformMatrix);

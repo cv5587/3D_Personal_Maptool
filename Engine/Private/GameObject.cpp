@@ -1,7 +1,7 @@
 #include "..\Public\GameObject.h"
 #include "GameInstance.h"
 
-const _tchar* CGameObject::m_pTransformTag = TEXT("Com_Transfrom");
+const _tchar* CGameObject::m_pTransformTag = TEXT("Com_Transform");
 
 CGameObject::CGameObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice{ pDevice }
@@ -42,9 +42,6 @@ HRESULT CGameObject::Initialize(void* pArg)
 		GAMEOBJECT_DESC* pDesc = (GAMEOBJECT_DESC*)pArg;
 		m_ModelTag = pDesc->ModelTag;
 		m_ProtoTypeTag = pDesc->ProtoTypeTag;
-		_float4 fPickPoint = pDesc->vPrePosition;
-		_vector vPosition = XMLoadFloat4(&fPickPoint);
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
 	}
 
 	m_Components.emplace(m_pTransformTag, m_pTransformCom);
@@ -97,14 +94,14 @@ HRESULT CGameObject::Save_Data(ofstream* fout)
 		fout->write((char*)ProtoTag, sizeof(_tchar) * MAX_PATH);
 		fout->write((char*)ModelTag, sizeof(_tchar) * MAX_PATH);
 
-		_float4 pPosition{};
-		XMStoreFloat4(&pPosition , m_pTransformCom->Get_State(CTransform::STATE::STATE_POSITION));	
-		fout->write((char*)&pPosition, sizeof(_float4));
+		_float4x4 pPosition{};
+		XMStoreFloat4x4(&pPosition , m_pTransformCom->Get_WorldMatrix());	
+		fout->write((char*)&pPosition, sizeof(_float4x4));
 
 		if (TEXT("Prototype_Component_VIBuffer_Terrain") == m_ModelTag)
 		{
-			fout->write((char*)dynamic_cast<CVIBuffer_Terrain*>(Get_Component(TEXT("Com_VIBuffer")))
-				->Get_Terrain_UV(), sizeof(_int) * 2);
+			//TODO:04091900터레인 수정함
+			dynamic_cast<CVIBuffer_Terrain*>(Get_Component(TEXT("Com_VIBuffer")))->Save_Terrain_UV(fout);
 		}
 	}
 	else

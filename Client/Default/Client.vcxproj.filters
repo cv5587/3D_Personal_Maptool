@@ -55,29 +55,35 @@
     <Filter Include="02.GameObjects\01.Terrain\Manager">
       <UniqueIdentifier>{24e1fcf2-54ef-43cc-bdfd-0faf56de3913}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.Monster">
-      <UniqueIdentifier>{68af5566-493b-4fbc-9cfe-a1382693893a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\03. EnvironmentObject">
       <UniqueIdentifier>{9ec30689-c6e7-4329-a8e5-f2a435ecaa63}</UniqueIdentifier>
     </Filter>
     <Filter Include="96.Imgui\Gizmo">
       <UniqueIdentifier>{8869d9dd-6f7c-4cab-bac4-413f1b0722da}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\04.Player">
-      <UniqueIdentifier>{cdcdeb71-9bb5-4b5e-a903-0f9a143f28fb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\04.Player\PartObject">
-      <UniqueIdentifier>{fbf1a8aa-0779-4228-ab31-10d1d646cda4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\04.Player\PartObject\Body">
-      <UniqueIdentifier>{24bce5bf-4f9a-4c71-9e84-8af32c5c7c5e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\04.Player\PartObject\Weapon">
-      <UniqueIdentifier>{701efc3f-07a4-4a8d-b090-5a76d5aad607}</UniqueIdentifier>
-    </Filter>
     <Filter Include="95.Data_Manager">
       <UniqueIdentifier>{20d33931-5137-4097-976c-5f45874ffcdc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject">
+      <UniqueIdentifier>{487034a0-d4f3-4233-885b-fc76ae12b509}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\Monster">
+      <UniqueIdentifier>{68af5566-493b-4fbc-9cfe-a1382693893a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\Player">
+      <UniqueIdentifier>{cdcdeb71-9bb5-4b5e-a903-0f9a143f28fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\Player\PartObject">
+      <UniqueIdentifier>{fbf1a8aa-0779-4228-ab31-10d1d646cda4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\Player\PartObject\Body">
+      <UniqueIdentifier>{24bce5bf-4f9a-4c71-9e84-8af32c5c7c5e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\Player\PartObject\Weapon">
+      <UniqueIdentifier>{701efc3f-07a4-4a8d-b090-5a76d5aad607}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="96.Imgui\Manager">
+      <UniqueIdentifier>{15a1f240-558c-40c0-baf0-540589bd30b7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -130,7 +136,7 @@
       <Filter>02.GameObjects\01.Terrain\Manager</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Monster.h">
-      <Filter>02.GameObjects\02.Monster</Filter>
+      <Filter>02.GameObjects\02.LandObject\Monster</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Imgui\imstb_truetype.h">
       <Filter>96.Imgui\Sources</Filter>
@@ -178,16 +184,25 @@
       <Filter>96.Imgui\Gizmo</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Player.h">
-      <Filter>02.GameObjects\04.Player</Filter>
+      <Filter>02.GameObjects\02.LandObject\Player</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Body_Player.h">
-      <Filter>02.GameObjects\04.Player\PartObject\Body</Filter>
+      <Filter>02.GameObjects\02.LandObject\Player\PartObject\Body</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\PartObject.h">
-      <Filter>02.GameObjects\04.Player\PartObject</Filter>
+      <Filter>02.GameObjects\02.LandObject\Player\PartObject</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Data_Manager.h">
       <Filter>95.Data_Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\LandObject.h">
+      <Filter>02.GameObjects\02.LandObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Weapon.h">
+      <Filter>02.GameObjects\02.LandObject\Player\PartObject\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ImGuiManager.h">
+      <Filter>96.Imgui\Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -231,7 +246,7 @@
       <Filter>02.GameObjects\01.Terrain\Manager</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Monster.cpp">
-      <Filter>02.GameObjects\02.Monster</Filter>
+      <Filter>02.GameObjects\02.LandObject\Monster</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Imgui\imgui.cpp">
       <Filter>96.Imgui\Sources</Filter>
@@ -273,16 +288,25 @@
       <Filter>96.Imgui\Gizmo</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Player.cpp">
-      <Filter>02.GameObjects\04.Player</Filter>
+      <Filter>02.GameObjects\02.LandObject\Player</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Body_Player.cpp">
-      <Filter>02.GameObjects\04.Player\PartObject\Body</Filter>
+      <Filter>02.GameObjects\02.LandObject\Player\PartObject\Body</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\PartObject.cpp">
-      <Filter>02.GameObjects\04.Player\PartObject</Filter>
+      <Filter>02.GameObjects\02.LandObject\Player\PartObject</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Data_Manager.cpp">
       <Filter>95.Data_Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\LandObject.cpp">
+      <Filter>02.GameObjects\02.LandObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Weapon.cpp">
+      <Filter>02.GameObjects\02.LandObject\Player\PartObject\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ImGuiManager.cpp">
+      <Filter>96.Imgui\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

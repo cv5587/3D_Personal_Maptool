@@ -9,7 +9,7 @@
 #include "CUIObject.h"
 
 #include "Shader.h"
-#include"Gui.h"
+#include "ImGuiManager.h"
 
 CMainApp::CMainApp()
 	: m_pGameInstance{ CGameInstance::GetInstance() }
@@ -39,8 +39,8 @@ HRESULT CMainApp::Initialize()
 	if (FAILED(Open_Level(LEVEL_LOGO)))
 		return E_FAIL;
 
-		m_pGui = CGui::Create(m_pDevice, m_pContext);	
-	
+	m_pGuiManager = CImGuiManager::GetInstance();
+	m_pGuiManager->Initialize(m_pDevice, m_pContext);
 
 	
 
@@ -49,9 +49,9 @@ HRESULT CMainApp::Initialize()
 
 void CMainApp::Tick(float fTimeDelta)
 {
-	m_pGui->Update_UI(fTimeDelta);
+	m_pGuiManager->Tick(fTimeDelta);
 	m_pGameInstance->Tick_Engine(fTimeDelta);
-	m_pGui->LateUpdate_UI();
+	m_pGuiManager->Late_Tick();
 
 	
 }
@@ -59,7 +59,7 @@ void CMainApp::Tick(float fTimeDelta)
 HRESULT CMainApp::Render()
 {
 
-	m_pGui->Render();
+	m_pGuiManager->Render();
 	/* ±×¸°´Ù. */
 	if (FAILED(m_pGameInstance->Draw(_float4(0.f, 0.f, 1.f, 1.f))))
 		return E_FAIL;
@@ -135,8 +135,8 @@ CMainApp * CMainApp::Create()
 
 void CMainApp::Free()
 {
-
-	Safe_Release(m_pGui);
+	Safe_Release(m_pGuiManager);
+	m_pGuiManager->DestroyInstance();
 
 	Safe_Release(m_pContext);
 	Safe_Release(m_pDevice);

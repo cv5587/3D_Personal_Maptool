@@ -6,6 +6,7 @@
 #include "EnvironmentObject.h"
 #include "PipeLine.h"
 #include "Data_Manager.h"	
+#include "LandObject.h"
 
 static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::TRANSLATE);
 bool useWindow = false;
@@ -242,8 +243,8 @@ HRESULT CGui::Update_UI(_float fTimeDelta)
 
 	if (m_bInputObject)
 	{
-
-		m_pTerrainManager->Clone_Terrain(iTerrain);
+		Make_Terrain(iTerrain);
+		//m_pTerrainManager->Clone_Terrain(iTerrain);
 		
 		m_bInputObject = !m_bInputObject;
 	}
@@ -251,18 +252,22 @@ HRESULT CGui::Update_UI(_float fTimeDelta)
 	if (m_bMakeObject &&(m_pGameInstance->Get_DIMouseState(DIM_LB) & 0x80)&&(m_pGameInstance->Get_DIKeyState(DIK_LCONTROL) & 0x80))	
 	{
 		
-		CGameObject::GAMEOBJECT_DESC pDesc{};
+		CLandObject::LANDOBJ_DESC		LandObjDesc{};
 
-		XMStoreFloat4(&pDesc.vPrePosition, Picking_HitScreen());
+		LandObjDesc.pTerrainTransform = dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), TEXT("Com_Transform")));
+		LandObjDesc.pTerrainVIBuffer = dynamic_cast<CVIBuffer*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), TEXT("Com_VIBuffer")));
 
-		_float4 p = { -1.f,-1.f,-1.f,-1.f };
+		_vector Pick_Point = Picking_HitScreen();
 
-		pDesc.ProtoTypeTag=m_szRealFullPath;
-		pDesc.ModelTag = m_ComponentTag;
-
-		if( !m_pGameInstance->Compare_Float4(p, pDesc.vPrePosition))
+		LandObjDesc.ProtoTypeTag=m_szRealFullPath;
+		LandObjDesc.ModelTag = m_ComponentTag;
+		
+		if(0<Pick_Point.m128_f32[0])
 			{
-				if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, m_szLayerPath, m_szRealFullPath,& pDesc) ))
+				_matrix PrePosition = XMMatrixIdentity();
+				PrePosition.r[3] = Pick_Point;
+				XMStoreFloat4x4(&LandObjDesc.vPrePosition, PrePosition);
+				if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, m_szLayerPath, m_szRealFullPath, &LandObjDesc) ))
 					return E_FAIL;
 		
 				m_bMakeObject = false;
@@ -291,18 +296,6 @@ HRESULT CGui::Render()
 	return S_OK;
 }
 
-_vector CGui::Picking_on_Terrain()
-{
-	_float4* pVtxPos = m_pTerrainManager->Get_Terrain_VtxPos();
-	_int* pTerrainUV = m_pTerrainManager->Get_Terrain_UV();
-	_float pWinSize[] = { g_iWinSizeX ,g_iWinSizeY };
-	_matrix ViewMatrixInverse = m_pGameInstance->Get_Transform_Matrix_Inverse(CPipeLine::TS_VIEW);
-	_matrix ProjMatrixInverse = m_pGameInstance->Get_Transform_Matrix_Inverse(CPipeLine::TS_PROJ);
-	_matrix TerrainWorldMatrixInverse= XMMatrixInverse(nullptr, m_pTerrainManager->Get_Terrain_WorldMatrix());
-
-	return m_pGameInstance->Picking_on_Terrain(g_hWnd, TerrainWorldMatrixInverse,
-					ViewMatrixInverse, ProjMatrixInverse, pVtxPos, pTerrainUV, pWinSize);
-}
 
 _vector CGui::Picking_HitScreen()
 {
@@ -438,8 +431,14 @@ _matrix CGui::CameraStateChange(_fmatrix CamWorld, _cmatrix ObjWorld,_float fTim
 	return XMMatrixInverse(nullptr, CamW);
 }
 
+void CGui::Make_Terrain(void* pArg)
+{
+	m_pTerrainManager->Clone_Terrain(pArg);
+}
+
 void CGui::Free()
 {
+	Safe_Release(m_pData_Manager);
 	Safe_Release(m_pTerrainManager);
 	Safe_Release(m_pGameInstance);
 	Safe_Release(m_pContext);

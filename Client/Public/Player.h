@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Client_Defines.h"
-#include "GameObject.h"
+#include "LandObject.h"
 
 BEGIN(Engine)
 
@@ -11,11 +11,11 @@ END
 
 BEGIN(Client)
 
-class CPlayer final : public CGameObject
+class CPlayer final : public CLandObject
 {
 public:
 	enum PART { PART_BODY, PART_WEAPON, PART_END };
-	enum STATE { STATE_IDLE, STATE_RUN, STATE_ATTACK, STATE_END };
+	enum STATE { STATE_IDLE, STATE_WALK, STATE_RUN, STATE_ATTACK, STATE_END };
 
 	static const _uint iState[STATE_END];
 private:
@@ -29,10 +29,10 @@ public:
 	virtual void Priority_Tick(_float fTimeDelta) override;
 	virtual void Tick(_float fTimeDelta) override;
 	virtual void Late_Tick(_float fTimeDelta) override;
-	virtual HRESULT Render() override;	
+	virtual HRESULT Render() override;
 
 public:
-	HRESULT Add_Components();	
+	HRESULT Add_Components();
 	HRESULT Add_PartObjects();
 
 private:

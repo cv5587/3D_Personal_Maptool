@@ -13,16 +13,16 @@ private:
 public:
 	virtual HRESULT Initialize_Prototype(const wstring& strHeightMapFilePath);
 	virtual HRESULT Initialize(void* pArg) override;
+	virtual _float Compute_Height(const _float3& vLocalPos) override;
 
-	_float4* Get_Terrain_Vtx() { return m_VtxPos; }
-	_int* Get_Terrain_UV() { return m_pTerrainUV; }
+public:
+	void Save_Terrain_UV(ofstream* fout);
 
 private:
 	_uint				m_iNumVerticesX = { 0 };
 	_uint				m_iNumVerticesZ = { 0 };
 	_int*				 m_pTerrainUV = {nullptr};
 	 _tchar			m_strHeightMapFilePath[MAX_PATH] = TEXT("");
-	 _float4*		m_VtxPos = { nullptr };
 
 public:
 	static CVIBuffer_Terrain* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strHeightMapFilePath);

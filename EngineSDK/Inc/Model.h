@@ -41,6 +41,7 @@ public:
 	HRESULT Bind_Material(class CShader* pShaderCom, const _char* pConstantName, _uint iMeshIndex, aiTextureType eMaterialType);
 	HRESULT Bind_BoneMatrices(class CShader* pShaderCom, const _char* pConstantName, _uint iMeshIndex);
 	void Play_Animation(_float fTimeDelta);
+	void Shift_Animation(_float fTimeDelta);
 	void Set_AnimationIndex(const ANIMATION_DESC& AnimDesc) {
 		if (m_AnimDesc.iAnimIndex == AnimDesc.iAnimIndex)
 			return;
@@ -67,8 +68,12 @@ private:
 	vector<class CBone*>	m_Bones;
 
 	_uint						m_iNumAnimations = { 0 };
-	ANIMATION_DESC				m_AnimDesc{ 0, false };
+	ANIMATION_DESC				m_AnimDesc{ 0, false };//지금애니메이션
+	ANIMATION_DESC				m_PreAnimDesc{ 0, false };//바뀐애니메이션
 	vector<class CAnimation*>	m_Animations;
+
+
+//	vector<KEYFRAME> m_PreAnimationLastKey;
 
 private:
 	HRESULT Ready_Meshes();

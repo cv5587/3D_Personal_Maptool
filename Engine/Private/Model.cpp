@@ -129,11 +129,29 @@ void CModel::Play_Animation(_float fTimeDelta)
     /* 특정 애니메이션을 재생한다. == 특정 애니메이션에서 사용하는 뼈들의 TransformationMatrix를 갱신해준다. */
     /* 현재 애니메이션의 상태에 맞도록 뼈들의 상태행렬(TransformationMatrix)을 만들고 갱신해준다. */
     /* m_Animations[m_iCurrentAnimIndex] : 이 애니메이션에서 사용ㅇ하는 뼈들의 상태정보다 */
-    m_Animations[m_AnimDesc.iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, m_AnimDesc.isLoop);
+    if (m_PreAnimDesc.iAnimIndex == m_AnimDesc.iAnimIndex)
+        m_Animations[m_AnimDesc.iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, m_AnimDesc.isLoop);
+    else
+        Shift_Animation(fTimeDelta);
+    
+
 
     /* 전체뼈를 순회하면서 모든 뼈의 CombinedTransformationMatrix를 갱신한다. */
     for (auto& pBone : m_Bones)
         pBone->Update_CombinedTransformationMatrix(m_Bones, XMLoadFloat4x4(&m_PreTransformMatrix));
+
+}
+
+void CModel::Shift_Animation(_float fTimeDelta)
+{
+    //if(m_PreAnimationLastKey.size()==0)
+    // m_PreAnimationLastKey = m_Animations[m_PreAnimDesc.iAnimIndex]->Get_AnimationLastKey(); 
+
+    if (m_Animations[m_AnimDesc.iAnimIndex]->Shift_Animation_TransformationMatrix(fTimeDelta, m_Bones))
+    {
+        m_PreAnimDesc = m_AnimDesc;
+        //m_PreAnimationLastKey.clear();
+    }
 }
 
 HRESULT CModel::Make_Binary(const wstring FilePath)
@@ -457,6 +475,8 @@ void CModel::Free()
         Safe_Release(pMesh);
 
     m_Meshes.clear();
+
+    //m_PreAnimationLastKey.clear();
 
     m_Importer.FreeScene();
 }

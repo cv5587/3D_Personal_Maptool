@@ -21,7 +21,10 @@ public:
 	HRESULT Initialize(const aiAnimation* pAIAnimation, const vector<class CBone*>& Bones);
 	HRESULT Initialize(ifstream* fin);
 	void Update_TransformationMatrix(_float fTimeDelta, const vector<class CBone*>& Bones, _bool isLoop);
+	_bool Shift_Animation_TransformationMatrix(_float fTimeDelta, const vector<class CBone*>& Bones);
 	void Reset();
+
+	vector<KEYFRAME> Get_AnimationLastKey();
 
 	HRESULT Save_Animation(ofstream* fout);
 private:
@@ -37,6 +40,10 @@ private:
 	vector<_uint>			m_CurrentKeyFrameIndices;
 	//위는 아래 각 채널이 가진 현재 위치의 왼쪽 키값임
 	vector<class CChannel*>	m_Channels;
+	vector<KEYFRAME> m_LastKeys;
+	
+	_double		m_ShiftDuration = { 0.2 };
+	_double		m_ShiftCurrentPosition = { 0.0 };
 
 public:
 	static CAnimation* Create(const aiAnimation* pAIAnimation, const vector<class CBone*>& Bones);

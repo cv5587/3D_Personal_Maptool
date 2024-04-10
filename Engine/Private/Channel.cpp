@@ -113,6 +113,41 @@ void CChannel::Update_TransformationMatrix(_double CurrentPosition, const vector
 	Bones[m_iBoneIndex]->Set_TransformationMatrix(TransformationMatrix);
 }
 
+void CChannel::Shift_Animation_TransformationMatrix(_double ShiftCurrentPosition, const vector<class CBone*>& Bones, _uint* pCurrentKeyFrameIndex)
+{
+
+	if (!m_bGetShiftBone)
+	{
+		//전프레임 마지막 본의 행렬 정보를 가져온다.
+		_matrix m_ShiftBoneMatrix = XMLoadFloat4x4(Bones[m_iBoneIndex]->Get_TransformationMatrix());
+		XMMatrixDecompose(&m_vPreScale, &m_vPreRotation, &m_vPreTranslation, m_ShiftBoneMatrix);
+		m_bGetShiftBone = true;
+	}
+	_vector			vScale, vRotation, vTranslation;
+	/* 현재 재생위치가 마지막 키프레임의 위치를 넘어가게되면 무조건 마지막 키프레임의 상태를 취한다.  */
+	if (ShiftCurrentPosition >= 0.2)
+	{
+		vScale			= m_vPreScale;
+		vRotation		= m_vPreRotation;
+		vTranslation = m_vPreTranslation;
+		m_bGetShiftBone = false;
+	}
+	/* 특정 키프레임들 사이에 있을거다!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */
+	else
+	{
+		/* 현재 위치에서 왼쪽에 있는 키프렝미의 위치를 뺀다. / 내 오른쪽 키르렝미의 위치 - 내 왼쪽 키프렝밍의 위치. */
+		_float		fRatio = ShiftCurrentPosition  / 0.2 ;
+
+		vScale = XMVectorLerp(m_vPreScale, XMLoadFloat3(&m_KeyFrames[0].vScale), fRatio);
+		vRotation = XMQuaternionSlerp(m_vPreRotation, XMLoadFloat4(&m_KeyFrames[0].vRotation), fRatio);
+		vTranslation = XMVectorLerp(m_vPreTranslation, XMLoadFloat3(&m_KeyFrames[0].vPosition), fRatio);
+	}
+
+	_matrix		TransformationMatrix = XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRotation, vTranslation);
+
+	Bones[m_iBoneIndex]->Set_TransformationMatrix(TransformationMatrix);
+}
+
 HRESULT CChannel::Save_Channel( ofstream* fout)
 {
 	fout->write(reinterpret_cast<char*>(m_szName), MAX_PATH);

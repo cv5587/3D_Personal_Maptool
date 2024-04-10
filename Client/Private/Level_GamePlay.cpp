@@ -20,7 +20,7 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
 		return E_FAIL;
 
-	if (FAILED(Ready_Layer_Environment(TEXT("Layer_Environment"))))
+	if (FAILED(Ready_Layer_Environment(TEXT("Layer_EnvironmentObject"))))
 		return E_FAIL;
 
 	if (FAILED(Ready_LandObjects()))
@@ -94,12 +94,12 @@ HRESULT CLevel_GamePlay::Ready_LandObjects()
 
 HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring& strLayerTag, CLandObject::LANDOBJ_DESC* pLandObjDesc)
 {
-	pLandObjDesc->ModelTag = TEXT("Prototype_Component_Model_Rabbit");
-	pLandObjDesc->ProtoTypeTag = TEXT("Prototype_GameObject_Monster");
-	XMStoreFloat4x4(&pLandObjDesc->vPrePosition,XMMatrixIdentity());
+	//pLandObjDesc->ModelTag = TEXT("Prototype_Component_Model_Rabbit");
+	//pLandObjDesc->ProtoTypeTag = TEXT("Prototype_GameObject_Monster");
+	//XMStoreFloat4x4(&pLandObjDesc->vPrePosition,XMMatrixIdentity());
 
-		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Monster"), pLandObjDesc)))
-			return E_FAIL;
+	//	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Monster"), pLandObjDesc)))
+	//		return E_FAIL;
 
 	return S_OK;
 }
@@ -108,7 +108,9 @@ HRESULT CLevel_GamePlay::Ready_Layer_Player(const wstring& strLayerTag, CLandObj
 {
 	pLandObjDesc->ModelTag = TEXT("Prototype_Component_Model_Player");
 	pLandObjDesc->ProtoTypeTag = TEXT("Prototype_GameObject_Player");
-	XMStoreFloat4x4(&pLandObjDesc->vPrePosition, XMMatrixIdentity());
+	
+	_matrix PreMatrix = XMMatrixIdentity() * XMMatrixTranslation(20.f, 0.f, 20.f);	
+	XMStoreFloat4x4(&pLandObjDesc->vPrePosition, PreMatrix);
 
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Player"), pLandObjDesc)))
 		return E_FAIL;

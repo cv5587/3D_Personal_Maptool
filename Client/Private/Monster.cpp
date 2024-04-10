@@ -50,6 +50,10 @@ void CMonster::Tick(_float fTimeDelta)
 
     m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC(m_AnimationIdx, true));
     }
+
+    if (FAILED(__super::SetUp_OnTerrain(m_pTransformCom)))
+        return;
+
     m_pModelCom->Play_Animation(fTimeDelta);
 }
 

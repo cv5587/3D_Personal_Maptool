@@ -88,6 +88,7 @@ HRESULT CObject_Manager::Add_CloneObject(_uint iLevelIndex, const wstring& strLa
 	if (nullptr == pCloneObject)
 		return E_FAIL;
 
+	pCloneObject->Set_ID(m_ObjectID++);
 	/* 아직 추가할려고하는 레이어가 없었따?!! */
 	/* 레이어를 생성해서 추가하믄되겄다. */
 	if (nullptr == pLayer)
@@ -191,6 +192,7 @@ void CObject_Manager::Clear(_uint iLevelIndex)
 	m_pLayers[iLevelIndex].clear();
 }
 
+
 vector< const _float4x4*>* CObject_Manager::Get_ObPos(_uint iLevelIndex, const wstring& strLayerTag)
 {
 	if (iLevelIndex >= m_iNumLevels)
@@ -213,6 +215,7 @@ CGameObject* CObject_Manager::Clone_Object(const wstring& strPrototypeTag, void*
 	CGameObject* pCloneObject = pPrototype->Clone(pArg);
 	if (nullptr == pCloneObject)
 		return nullptr;
+	pCloneObject->Set_ID(m_ObjectID++);
 
 	return pCloneObject;
 }
@@ -264,9 +267,10 @@ HRESULT CObject_Manager::Save_Level(_uint iLevelIndex)
 			ZeroMemory(Layer, sizeof(_tchar) * MAX_PATH);
 			wsprintf(Layer, pLayer.first.c_str());
 			wstring wLayer(Layer);
-			if (TEXT("Layer_Camera") != wLayer && TEXT("Layer_Player") != wLayer)
-			{
 
+			//카메라랑 플레이어도 가져 가게 조절
+			if (TEXT("Layer_Camera") != wLayer )
+			{
 				fout.write((char*)Layer, sizeof(_tchar) * MAX_PATH);
 				if (FAILED(pLayer.second->Save_Data(&fout)))	
 					return E_FAIL;

@@ -58,6 +58,9 @@ HRESULT CLandObject::Render()
 
 HRESULT CLandObject::SetUp_OnTerrain(CTransform* pTransform)
 {
+	if (nullptr == m_pTerrainTransform)
+		return S_OK;
+
 	_vector			vWorldPos = pTransform->Get_State(CTransform::STATE_POSITION);
 	_float3			vLocalPos;
 

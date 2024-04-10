@@ -30,7 +30,7 @@ CGui::CGui(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 HRESULT CGui::Initialize()
 {
 	m_pTerrainManager = CTerrainManager::Create();
-	m_pData_Manager = CData_Manager::Create(m_pTerrainManager);
+	m_pData_Manager = CData_Manager::Create(m_pDevice,m_pContext,m_pTerrainManager);
 	return S_OK;
 }
 
@@ -90,7 +90,7 @@ HRESULT CGui::Update_UI(_float fTimeDelta)
 	}
 
 
-
+	
 	const char* szObject = "EnvironmentObject";
 	if (ImGui::TreeNode(szObject))
 	{
@@ -217,7 +217,7 @@ HRESULT CGui::Update_UI(_float fTimeDelta)
 		}
 		if (ImGui::Button("Load_Data"))
 		{
-			//로드는 클라에서 하자
+			//로드도 클라에서 하자
 			m_pData_Manager->Load_Data((_uint)Level_current);
 		}
 		ImGui::TreePop();	

@@ -77,6 +77,7 @@ HRESULT CChannel::Initialize(ifstream* fin)
 
 void CChannel::Update_TransformationMatrix(_double CurrentPosition, const vector<class CBone*>& Bones, _uint* pCurrentKeyFrameIndex)
 {
+
 	if (0.0 == CurrentPosition)
 		*pCurrentKeyFrameIndex = 0;
 

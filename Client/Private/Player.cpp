@@ -31,8 +31,8 @@ HRESULT CPlayer::Initialize(void* pArg)
 {
 	CLandObject::LANDOBJ_DESC* pDesc = (CLandObject::LANDOBJ_DESC*)pArg;
 
-	pDesc->fSpeedPerSec = 10.f;
-	pDesc->fRotationPerSec = XMConvertToRadians(90.0f);
+	pDesc->fSpeedPerSec = 2.f;
+	pDesc->fRotationPerSec = XMConvertToRadians(120.0f);
 
 	if (FAILED(__super::Initialize(pDesc)))
 		return E_FAIL;

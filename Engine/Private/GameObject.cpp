@@ -100,7 +100,6 @@ HRESULT CGameObject::Save_Data(ofstream* fout)
 
 		if (TEXT("Prototype_Component_VIBuffer_Terrain") == m_ModelTag)
 		{
-			//TODO:04091900터레인 수정함
 			dynamic_cast<CVIBuffer_Terrain*>(Get_Component(TEXT("Com_VIBuffer")))->Save_Terrain_UV(fout);
 		}
 	}

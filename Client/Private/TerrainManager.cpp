@@ -2,6 +2,7 @@
 #include "Terrain.h"
 #include "GameInstance.h"
 
+
 CTerrainManager::CTerrainManager()	
 	:m_pGameInstance{ CGameInstance::GetInstance() }
 {
@@ -11,6 +12,7 @@ CTerrainManager::CTerrainManager()
 HRESULT CTerrainManager::Initialize()
 {
 	return S_OK;
+	
 }
 
 HRESULT CTerrainManager::Clone_Terrain(void* pArg)	
@@ -28,6 +30,18 @@ HRESULT CTerrainManager::Clone_Terrain(void* pArg)
 	
 	return S_OK;
 }
+
+CComponent* CTerrainManager::Get_Terrain_Component(const wstring& ComTag)
+{
+	return nullptr;
+}
+
+void CTerrainManager::Terrain_Release()
+{
+	Safe_Release(m_pTerrain);
+}
+
+
 
 CTerrainManager* CTerrainManager::Create()
 {

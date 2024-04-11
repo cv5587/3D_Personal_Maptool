@@ -42,11 +42,17 @@ public:
 	HRESULT Bind_BoneMatrices(class CShader* pShaderCom, const _char* pConstantName, _uint iMeshIndex);
 	void Play_Animation(_float fTimeDelta);
 	void Shift_Animation(_float fTimeDelta);
+	void Set_FirstAnimationIndex(const ANIMATION_DESC& AnimDesc) {
+		m_PreAnimDesc = AnimDesc;
+		m_AnimDesc = AnimDesc;
+	}
 	void Set_AnimationIndex(const ANIMATION_DESC& AnimDesc) {
 		if (m_AnimDesc.iAnimIndex == AnimDesc.iAnimIndex)
 			return;
+
 		m_AnimDesc = AnimDesc;
 		m_Animations[m_AnimDesc.iAnimIndex]->Reset();
+		m_Animations[m_AnimDesc.iAnimIndex]->Shift_Reset();
 	}
 
 	HRESULT Make_Binary(const wstring FilePath);

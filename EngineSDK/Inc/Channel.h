@@ -11,11 +11,7 @@ public:
     HRESULT Initialize(const aiNodeAnim* pAIChannel, const vector<class CBone*>& Bones);
     HRESULT Initialize(ifstream* fin);
     void Update_TransformationMatrix(_double CurrentPosition, const vector<class CBone*>& Bones, _uint* pCurrentKeyFrameIndex);
-    void Shift_Animation_TransformationMatrix(_double ShiftCurrentPosition, const vector<class CBone*>& Bones, _uint* pCurrentKeyFrameIndex);
-
-    KEYFRAME Get_LastKey() {
-       return m_KeyFrames.back();   
-    }
+    void Shift_Animation_TransformationMatrix(_double ShiftCurrentPosition, const vector<class CBone*>& Bones, _bool& bFirst);
 
     HRESULT Save_Channel( ofstream* fout);
 private:
@@ -29,7 +25,7 @@ private:
     vector<KEYFRAME>	m_KeyFrames;
 
     _vector			m_vPreScale, m_vPreRotation, m_vPreTranslation;
-    _bool            m_bGetShiftBone = { false };
+    _bool            m_bGetShiftBone = { true };
 public:
     static CChannel* Create(const aiNodeAnim* pAIChannel, const vector<class CBone*>& Bones);
     static CChannel* Create(ifstream* fin);

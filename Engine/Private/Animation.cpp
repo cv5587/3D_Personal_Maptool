@@ -71,6 +71,7 @@ void CAnimation::Update_TransformationMatrix(_float fTimeDelta, const vector<cla
 {
 	m_CurrentPosition += m_TickPerSecond * fTimeDelta;
 
+
 	if (m_CurrentPosition >= m_Duration)
 	{
 		m_CurrentPosition = 0.0;
@@ -90,39 +91,68 @@ void CAnimation::Update_TransformationMatrix(_float fTimeDelta, const vector<cla
 	}
 }
 
-_bool CAnimation::Shift_Animation_TransformationMatrix(_float fTimeDelta, const vector<class CBone*>& Bones)
+
+void CAnimation::Shift_Update_TransformationMatrix(_float fTimeDelta, const vector<class CBone*>& Bones, _bool isLoop)
 {
-	_bool Finish_Shift = { false };
-	//m_CurrentPosition = 0; // 애님 전환시 이미 해줌Reset함수에서
-
-	m_ShiftCurrentPosition+= (_double)fTimeDelta;
+	m_CurrentPosition = 0.0;
 
 
+	if (m_CurrentPosition >= m_Duration)
+	{
+		m_CurrentPosition = 0.0;
 
-	if(!Finish_Shift)
+		if (false == isLoop)
+			m_isFinished = true;
+	}
+
+	if (false == m_isFinished)
 	{
 		_uint		iChannelIndex = { 0 };
 
 		for (auto& pChannel : m_Channels)
 		{
-			pChannel->Shift_Animation_TransformationMatrix(m_ShiftCurrentPosition, Bones, &m_CurrentKeyFrameIndices[iChannelIndex++]);
+			pChannel->Update_TransformationMatrix(m_CurrentPosition, Bones, &m_CurrentKeyFrameIndices[iChannelIndex++]);
 		}
-		//앞으로 움직일 본의 갯수만큼 가져와됨. 전 본갯수 X
 	}
+}
+
+
+_bool CAnimation::Shift_Animation_TransformationMatrix(_float fTimeDelta, const vector<class CBone*>& Bones)
+{
+
+	//m_CurrentPosition = 0; // 애님 전환시 이미 해줌Reset함수에서
+
+	m_ShiftCurrentPosition+= (_double)fTimeDelta;
 
 	if (m_ShiftCurrentPosition >= m_ShiftDuration)
 	{
 		m_ShiftCurrentPosition = 0.0;
-		Finish_Shift = true;
+		m_First_Shift = true;
+		return true;
 	}
 
-	return Finish_Shift;
+	_uint		iChannelIndex = { 0 };
+
+	for (auto& pChannel : m_Channels)
+	{
+		pChannel->Shift_Animation_TransformationMatrix(m_ShiftCurrentPosition, Bones, m_First_Shift);
+	}
+
+	m_First_Shift = false;
+
+	return false;
 }
 
 void CAnimation::Reset()
 {
 	m_CurrentPosition = 0.0;
 	m_isFinished = false;
+}
+
+void CAnimation::Shift_Reset()
+{
+	m_ShiftCurrentPosition = 0.0 ;
+	m_First_Shift =  true ;
 }
 
 HRESULT CAnimation::Save_Animation(ofstream* fout)

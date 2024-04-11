@@ -69,7 +69,7 @@ void CPlayer::Tick(_float fTimeDelta)
 
 	if (GetKeyState(VK_UP) & 0x8000)
 	{
-		m_pTransformCom->Go_Straight(fTimeDelta);
+		//m_pTransformCom->Go_Straight(fTimeDelta);
 		m_iState |= iState[STATE_WALK];
 		if (m_iState & iState[STATE_IDLE])
 			m_iState ^= iState[STATE_IDLE];

@@ -27,7 +27,7 @@ HRESULT CBody_Player::Initialize(void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC(rand() % 20, true));
+	m_pModelCom->Set_FirstAnimationIndex(CModel::ANIMATION_DESC(166, true));
 
 
 
@@ -45,7 +45,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 	if (*m_pState & CPlayer::iState[CPlayer::STATE_IDLE])
 	{
 		AnimDesc.isLoop = true;
-		AnimDesc.iAnimIndex = 0;
+		AnimDesc.iAnimIndex = 166;
 	}
 	else if (*m_pState & CPlayer::iState[CPlayer::STATE_WALK])
 	{

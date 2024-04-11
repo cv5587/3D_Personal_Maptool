@@ -144,13 +144,11 @@ void CModel::Play_Animation(_float fTimeDelta)
 
 void CModel::Shift_Animation(_float fTimeDelta)
 {
-    //if(m_PreAnimationLastKey.size()==0)
-    // m_PreAnimationLastKey = m_Animations[m_PreAnimDesc.iAnimIndex]->Get_AnimationLastKey(); 
 
     if (m_Animations[m_AnimDesc.iAnimIndex]->Shift_Animation_TransformationMatrix(fTimeDelta, m_Bones))
     {
-        m_PreAnimDesc = m_AnimDesc;
-        //m_PreAnimationLastKey.clear();
+        m_PreAnimDesc = m_AnimDesc; 
+        m_Animations[m_AnimDesc.iAnimIndex]->Shift_Update_TransformationMatrix(fTimeDelta, m_Bones, m_AnimDesc.isLoop);
     }
 }
 

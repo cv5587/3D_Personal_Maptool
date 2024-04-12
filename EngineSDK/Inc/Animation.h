@@ -21,7 +21,6 @@ public:
 	HRESULT Initialize(const aiAnimation* pAIAnimation, const vector<class CBone*>& Bones);
 	HRESULT Initialize(ifstream* fin);
 	void Update_TransformationMatrix(_float fTimeDelta, const vector<class CBone*>& Bones, _bool isLoop);
-	void Shift_Update_TransformationMatrix(_float fTimeDelta, const vector<class CBone*>& Bones, _bool isLoop);
 	_bool Shift_Animation_TransformationMatrix(_float fTimeDelta, const vector<class CBone*>& Bones);
 	void Reset();
 	void Shift_Reset();

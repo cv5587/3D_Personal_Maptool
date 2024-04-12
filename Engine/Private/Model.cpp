@@ -148,7 +148,6 @@ void CModel::Shift_Animation(_float fTimeDelta)
     if (m_Animations[m_AnimDesc.iAnimIndex]->Shift_Animation_TransformationMatrix(fTimeDelta, m_Bones))
     {
         m_PreAnimDesc = m_AnimDesc; 
-        m_Animations[m_AnimDesc.iAnimIndex]->Shift_Update_TransformationMatrix(fTimeDelta, m_Bones, m_AnimDesc.isLoop);
     }
 }
 

@@ -137,7 +137,7 @@ HRESULT CPlayer::Add_PartObjects()
 	if (nullptr == pModelCom)
 		return E_FAIL;
 	//무기 가 붙어 있을 뼈정보를 가져옴
-	WeaponDesc.pCombinedTransformationMatrix = pModelCom->Get_BoneCombinedTransformationMatrix("left_prop_point");
+	WeaponDesc.pCombinedTransformationMatrix = pModelCom->Get_BoneCombinedTransformationMatrix("right_prop_point");
 	if (nullptr == WeaponDesc.pCombinedTransformationMatrix)
 		return E_FAIL;
 	//뼈정보를 넣어줘서 제작

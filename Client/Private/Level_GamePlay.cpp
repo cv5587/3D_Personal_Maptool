@@ -94,12 +94,12 @@ HRESULT CLevel_GamePlay::Ready_LandObjects()
 
 HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring& strLayerTag, CLandObject::LANDOBJ_DESC* pLandObjDesc)
 {
-	//pLandObjDesc->ModelTag = TEXT("Prototype_Component_Model_Rabbit");
-	//pLandObjDesc->ProtoTypeTag = TEXT("Prototype_GameObject_Monster");
-	//XMStoreFloat4x4(&pLandObjDesc->vPrePosition,XMMatrixIdentity());
+	pLandObjDesc->ModelTag = TEXT("Prototype_Component_Model_Revolver");
+	pLandObjDesc->ProtoTypeTag = TEXT("Prototype_GameObject_Monster");
+	XMStoreFloat4x4(&pLandObjDesc->vPrePosition,XMMatrixIdentity());
 
-	//	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Monster"), pLandObjDesc)))
-	//		return E_FAIL;
+		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Monster"), pLandObjDesc)))
+			return E_FAIL;
 
 	return S_OK;
 }

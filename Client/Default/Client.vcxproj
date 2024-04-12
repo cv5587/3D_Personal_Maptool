@@ -206,6 +206,7 @@
     <ClInclude Include="..\Public\Monster.h" />
     <ClInclude Include="..\Public\PartObject.h" />
     <ClInclude Include="..\Public\Player.h" />
+    <ClInclude Include="..\Public\Revolver.h" />
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\Public\TerrainManager.h" />
     <ClInclude Include="..\Public\Weapon.h" />
@@ -243,6 +244,7 @@
     <ClCompile Include="..\Private\Monster.cpp" />
     <ClCompile Include="..\Private\PartObject.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
+    <ClCompile Include="..\Private\Revolver.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="..\Private\TerrainManager.cpp" />
     <ClCompile Include="..\Private\Weapon.cpp" />

@@ -79,11 +79,17 @@
     <Filter Include="02.GameObjects\02.LandObject\Player\PartObject\Body">
       <UniqueIdentifier>{24bce5bf-4f9a-4c71-9e84-8af32c5c7c5e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.LandObject\Player\PartObject\Weapon">
-      <UniqueIdentifier>{701efc3f-07a4-4a8d-b090-5a76d5aad607}</UniqueIdentifier>
-    </Filter>
     <Filter Include="96.Imgui\Manager">
       <UniqueIdentifier>{15a1f240-558c-40c0-baf0-540589bd30b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\Player\PartObject\Weapon">
+      <UniqueIdentifier>{f2eeef2a-b14c-4ca5-8fce-41e0d6eed453}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\Player\PartObject\Weapon\Revolver">
+      <UniqueIdentifier>{77e6e7a8-7129-4dfe-8943-adf9bcd5e5bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\Player\PartObject\Weapon\Weapon_EX">
+      <UniqueIdentifier>{701efc3f-07a4-4a8d-b090-5a76d5aad607}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -199,10 +205,13 @@
       <Filter>02.GameObjects\02.LandObject</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Weapon.h">
-      <Filter>02.GameObjects\02.LandObject\Player\PartObject\Weapon</Filter>
+      <Filter>02.GameObjects\02.LandObject\Player\PartObject\Weapon\Weapon_EX</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\ImGuiManager.h">
       <Filter>96.Imgui\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Revolver.h">
+      <Filter>02.GameObjects\02.LandObject\Player\PartObject\Weapon\Revolver</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -303,10 +312,13 @@
       <Filter>02.GameObjects\02.LandObject</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Weapon.cpp">
-      <Filter>02.GameObjects\02.LandObject\Player\PartObject\Weapon</Filter>
+      <Filter>02.GameObjects\02.LandObject\Player\PartObject\Weapon\Weapon_EX</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ImGuiManager.cpp">
       <Filter>96.Imgui\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Revolver.cpp">
+      <Filter>02.GameObjects\02.LandObject\Player\PartObject\Weapon\Revolver</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

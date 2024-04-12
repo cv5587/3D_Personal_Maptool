@@ -30,7 +30,7 @@ private:
 	CModel* m_pModelCom = { nullptr };
 
 private:
-	_uint m_AnimationIdx = { 0 };
+	_uint m_AnimationIdx = { 3 };
 
 public:
 	HRESULT Add_Components();

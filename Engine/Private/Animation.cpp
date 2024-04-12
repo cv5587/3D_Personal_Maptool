@@ -26,6 +26,7 @@ HRESULT CAnimation::Initialize(const aiAnimation* pAIAnimation, const vector<cla
 {
 	strcpy_s(m_szName, pAIAnimation->mName.data);
 
+
 	m_Duration = pAIAnimation->mDuration;
 	m_TickPerSecond = pAIAnimation->mTicksPerSecond;
 

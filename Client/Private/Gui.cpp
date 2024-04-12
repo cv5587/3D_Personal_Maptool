@@ -147,7 +147,7 @@ HRESULT CGui::Update_UI(_float fTimeDelta)
 	{
 
 		{
-			const char* Monsters[] = { "Fiona","Rabbit","Player"};
+			const char* Monsters[] = { "Fiona","Rabbit","Player","Revolver"};
 			static int Monster_current = 0;
 			ImGui::ListBox("List", &Monster_current, Monsters, IM_ARRAYSIZE(Monsters));
 

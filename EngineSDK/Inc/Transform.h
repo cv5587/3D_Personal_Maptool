@@ -61,6 +61,12 @@ public:
 	HRESULT Go_Backward(_float fTimeDelta);
 	HRESULT Go_Left(_float fTimeDelta);
 	HRESULT Go_Right(_float fTimeDelta);
+	
+	HRESULT Go_LeftStraight(_float fTimeDelta);
+	HRESULT Go_RightStraight(_float fTimeDelta);
+	HRESULT Go_LeftBackward(_float fTimeDelta);
+	HRESULT Go_RightBackward(_float fTimeDelta);
+
 	HRESULT LookAt(_fvector vTargetPosition);
 	HRESULT LookAt_For_LandObject(_fvector vTargetPosition);
 	HRESULT Turn(_fvector vAxis, _float fTimeDelta);

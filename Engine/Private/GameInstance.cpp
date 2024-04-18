@@ -8,6 +8,8 @@
 #include "Object_Manager.h"
 #include "Renderer.h"
 #include "Calculator.h"
+
+
 IMPLEMENT_SINGLETON(CGameInstance)
 
 CGameInstance::CGameInstance()
@@ -165,6 +167,11 @@ _int CGameInstance::Compute_ID(const POINT& ptWindowPos, ID3D11Texture2D* pIDScr
 _byte CGameInstance::Get_DIKeyState(_ubyte byKeyID)
 {
 	return m_pInput_Device->Get_DIKeyState(byKeyID);
+}
+
+_byte CGameInstance::Get_DIKeyState_Once(_ubyte byKeyID)
+{
+	 return m_pInput_Device->Get_DIKeyState_Once(byKeyID);
 }
 
 _byte CGameInstance::Get_DIMouseState(MOUSEKEYSTATE eMouse)

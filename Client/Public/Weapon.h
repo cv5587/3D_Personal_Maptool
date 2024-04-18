@@ -10,7 +10,7 @@ END
 
 BEGIN(Client)
 
-class CWeapon final : public CPartObject
+class CWeapon : public CPartObject
 {
 public:
 	typedef struct : public CPartObject::PARTOBJ_DESC

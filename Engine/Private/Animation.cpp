@@ -22,10 +22,39 @@ CAnimation::CAnimation(const CAnimation& rhs)
 		Safe_AddRef(pChannel);
 }
 
-HRESULT CAnimation::Initialize(const aiAnimation* pAIAnimation, const vector<class CBone*>& Bones)
+HRESULT CAnimation::Initialize(const aiAnimation* pAIAnimation, const vector<class CBone*>& Bones, ANIMTYPE eAnimType)
 {
-	strcpy_s(m_szName, pAIAnimation->mName.data);
+	switch (eAnimType)
+	{
+	case Engine::CAnimation::OBJ_PLAYER:
+	{
+		char FullName[MAX_PATH] = "";
+		strcpy_s(FullName, pAIAnimation->mName.data);
+		//이름 때기
 
+		char* Next_Token = { nullptr };
+		char* token = strtok_s(FullName, "|", &Next_Token);
+		token = strtok_s(nullptr, "|", &Next_Token);
+		token = strtok_s(nullptr, "|", &Next_Token);
+		strcpy_s(m_szName, token);
+	}
+		break;
+	case Engine::CAnimation::OBJ_MONSTER:
+		strcpy_s(m_szName, pAIAnimation->mName.data);
+		break;
+	case Engine::CAnimation::OBJ_WEAPON:
+		strcpy_s(m_szName, pAIAnimation->mName.data);
+		break;
+	case Engine::CAnimation::OBJ_ENVIRONMENT:
+		strcpy_s(m_szName, pAIAnimation->mName.data);
+		break;
+	case Engine::CAnimation::OBJ_END:
+		break;
+	default:
+		break;
+	}
+	
+	
 
 	m_Duration = pAIAnimation->mDuration;
 	m_TickPerSecond = pAIAnimation->mTicksPerSecond;
@@ -110,7 +139,7 @@ _bool CAnimation::Shift_Animation_TransformationMatrix(_float fTimeDelta, const 
 
 	for (auto& pChannel : m_Channels)
 	{
-		pChannel->Shift_Animation_TransformationMatrix(m_ShiftCurrentPosition, Bones, m_First_Shift);
+		pChannel->Shift_Animation_TransformationMatrix(m_ShiftCurrentPosition, Bones, m_First_Shift, m_ShiftDuration);
 	}
 
 	m_First_Shift = false;
@@ -149,11 +178,11 @@ HRESULT CAnimation::Save_Animation(ofstream* fout)
 }
 
 
-CAnimation* CAnimation::Create(const aiAnimation* pAIAnimation, const vector<class CBone*>& Bones)
+CAnimation* CAnimation::Create(const aiAnimation* pAIAnimation, const vector<class CBone*>& Bones, ANIMTYPE eAnimType)
 {
 	CAnimation* pInstance = new CAnimation();
 
-	if (FAILED(pInstance->Initialize(pAIAnimation, Bones)))
+	if (FAILED(pInstance->Initialize(pAIAnimation, Bones, eAnimType)))
 	{
 		MSG_BOX("Failed To Created : CAnimation");
 		Safe_Release(pInstance);

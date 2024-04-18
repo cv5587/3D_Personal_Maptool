@@ -4,6 +4,21 @@ CInput_Device::CInput_Device(void)
 {
 }
 
+_byte CInput_Device::Get_DIKeyState_Once(_ubyte byKeyID)
+{
+
+    if (!key_down && KEYDOWN(m_byKeyState, byKeyID))
+	{
+        key_down = true; 
+		return Get_DIKeyState(byKeyID);
+    } 
+	else if (key_down && !KEYDOWN(m_byKeyState, byKeyID))
+	{
+        key_down = false; 
+		return 0x00;
+    } 
+}
+
 HRESULT CInput_Device::Ready_InputDev(HINSTANCE hInst, HWND hWnd)
 {
 

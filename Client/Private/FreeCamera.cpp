@@ -37,18 +37,18 @@ void CFreeCamera::Priority_Tick(_float fTimeDelta)
 
 void CFreeCamera::Tick(_float fTimeDelta)
 {
-	if (m_pGameInstance->Get_DIKeyState(DIK_Q) & 0x80)
+	if (m_pGameInstance->Get_DIKeyState_Once(DIK_Q) )
 		m_bTab = !m_bTab;
 
 	if (!m_bTab)
 	{
-	if (m_pGameInstance->Get_DIKeyState(DIK_A) & 0x80)
+	if (m_pGameInstance->Get_DIKeyState(DIK_LEFT) )
 		m_pTransformCom->Go_Left(fTimeDelta);
-	if (m_pGameInstance->Get_DIKeyState(DIK_D) & 0x80)
+	if (m_pGameInstance->Get_DIKeyState(DIK_RIGHT) )
 		m_pTransformCom->Go_Right(fTimeDelta);
-	if (m_pGameInstance->Get_DIKeyState(DIK_W) & 0x80)
+	if (m_pGameInstance->Get_DIKeyState(DIK_UP) )
 		m_pTransformCom->Go_Straight(fTimeDelta);
-	if (m_pGameInstance->Get_DIKeyState(DIK_S) & 0x80)
+	if (m_pGameInstance->Get_DIKeyState(DIK_DOWN) )
 		m_pTransformCom->Go_Backward(fTimeDelta);
 
 

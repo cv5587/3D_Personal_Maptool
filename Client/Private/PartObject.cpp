@@ -22,6 +22,8 @@ HRESULT CPartObject::Initialize(void* pArg)
 
 	m_pParentMatrix = pPartObjDesc->pParentMatrix;
 	m_pState = pPartObjDesc->pState;
+	m_pEquip = pPartObjDesc->pEquip;
+	m_pAnimFinished = pPartObjDesc->pAnimFinished;
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;

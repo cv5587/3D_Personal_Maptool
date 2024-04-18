@@ -3,6 +3,7 @@
 #include "Client_Defines.h"
 #include "PartObject.h"
 
+
 BEGIN(Engine)
 class CShader;
 class CModel;
@@ -28,6 +29,8 @@ public:
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
+
+	void Set_AnimationState();
 
 public:
 	HRESULT Add_Components();

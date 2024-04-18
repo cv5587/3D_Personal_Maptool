@@ -114,6 +114,58 @@ HRESULT CTransform::Go_Right(_float fTimeDelta)
 	return S_OK;
 }
 
+HRESULT CTransform::Go_LeftStraight(_float fTimeDelta)
+{
+	_vector vPosition = Get_State(STATE_POSITION);
+	_vector vLook = Get_State(STATE_LOOK);
+	_vector vLeft = Get_State(STATE_RIGHT)*-1.f;
+
+	vPosition += XMVector3Normalize(vLook + vLeft) * m_fSpeedPerSec * fTimeDelta;
+
+	Set_State(STATE_POSITION, vPosition);
+
+	return S_OK;
+}
+
+HRESULT CTransform::Go_RightStraight(_float fTimeDelta)
+{
+	_vector vPosition = Get_State(STATE_POSITION);
+	_vector vLook = Get_State(STATE_LOOK);
+	_vector vRight = Get_State(STATE_RIGHT);
+
+	vPosition += XMVector3Normalize(vLook + vRight) * m_fSpeedPerSec * fTimeDelta;
+
+	Set_State(STATE_POSITION, vPosition);
+
+	return S_OK;
+}
+
+HRESULT CTransform::Go_LeftBackward(_float fTimeDelta)
+{
+	_vector vPosition = Get_State(STATE_POSITION);
+	_vector vLook = Get_State(STATE_LOOK);
+	_vector vRight = Get_State(STATE_RIGHT);
+
+	vPosition -= XMVector3Normalize(vLook + vRight) * m_fSpeedPerSec * fTimeDelta;
+
+	Set_State(STATE_POSITION, vPosition);
+
+	return S_OK;
+}
+
+HRESULT CTransform::Go_RightBackward(_float fTimeDelta)
+{
+	_vector vPosition = Get_State(STATE_POSITION);
+	_vector vLook = Get_State(STATE_LOOK);
+	_vector vLeft = Get_State(STATE_RIGHT) * -1.f;
+
+	vPosition -= XMVector3Normalize(vLook + vLeft) * m_fSpeedPerSec * fTimeDelta;
+
+	Set_State(STATE_POSITION, vPosition);
+
+	return S_OK;
+}
+
 HRESULT CTransform::LookAt(_fvector vTargetPosition)
 {
 	_float3 vScaled = Get_Scaled();

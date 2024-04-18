@@ -42,16 +42,16 @@ void CRevolver::Tick(_float fTimeDelta)
 {
 	CModel::ANIMATION_DESC		AnimDesc{ 0, true };
 
-	if (*m_pState & CPlayer::iState[CPlayer::STATE_IDLE])
-	{
-		AnimDesc.isLoop = true;
-		AnimDesc.iAnimIndex = 166;
-	}
-	else if (*m_pState & CPlayer::iState[CPlayer::STATE_WALK])
-	{
-		AnimDesc.isLoop = true;
-		AnimDesc.iAnimIndex = 165;
-	}
+	//if (*m_pState & CPlayer::iState[CPlayer::STATE_IDLE])
+	//{
+	//	AnimDesc.isLoop = true;
+	//	AnimDesc.iAnimIndex = 166;
+	//}
+	//else if (*m_pState & CPlayer::iState[CPlayer::STATE_WALK])
+	//{
+	//	AnimDesc.isLoop = true;
+	//	AnimDesc.iAnimIndex = 165;
+	//}
 	//TODO::040920 애니메이션 번호 체크해서 돌려보기 ->이후 보간 ㄱ
 	m_pModelCom->Set_AnimationIndex(AnimDesc);
 

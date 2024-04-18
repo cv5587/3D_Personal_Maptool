@@ -52,7 +52,7 @@ const _float4x4* CModel::Get_BoneCombinedTransformationMatrix(const _char* pBone
 	return (*iter)->Get_CombinedTransformationMatrix();	
 }
 
-HRESULT CModel::Initialize_Prototype(MODELTYPE eModelType, const _char* pModelFilePath, _fmatrix PreTransformMatrix)
+HRESULT CModel::Initialize_Prototype(MODELTYPE eModelType, CAnimation::ANIMTYPE eAnimType, const _char* pModelFilePath, _fmatrix PreTransformMatrix)
 {
     /*_uint		iFlag = aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_Fast;*/
 
@@ -88,7 +88,7 @@ HRESULT CModel::Initialize_Prototype(MODELTYPE eModelType, const _char* pModelFi
     if (FAILED(Ready_Meshes()))
         return E_FAIL;
 
-    if (FAILED(Ready_Animations()))
+    if (FAILED(Ready_Animations(eAnimType)))
         return E_FAIL;
 
 
@@ -133,8 +133,6 @@ void CModel::Play_Animation(_float fTimeDelta)
         m_Animations[m_AnimDesc.iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, m_AnimDesc.isLoop);
     else
         Shift_Animation(fTimeDelta);
-    
-
 
     /* 전체뼈를 순회하면서 모든 뼈의 CombinedTransformationMatrix를 갱신한다. */
     for (auto& pBone : m_Bones)
@@ -388,7 +386,7 @@ HRESULT CModel::Ready_Bones(const aiNode* pAINode, _int iParentIndex)
     return S_OK;
 }
 
-HRESULT CModel::Ready_Animations()
+HRESULT CModel::Ready_Animations(CAnimation::ANIMTYPE eAnimType)
 {
 
     /* 어떤 애니메이션을 재생했을 때, 이 애니메이션에서 사용하고 있는 뼈들의 각각의 변환 상태(행렬)들을 로드한다.  */
@@ -396,7 +394,7 @@ HRESULT CModel::Ready_Animations()
 
     for (size_t i = 0; i < m_iNumAnimations; i++)
     {
-        CAnimation* pAnimation = CAnimation::Create(m_pAIScene->mAnimations[i], m_Bones);
+        CAnimation* pAnimation = CAnimation::Create(m_pAIScene->mAnimations[i], m_Bones, eAnimType);
         if (nullptr == pAnimation)
             return E_FAIL;
 
@@ -406,11 +404,11 @@ HRESULT CModel::Ready_Animations()
     return S_OK;
 }
 
-CModel* CModel::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MODELTYPE eModelType, const _char* pModelFilePath, _fmatrix PreTransformMatrix)
+CModel* CModel::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MODELTYPE eModelType, CAnimation::ANIMTYPE eAnimType, const _char* pModelFilePath, _fmatrix PreTransformMatrix)
 {
     CModel* pInstance = new CModel(pDevice, pContext);
 
-    if (FAILED(pInstance->Initialize_Prototype(eModelType, pModelFilePath, PreTransformMatrix)))
+    if (FAILED(pInstance->Initialize_Prototype(eModelType, eAnimType, pModelFilePath, PreTransformMatrix)))
     {
         MSG_BOX("Failed To Created : CModel");
         Safe_Release(pInstance);

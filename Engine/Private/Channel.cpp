@@ -113,7 +113,7 @@ void CChannel::Update_TransformationMatrix(_double CurrentPosition, const vector
 	Bones[m_iBoneIndex]->Set_TransformationMatrix(TransformationMatrix);
 }
 
-void CChannel::Shift_Animation_TransformationMatrix(_double ShiftCurrentPosition, const vector<class CBone*>& Bones,_bool& bFirst)
+void CChannel::Shift_Animation_TransformationMatrix(_double ShiftCurrentPosition, const vector<class CBone*>& Bones,_bool& bFirst,_double& ShiftDuration)
 {
 	if (bFirst)
 		m_bGetShiftBone = false;
@@ -127,7 +127,7 @@ void CChannel::Shift_Animation_TransformationMatrix(_double ShiftCurrentPosition
 	}
 	_vector			vScale, vRotation, vTranslation;
 	
-	_float		fRatio = ShiftCurrentPosition  / 2.0 ;
+	_float		fRatio = ShiftCurrentPosition  / ShiftDuration;
 	
 	vScale = XMVectorLerp(m_vPreScale, XMLoadFloat3(&m_KeyFrames[0].vScale), fRatio);
 	vRotation = XMQuaternionSlerp(m_vPreRotation, XMLoadFloat4(&m_KeyFrames[0].vRotation), fRatio);

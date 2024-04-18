@@ -88,8 +88,35 @@
     <Filter Include="02.GameObjects\02.LandObject\Player\PartObject\Weapon\Revolver">
       <UniqueIdentifier>{77e6e7a8-7129-4dfe-8943-adf9bcd5e5bf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.LandObject\Player\PartObject\Weapon\Weapon_EX">
+    <Filter Include="02.GameObjects\02.LandObject\Player\PartObject\Weapon\Weapon">
       <UniqueIdentifier>{701efc3f-07a4-4a8d-b090-5a76d5aad607}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="94. StateMachine">
+      <UniqueIdentifier>{29393c3f-1693-4ca3-baf2-a92cdb918b27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="94. StateMachine\State">
+      <UniqueIdentifier>{88ddf3b0-30ad-4617-8ff3-111821407f71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="94. StateMachine\State\Player">
+      <UniqueIdentifier>{c96958d3-5b73-4600-8069-00e30ba8b938}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="94. StateMachine\State\Player\State_Jog">
+      <UniqueIdentifier>{8aa4ce01-40a9-43e4-8ae4-038733e235ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="94. StateMachine\State\Player\State_Idel">
+      <UniqueIdentifier>{31688db2-f7c8-4f86-9afd-e19da4c4f024}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="94. StateMachine\State\Player\State_Exhausted">
+      <UniqueIdentifier>{4af0577c-c4e2-479e-9a12-ce04d527541d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="94. StateMachine\State\Player\State_Run">
+      <UniqueIdentifier>{559a0c4a-f409-4ec0-b803-4b80a5e9547a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="94. StateMachine\State\Player\State_Equip">
+      <UniqueIdentifier>{62e7bce1-1f8e-460d-a4f9-21c0ec43d277}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="94. StateMachine\State\Player\State_UnEquip">
+      <UniqueIdentifier>{1a5c5f12-a26b-450e-9013-b28005c7dc95}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -205,13 +232,37 @@
       <Filter>02.GameObjects\02.LandObject</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Weapon.h">
-      <Filter>02.GameObjects\02.LandObject\Player\PartObject\Weapon\Weapon_EX</Filter>
+      <Filter>02.GameObjects\02.LandObject\Player\PartObject\Weapon\Weapon</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\ImGuiManager.h">
       <Filter>96.Imgui\Manager</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Revolver.h">
       <Filter>02.GameObjects\02.LandObject\Player\PartObject\Weapon\Revolver</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\StateMachine.h">
+      <Filter>94. StateMachine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State.h">
+      <Filter>94. StateMachine\State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Idle.h">
+      <Filter>94. StateMachine\State\Player\State_Idel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Jog.h">
+      <Filter>94. StateMachine\State\Player\State_Jog</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Exhausted.h">
+      <Filter>94. StateMachine\State\Player\State_Exhausted</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Run.h">
+      <Filter>94. StateMachine\State\Player\State_Run</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Equip.h">
+      <Filter>94. StateMachine\State\Player\State_Equip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_UnEquip.h">
+      <Filter>94. StateMachine\State\Player\State_UnEquip</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -312,13 +363,37 @@
       <Filter>02.GameObjects\02.LandObject</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Weapon.cpp">
-      <Filter>02.GameObjects\02.LandObject\Player\PartObject\Weapon\Weapon_EX</Filter>
+      <Filter>02.GameObjects\02.LandObject\Player\PartObject\Weapon\Weapon</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ImGuiManager.cpp">
       <Filter>96.Imgui\Manager</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Revolver.cpp">
       <Filter>02.GameObjects\02.LandObject\Player\PartObject\Weapon\Revolver</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\StateMachine.cpp">
+      <Filter>94. StateMachine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State.cpp">
+      <Filter>94. StateMachine\State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Idle.cpp">
+      <Filter>94. StateMachine\State\Player\State_Idel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Jog.cpp">
+      <Filter>94. StateMachine\State\Player\State_Jog</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Exhausted.cpp">
+      <Filter>94. StateMachine\State\Player\State_Exhausted</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Run.cpp">
+      <Filter>94. StateMachine\State\Player\State_Run</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Equip.cpp">
+      <Filter>94. StateMachine\State\Player\State_Equip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_UnEquip.cpp">
+      <Filter>94. StateMachine\State\Player\State_UnEquip</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

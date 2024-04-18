@@ -3,8 +3,8 @@
 
 #include "GameInstance.h"
 
-CWeapon::CWeapon(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CPartObject{ pDevice, pContext }
+CWeapon::CWeapon(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)	
+	: CPartObject{ pDevice, pContext }	
 {
 }
 
@@ -30,9 +30,8 @@ HRESULT CWeapon::Initialize(void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_pTransformCom->Scaling(0.1f, 0.1f, 0.1f);
-	m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(90.0f));
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.6f, 0.f, 0.f, 1.f));
+	//m_pTransformCom->Scaling(0.1f, 0.1f, 0.1f);
+	//m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(90.0f));
 
 	return S_OK;
 }
@@ -55,7 +54,7 @@ void CWeapon::Late_Tick(_float fTimeDelta)
 
 	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * SocketMatrix * XMLoadFloat4x4(m_pParentMatrix));
 
-
+	
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
 }
 
@@ -85,7 +84,7 @@ HRESULT CWeapon::Render()
 HRESULT CWeapon::Add_Components()
 {
 	/* For.Com_Model */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_ForkLift"),
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Stone"),
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 

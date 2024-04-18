@@ -3,7 +3,7 @@
 
 #include "GameInstance.h"
 #include "Terrain.h"
-#include"FreeCamera.h"
+#include "FreeCamera.h"
 #include "Monster.h"
 #include "EnvironmentObject.h"
 #include "Player.h"
@@ -104,72 +104,78 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CVIBuffer_Terrain::Create(m_pDevice, m_pContext, TEXT("../Bin/Asset2D/Textures/Terrain/Heightmap/heightmap_ravine.bmp")))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Fiona"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/bin/Prototype_Component_Model_Fiona.bin"))))
-		return E_FAIL;
-
+	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Fiona"),
+	//	CModel::Create(m_pDevice, m_pContext, "../Bin/bin/Prototype_Component_Model_Fiona.bin"))))
+	//	return E_FAIL;
+	//돌
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_CliffA"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/bin/Prototype_Component_Model_CliffA.bin"))))
 		return E_FAIL;
-
+	//토끼
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Rabbit"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/bin/Prototype_Component_Model_Rabbit.bin"))))
 		return E_FAIL;
-
-	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Player"),
-	//	CModel::Create(m_pDevice, m_pContext, "../Bin/bin/Prototype_Component_Model_Player.bin"))))
-	//	return E_FAIL;
-
+	//플레이어
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Player"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/bin/Prototype_Component_Model_Player.bin"))))
+		return E_FAIL;
+	//리볼버
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Revolver"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/bin/Prototype_Component_Model_Revolver.bin"))))
 		return E_FAIL;
-
+	//돌
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Stone"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/bin/Prototype_Component_Model_Stone.bin"))))
+		return E_FAIL;
+	
 	_matrix		PreTransformMatrix;
 	///* For.Prototype_Component_Model_Fiona */
 	//PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.0f));
 	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Fiona"),
 	//	CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Fiona/Fiona.fbx", PreTransformMatrix))))
 	//	return E_FAIL;
-	// /*CliffA*/
+	 /*ForkLift*/
+	PreTransformMatrix = XMMatrixScaling(0.1f, 0.1f, 0.1f) * XMMatrixRotationY(XMConvertToRadians(180.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_ForkLift"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM,CAnimation::OBJ_ENVIRONMENT, "../Bin/Resources/Models/ForkLift/ForkLift.fbx", PreTransformMatrix))))
+		return E_FAIL;
+	///*CliffA*/
 	//PreTransformMatrix = XMMatrixScaling(0.1f, 0.1f, 0.1f) * XMMatrixRotationY(XMConvertToRadians(180.f));
 	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_CliffA"),
-	//	CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Asset2D/EnvironmentObject/CliffA/Cliff_Climbable_5m_v3.fbx", PreTransformMatrix))))
+	//	CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, CAnimation::OBJ_ENVIRONMENT, "../Bin/Asset2D/EnvironmentObject/CliffA/Cliff_Climbable_5m_v3.fbx", PreTransformMatrix))))
 	//	return E_FAIL;
 	///*토끼*/
 	//PreTransformMatrix= XMMatrixRotationY(XMConvertToRadians(180.0f));
 	//	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Rabbit"),
-	//	CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Asset2D/Monster/Rabbit/WILDLIFE_Rabbit_fix.fbx", PreTransformMatrix))))
+	//	CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, CAnimation::OBJ_MONSTER, "../Bin/Asset2D/Monster/Rabbit/WILDLIFE_Rabbit_fix.fbx", PreTransformMatrix))))
 	//	return E_FAIL;
 
-	//TODO::04121940 지금 플레이어 무기 분할함 바이너리해서 읽기 하면 될듯
-		/*플레이어*/
-	PreTransformMatrix= XMMatrixRotationY(XMConvertToRadians(180.0f));
-		if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Player"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Asset2D/Player/NEW_FPHand_Rig_fix.fbx", PreTransformMatrix))))
-		return E_FAIL;
+	//	/*플레이어*/
+	//PreTransformMatrix= XMMatrixRotationY(XMConvertToRadians(180.0f));
+	//	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Player"),
+	//	CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, CAnimation::OBJ_PLAYER, "../Bin/Asset2D/Player/NEW_FPHand_Rig_fix.fbx", PreTransformMatrix))))
+	//	return E_FAIL;
 
 
 	//장비류
-	/* For.Prototype_Component_Model_ForkLift */
-
-	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_ForkLift"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/ForkLift/ForkLift.fbx", PreTransformMatrix))))
-		return E_FAIL;
 
 		//	/*라이플*/
 	//PreTransformMatrix=XMMatrixIdentity();	
 	//	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Rifle"),
 	//	CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Asset2D/Equipment/Rifle/rifle_rig.fbx", PreTransformMatrix))))
 	//	return E_FAIL;
-	// 
-			//	/*리볼버*/
+
+	//			/*리볼버*/
 	//PreTransformMatrix=XMMatrixIdentity();
 	//	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Revolver"),
-	//	CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Asset2D/Equipment/Revolver/FPH_Revolver_44Mag_Rig.fbx", PreTransformMatrix))))
+	//	CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, CAnimation::OBJ_WEAPON,"../Bin/Asset2D/Equipment/Revolver/FPH_Revolver_44Mag_Rig.fbx", PreTransformMatrix))))
 	//	return E_FAIL;
 
-
+	///*돌*/
+	//PreTransformMatrix =  XMMatrixIdentity();
+	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Stone"),
+	//	CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, CAnimation::OBJ_WEAPON, "../Bin/Asset2D/Equipment/Stone/GEAR_Rock.fbx", PreTransformMatrix))))
+	//	return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("셰이더를(을) 로딩 중 입니다."));
 	/* For.Prototype_Component_Shader_VtxNorTex */
@@ -191,6 +197,7 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxAnimMesh"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxAnimMesh.hlsl"), VTXANIMMESH::Elements, VTXANIMMESH::iNumElements))))
 		return E_FAIL;
+
 
 	lstrcpy(m_szLoadingText, TEXT("객체원형을 로딩 중 입니다."));
 

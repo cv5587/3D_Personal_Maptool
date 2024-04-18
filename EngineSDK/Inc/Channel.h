@@ -11,7 +11,7 @@ public:
     HRESULT Initialize(const aiNodeAnim* pAIChannel, const vector<class CBone*>& Bones);
     HRESULT Initialize(ifstream* fin);
     void Update_TransformationMatrix(_double CurrentPosition, const vector<class CBone*>& Bones, _uint* pCurrentKeyFrameIndex);
-    void Shift_Animation_TransformationMatrix(_double ShiftCurrentPosition, const vector<class CBone*>& Bones, _bool& bFirst);
+    void Shift_Animation_TransformationMatrix(_double ShiftCurrentPosition, const vector<class CBone*>& Bones, _bool& bFirst,_double& ShiftDuration);
 
     HRESULT Save_Channel( ofstream* fout);
 private:

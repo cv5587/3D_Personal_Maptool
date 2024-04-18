@@ -33,7 +33,7 @@ public:
 protected:
 	CTransform* m_pTerrainTransform = { nullptr };
 	CVIBuffer* m_pTerrainVIBuffer = { nullptr };
-
+	
 protected:
 	/* 태우고자하는 객체의 월드위치. * 지형월드역*/
 	/* 지형버퍼의 정점들의 로컬위치. */

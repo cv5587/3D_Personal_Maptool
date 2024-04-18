@@ -5,6 +5,7 @@
 #include "PipeLine.h"
 
 
+
 BEGIN(Engine)
 
 class ENGINE_DLL CGameInstance final : public CBase
@@ -34,6 +35,7 @@ public: /* For.Graphic_Device */
 
 public: /* For.Input_Device */
 	_byte	Get_DIKeyState(_ubyte byKeyID);
+	_byte		Get_DIKeyState_Once(_ubyte byKeyID);
 	_byte	Get_DIMouseState(MOUSEKEYSTATE eMouse);
 	_long	Get_DIMouseMove(MOUSEMOVESTATE eMouseState);
 
@@ -84,6 +86,8 @@ public:/*For.Calculator*/
 	_vector Picking_HitScreen();
 	_int Picking_IDScreen();
 	_bool Compare_Float4(_float4 f1, _float4 f2);
+
+public:/*For.StatePattern*/
 
 private:
 	class CGraphic_Device*				m_pGraphic_Device = { nullptr };

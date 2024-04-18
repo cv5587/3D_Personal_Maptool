@@ -9,7 +9,7 @@ class ENGINE_DLL CModel final:
 {
 public :
 	enum MODELTYPE{TYPE_NONANIM,TYPE_ANIM,TYPE_END};
-	
+
 	typedef struct tagAnimationDesc
 	{
 		tagAnimationDesc(_uint iAnimIndex, _bool isLoop)
@@ -34,7 +34,7 @@ public:
 	const _float4x4* Get_BoneCombinedTransformationMatrix(const _char* pBoneName) const;
 
 public:
-	virtual HRESULT	Initialize_Prototype(MODELTYPE eModelType, const _char* pModelFilePath, _fmatrix PreTransformMatrix);
+	virtual HRESULT	Initialize_Prototype(MODELTYPE eModelType, CAnimation::ANIMTYPE eAnimType, const _char* pModelFilePath, _fmatrix PreTransformMatrix);
 	virtual HRESULT	Initialize(void* pArg) override;
 	HRESULT Render(_uint iMeshIndex);
 
@@ -85,11 +85,11 @@ private:
 	HRESULT Ready_Meshes();
 	HRESULT Ready_Materials(const _char* pModelFilePath);
 	HRESULT Ready_Bones(const aiNode* pAINode, _int iParentIndex);
-	HRESULT Ready_Animations();
+	HRESULT Ready_Animations(CAnimation::ANIMTYPE eAnimType);
 
 
 public:
-	static CModel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MODELTYPE eModelType, const _char* pModelFilePath, _fmatrix PreTransformMatrix);
+	static CModel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MODELTYPE eModelType, CAnimation::ANIMTYPE eAnimType, const _char* pModelFilePath, _fmatrix PreTransformMatrix);
 	static CModel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,  char* BinaryFilePath);
 	virtual CComponent* Clone(void* pArg) override;
 	virtual void Free() override;

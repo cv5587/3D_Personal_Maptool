@@ -3,6 +3,7 @@
 
 #include "GameInstance.h"
 #include "Player.h"
+#include "StateMachine.h"
 
 CBody_Player::CBody_Player(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CPartObject{ pDevice, pContext }
@@ -27,9 +28,7 @@ HRESULT CBody_Player::Initialize(void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_pModelCom->Set_FirstAnimationIndex(CModel::ANIMATION_DESC(166, true));
-
-
+	//m_pModelCom->Set_FirstAnimationIndex(CModel::ANIMATION_DESC(332, true));
 
 	return S_OK;
 }
@@ -40,28 +39,25 @@ void CBody_Player::Priority_Tick(_float fTimeDelta)
 
 void CBody_Player::Tick(_float fTimeDelta)
 {
-	CModel::ANIMATION_DESC		AnimDesc{ 0, true };
 
-	if (*m_pState & CPlayer::iState[CPlayer::STATE_IDLE])
-	{
-		AnimDesc.isLoop = true;
-		AnimDesc.iAnimIndex = 166;
-	}
-	else if (*m_pState & CPlayer::iState[CPlayer::STATE_WALK])
-	{
-		AnimDesc.isLoop = true;
-		AnimDesc.iAnimIndex = 165;
-	}
-	//TODO::040920 애니메이션 번호 체크해서 돌려보기 ->이후 보간 ㄱ
-	m_pModelCom->Set_AnimationIndex(AnimDesc);
+	Set_AnimationState();
 
 	m_pModelCom->Play_Animation(fTimeDelta);
 
-	//m_pModelCom->Get_AnimFinished();
+	if(*m_pAnimFinished==false)
+		if (m_pModelCom->Get_AnimFinished())
+			*m_pAnimFinished = true;
+
+	
+	
+
 }
 
 void CBody_Player::Late_Tick(_float fTimeDelta)
 {
+
+	(*m_pAnimFinished) = m_pModelCom->Get_AnimFinished();
+
 	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(m_pParentMatrix));
 
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
@@ -90,6 +86,118 @@ HRESULT CBody_Player::Render()
 
 
 	return S_OK;
+}
+
+void CBody_Player::Set_AnimationState()
+{
+	CModel::ANIMATION_DESC		AnimDesc{ 0, true };
+	switch (*m_pEquip)
+	{
+	case EQUIP_NONE:
+		switch (*m_pState)
+		{
+		case Client::PLAYER_IDLE:
+			AnimDesc.iAnimIndex = 115;
+			AnimDesc.isLoop = true;
+			break;
+		case Client::PLAYER_JOG:
+			AnimDesc.iAnimIndex = 374;
+			AnimDesc.isLoop = true;
+			break;
+		case Client::PLAYER_RUN:
+			AnimDesc.iAnimIndex = 375;
+			AnimDesc.isLoop = true;
+			break;
+		}
+		break;
+	case EQUIP_STONE:
+		switch (*m_pState)
+		{
+		case Client::PLAYER_IDLE:
+			AnimDesc.iAnimIndex = 332;
+			AnimDesc.isLoop = true;
+			break;
+		case Client::PLAYER_IDLE_EXHAUSTED:
+			AnimDesc.iAnimIndex = 330;
+			AnimDesc.isLoop = true;
+			break;
+		case Client::PLAYER_JOG:
+			AnimDesc.iAnimIndex = 333;
+			AnimDesc.isLoop = true;
+			break;
+		case Client::PLAYER_RUN:
+			AnimDesc.iAnimIndex = 336;
+			AnimDesc.isLoop = true;
+			break;
+		case Client::PLAYER_WALK_S:
+			AnimDesc.iAnimIndex = 341;
+			AnimDesc.isLoop = false;
+			break;
+		case Client::PLAYER_WALK_E:
+			AnimDesc.iAnimIndex = 344;
+			AnimDesc.isLoop = false;
+			break;
+		case Client::PLAYER_WALK_FB:
+			AnimDesc.iAnimIndex = 339;
+			AnimDesc.isLoop = true;
+			break;
+		case Client::PLAYER_SLOW_WALK_FB:
+			AnimDesc.iAnimIndex = 340;
+			AnimDesc.isLoop = true;
+			break;
+		case Client::PLAYER_WALK_L:
+			AnimDesc.iAnimIndex = 342;
+			AnimDesc.isLoop = true;
+			break;
+		case Client::PLAYER_WALK_R:
+			AnimDesc.iAnimIndex = 343;
+			AnimDesc.isLoop = true;
+			break;
+		case Client::PLAYER_WALK_LE:
+			AnimDesc.iAnimIndex = 345;
+			AnimDesc.isLoop = false;
+			break;
+		case Client::PLAYER_WALK_RE:
+			AnimDesc.iAnimIndex = 346;
+			AnimDesc.isLoop = false;
+			break;
+		case Client::PLAYER_AIM_S:
+			AnimDesc.iAnimIndex = 331;
+			AnimDesc.isLoop = false;
+			break;
+		case Client::PLAYER_AIM:
+			AnimDesc.iAnimIndex = 328;
+			AnimDesc.isLoop = true;
+			break;
+		case Client::PLAYER_AIM_E:
+			AnimDesc.iAnimIndex = 327;
+			AnimDesc.isLoop = false;
+			break;
+		case Client::PLAYER_THROW:
+			AnimDesc.iAnimIndex = 337;
+			AnimDesc.isLoop = false;
+			break;
+		case Client::PLAYER_EQUIP:
+			AnimDesc.iAnimIndex = 329;
+			AnimDesc.isLoop = false;
+			break;
+		case Client::PLAYER_UNEQUIP:
+			AnimDesc.iAnimIndex = 338;
+			AnimDesc.isLoop = false;
+			break;
+		default:
+			break;
+		}
+		break;
+	case EQUIP_PIPE:
+		break;
+	default:
+		break;
+	}
+	
+	*m_pAnimFinished = AnimDesc.isLoop;
+
+	m_pModelCom->Set_AnimationIndex(AnimDesc);
 }
 
 HRESULT CBody_Player::Add_Components()
@@ -122,6 +230,7 @@ HRESULT CBody_Player::Bind_ShaderResources()
 
 	return S_OK;
 }
+
 
 CBody_Player* CBody_Player::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {

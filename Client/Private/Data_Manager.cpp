@@ -22,6 +22,7 @@ HRESULT CData_Manager::Load_Data(_uint iLevelIndex)
 
 	char FileRoute[MAX_PATH] = "../Bin/bin/Save_Data/";
 	char FilePath[MAX_PATH] = "";
+	char FileDat[MAX_PATH] = ".dat";
 
 	switch (iLevelIndex)
 	{
@@ -42,6 +43,7 @@ HRESULT CData_Manager::Load_Data(_uint iLevelIndex)
 	}
 
 	strcat_s(FileRoute, FilePath);
+	strcat_s(FileRoute, FileDat);
 
 
 	
@@ -53,22 +55,22 @@ HRESULT CData_Manager::Load_Data(_uint iLevelIndex)
 		_uint iReadLevel=0;
 		fin.read((char*)&iReadLevel, sizeof(_uint));
 
-		if(iReadLevel!= m_CurrentLevel)
-		{
-			//짜긴했는데 확인 안해봄 나중에 꼭 터질예정이니 잘 생각해서 다시 짜셈
-			
-			m_CurrentLevel = iReadLevel;
+		//if(iReadLevel!= m_CurrentLevel)
+		//{
+		//	
+		//	m_CurrentLevel = iReadLevel;
 
-			m_pGameInstance->Clear_Resources(iReadLevel);
+		//	if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, (LEVEL)m_CurrentLevel))))
+		//		return E_FAIL;
+		//}
+		//else
+		//{
+		//	m_pGameInstance->Clear_CloneData(iReadLevel);
+		//	m_pTerrainMgr->Terrain_Release();
+		//}
 
-			if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, (LEVEL)m_CurrentLevel))))
-				return E_FAIL;
-		}
-		else
-		{
-			m_pGameInstance->Clear_CloneData(iReadLevel);
-			m_pTerrainMgr->Terrain_Release();
-		}
+		m_pGameInstance->Clear_CloneData(iReadLevel);
+		m_pTerrainMgr->Terrain_Release();
 
 		_tchar Layer[MAX_PATH] = TEXT("");
 		_tchar szProtoTag[MAX_PATH] = TEXT("");

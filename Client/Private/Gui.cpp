@@ -96,7 +96,7 @@ HRESULT CGui::Update_UI(_float fTimeDelta)
 	{
 
 		{
-			const char* objects[] = { "CliffA","Charcoal","Stone"};
+			const char* objects[] = { "CliffA","Charcoal","Stone","RockSouth" };
 			static int object_current = 0;
 			ImGui::ListBox("List", &object_current, objects, IM_ARRAYSIZE(objects));
 			

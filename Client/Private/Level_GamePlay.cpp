@@ -23,8 +23,8 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(Ready_Layer_Environment(TEXT("Layer_EnvironmentObject"))))
 		return E_FAIL;
 
-	if (FAILED(Ready_LandObjects()))
-		return E_FAIL;
+	//if (FAILED(Ready_LandObjects()))
+	//	return E_FAIL;
 
 	return S_OK;
 }
@@ -58,7 +58,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const wstring& strLayerTag)
 
 HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const wstring& strLayerTag)
 {
-	_int sTerrainUV[2] = { 51,53 };
+	_int sTerrainUV[2] = { 1025	,	1025};
 	CImGuiManager::GetInstance()->Make_Terrain(sTerrainUV);
 
 	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Terrain"))))
@@ -83,11 +83,11 @@ HRESULT CLevel_GamePlay::Ready_LandObjects()
 	LandObjDesc.pTerrainVIBuffer = dynamic_cast<CVIBuffer*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), TEXT("Com_VIBuffer")));
 
 
-	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"), &LandObjDesc)))
-		return E_FAIL;
+//	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"), &LandObjDesc)))
+//		return E_FAIL;
 
-	if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"), &LandObjDesc)))
-		return E_FAIL;
+//	if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"), &LandObjDesc)))
+//		return E_FAIL;
 
 	return S_OK;
 }

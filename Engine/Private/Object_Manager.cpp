@@ -224,6 +224,7 @@ HRESULT CObject_Manager::Save_Level(_uint iLevelIndex)
 {
 	char FileRoute[MAX_PATH] = "../Bin/bin/Save_Data/";
 	char FilePath[MAX_PATH] = "";
+	char FileDat[MAX_PATH] = ".dat";
 
 	switch (iLevelIndex)
 	{
@@ -245,6 +246,7 @@ HRESULT CObject_Manager::Save_Level(_uint iLevelIndex)
 	}
 
 	strcat_s(FileRoute, FilePath);
+	strcat_s(FileRoute, FileDat);
 
 	_tchar Layer[MAX_PATH] = TEXT("");
 

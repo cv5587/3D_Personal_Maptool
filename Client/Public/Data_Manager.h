@@ -16,7 +16,7 @@ private:
 	ID3D11DeviceContext* m_pContext = { nullptr };
 	class CGameInstance* m_pGameInstance = { nullptr };
 	class CTerrainManager* m_pTerrainMgr = { nullptr };
-	_uint m_CurrentLevel = { 3 };
+	_uint m_CurrentLevel = { (_uint)LEVEL_END };
 public:
 	HRESULT Load_Data(_uint iLevelIndex);
 public:

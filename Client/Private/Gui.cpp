@@ -7,6 +7,8 @@
 #include "PipeLine.h"
 #include "Data_Manager.h"	
 #include "LandObject.h"
+#include "Component_Manager.h"
+#include "LandObject.h"
 
 static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::TRANSLATE);
 bool useWindow = false;
@@ -29,8 +31,15 @@ CGui::CGui(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 HRESULT CGui::Initialize()
 {
-	m_pTerrainManager = CTerrainManager::Create();
+ 	m_pTerrainManager = CTerrainManager::Create();
 	m_pData_Manager = CData_Manager::Create(m_pDevice,m_pContext,m_pTerrainManager);
+
+	//if (FAILED(Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Navigation"),
+	//	TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom))))
+	//	return E_FAIL;
+
+
+	ZeroMemory(m_Points, sizeof(_float3) * 3);
 	return S_OK;
 }
 
@@ -96,7 +105,10 @@ HRESULT CGui::Update_UI(_float fTimeDelta)
 	{
 
 		{
-			const char* objects[] = { "CliffA","Charcoal","Stone","RockSouth" };
+			const char* objects[] = { "CliffA","Charcoal","Stone","RockBigA" ,"RockBigB" ,"RockBigC" ,"RockBigD" 
+				,"PinTreeLogA","PinTreeLogB" ,"PinTreeLogC" ,"PinTreeLogD" ,"PinTreeLogE"
+			,"PinTreeSingleA","PinTreeSingleB" ,"PinTreeSingleC" ,"PinTreeSingleD" ,"PinTreeSingleE" ,"PinTreeSingleF" ,"PinTreeSingleG" ,"PinTreeSingleH" ,"PinTreeSingleI" ,"PinTreeSingleJ","PinTreeSingleK","PinTreeSingleL","PinTreeSingleM","PinTreeSingleN"
+			,"PinTreeRootA"};
 			static int object_current = 0;
 			ImGui::ListBox("List", &object_current, objects, IM_ARRAYSIZE(objects));
 			
@@ -162,7 +174,7 @@ HRESULT CGui::Update_UI(_float fTimeDelta)
 
 				char szMonstername[MAX_PATH] = "Prototype_GameObject_";
 				strcat_s(szMonstername, szMoster);
-				wcsset(m_szRealFullPath, L'\0');
+				ZeroMemory(m_szRealFullPath, sizeof(_tchar) * MAX_PATH);
 				MultiByteToWideChar(CP_ACP, 0, szMonstername, strlen(szMonstername), m_szRealFullPath, MAX_PATH);
 
 				char szComponentname[MAX_PATH] = "Prototype_Component_Model_";
@@ -203,6 +215,109 @@ HRESULT CGui::Update_UI(_float fTimeDelta)
 	}
 	ImGui::End();
 
+
+
+	ImGui::Begin("Navigation");
+	if (ImGui::TreeNode("Navigation"))
+	{
+		if (nullptr == m_pNavigationCom)
+			m_pNavigationCom = dynamic_cast<CNavigation*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), TEXT("Com_Navigation")));
+
+		if (ImGui::Button("Nave_Cellmode"))
+		{
+			m_CellMode = !m_CellMode;
+
+		}
+		
+		ImGui::InputFloat("SnapReach", &m_SnapReach);
+		ImGui::SliderFloat("SnapReach", &m_SnapReach, 0, 2);
+
+		if (m_CellMode)
+			ImGui::SeparatorText("Make Cell Mode:");
+		else
+			ImGui::SeparatorText(" ");
+
+		ImGui::NewLine();
+		if (ImGui::Button("Undo_Cell"))
+		{
+			m_pNavigationCom->Undo_Cell();
+		}
+		ImGui::InputInt("Delete_Cell_Index", &m_CellIndex);
+		if (ImGui::Button("Delete_Index_Cell"))
+		{
+			m_pNavigationCom->Delete_Index(m_CellIndex);
+		}
+		ImGui::NewLine();
+		if (ImGui::Button("Save_Data"))
+		{
+			m_pNavigationCom->Save_Data();
+		}
+		if (ImGui::Button("Load_Data"))
+		{
+			m_pNavigationCom->Load_Data();
+		}
+		if (m_CellMode)
+		{
+
+
+			if (!io.WantCaptureMouse)
+			{
+				if (m_pGameInstance->Get_DIKeyState(DIK_LCONTROL) && m_pGameInstance->Get_DIMouseState_Once(DIM_LB) )
+				{
+					CLandObject::LANDOBJ_DESC		LandObjDesc{};
+
+					LandObjDesc.pTerrainTransform = dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), TEXT("Com_Transform")));
+					LandObjDesc.pTerrainVIBuffer = dynamic_cast<CVIBuffer*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), TEXT("Com_VIBuffer")));
+
+					LandObjDesc.ModelTag = TEXT("Prototype_Component_Model_Player");
+					LandObjDesc.ProtoTypeTag = TEXT("Prototype_GameObject_Player");
+
+					_vector Pick_Point = Picking_HitScreen();
+
+					_matrix PreMatrix = XMMatrixIdentity()*XMMatrixTranslation(Pick_Point.m128_f32[0], 0.f, Pick_Point.m128_f32[2]);
+					XMStoreFloat4x4(&LandObjDesc.vPrePosition, PreMatrix);
+
+					if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Prototype_GameObject_Player"), &LandObjDesc)))
+						return E_FAIL;
+
+				}
+				 if (m_pGameInstance->Get_DIMouseState_Once(DIM_LB))
+				{
+					_vector Pick_Point = Picking_HitScreen();//찍은 위치가 셀전체 순회 하면서 비슷한거에 붙게
+					if (!XMVector3Equal(Pick_Point, XMVectorSet(-1.f, -1.f, -1.f, -1.f)))
+					{
+						for (size_t i = 0; i < 3; i++)
+						{
+							if (XMVector3Equal(XMLoadFloat3(&m_Points[i]), XMVectorSet(0.f, 0.f, 0.f, 0.f)))
+							{
+								m_pNavigationCom->Snap_Point(Pick_Point, &m_Points[i],m_SnapReach);
+								break;
+							}
+							if (i == 2)
+							{
+								m_pNavigationCom->Make_Cell(m_Points);
+								ZeroMemory(m_Points, sizeof(_float3) * 3);
+							}
+						}
+					}
+				}
+
+
+			}
+
+		}
+
+		ImGui::TreePop();
+	}
+		
+
+
+
+	ImGui::End();
+
+
+
+
 	ImGui::Begin("Control_GameData");
 
 	if (ImGui::TreeNode("Level_Choice"))
@@ -218,6 +333,7 @@ HRESULT CGui::Update_UI(_float fTimeDelta)
 		if (ImGui::Button("Load_Data"))
 		{
 			//로드도 클라에서 하자
+			m_pNavigationCom = nullptr;
 			m_pData_Manager->Load_Data((_uint)Level_current);
 		}
 		ImGui::TreePop();	
@@ -274,7 +390,7 @@ HRESULT CGui::Update_UI(_float fTimeDelta)
 			}
 	}
 	
-	if ((m_pGameInstance->Get_DIMouseState(DIM_LB) & 0x80) && (m_pGameInstance->Get_DIKeyState(DIK_LALT) & 0x80))
+	if ( (m_pGameInstance->Get_DIKeyState(DIK_LALT))&&(m_pGameInstance->Get_DIMouseState(DIM_LB)) )
 	{
 		m_pPickObject=m_pGameInstance->FindID_CloneObject(LEVEL_GAMEPLAY,  m_pGameInstance->Picking_IDScreen());
 
@@ -429,6 +545,21 @@ _matrix CGui::CameraStateChange(_fmatrix CamWorld, _cmatrix ObjWorld,_float fTim
 	CamW *= ObPosition;
 
 	return XMMatrixInverse(nullptr, CamW);
+}
+
+HRESULT CGui::Add_Component(_uint iPrototypeLevelIndex, const wstring& strPrototypeTag, const wstring& strComponentTag, CComponent** ppOut, void* pArg)
+{
+
+	CComponent* pComponent = m_pGameInstance->Clone_Component(iPrototypeLevelIndex, strPrototypeTag, pArg);
+	if (nullptr == pComponent)
+		return E_FAIL;
+
+
+	*ppOut = pComponent;
+
+	Safe_AddRef(pComponent);
+
+	return S_OK;
 }
 
 void CGui::Make_Terrain(void* pArg)

@@ -66,7 +66,11 @@ private:
 	PLAYERCONDITION						m_eCondition = { PLAYERCONDITION::CON_NORMAL };
 	class CStateMachine* m_pStateMachine = { nullptr };
 	_bool m_bAnimFinished = { true };
-	
+
+	class CNavigation* m_pNavigationCom = { nullptr };
+
+
+	_bool m_KeyInput = {true};
 public:
 	static CPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

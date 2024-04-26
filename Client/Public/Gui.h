@@ -1,6 +1,10 @@
 #pragma once
 #include "Client_Defines.h"
 #include "Base.h"
+BEGIN(Engine)
+class CNavigation;	
+END
+
 
 BEGIN(Client)
 class CGui final : public CBase
@@ -32,16 +36,22 @@ private:
 	wstring		m_ComponentTag;
 	class CGameObject* m_pPickObject = { nullptr };
 
+	class CNavigation* m_pNavigationCom = nullptr;
 
 private:
 	_int m_iObjectID = { 0 };
-
+	_bool m_CellMode = { false };
+	_float3 m_Points[3] = {};
+	_float m_SnapReach = { 1.f };
+	_int		m_CellIndex = { 0 };
 private:
 	_vector Picking_HitScreen();
 	void EditTransform(_float* cameraView, _float* cameraProjection, _float* matrix);
 	void TestGuizmo(_float fTimeDelta);
 	_matrix CameraStateChange(_fmatrix CamWorld,_cmatrix ObjWorld, _float fTimeDelta);
-
+	
+	HRESULT Add_Component(_uint iPrototypeLevelIndex, const wstring& strPrototypeTag, const wstring& strComponentTag,
+		class CComponent** ppOut, void* pArg = nullptr);
 public:
 	void Make_Terrain(void* pArg);
 public:

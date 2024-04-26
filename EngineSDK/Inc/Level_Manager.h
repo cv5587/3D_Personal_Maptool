@@ -19,7 +19,7 @@ private:
 public:
 	HRESULT Initialize();
 	void Tick(_float fTimeDelta);
-
+	void Render();
 public:
 	/* 새로운 레벨로 교체한다. */
 	HRESULT Open_Level(_uint iLevelIndex, class CLevel* pNewLevel);

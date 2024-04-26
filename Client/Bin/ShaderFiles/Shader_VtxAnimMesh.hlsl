@@ -53,7 +53,7 @@ VS_OUT VS_MAIN(VS_IN In)
 		g_BoneMatrices[In.vBlendIndices.y] * In.vBlendWeights.y +
 		g_BoneMatrices[In.vBlendIndices.z] * In.vBlendWeights.z +
 		g_BoneMatrices[In.vBlendIndices.w] * fWeightW;
-
+    
     vector vPosition = mul(float4(In.vPosition, 1.f), BoneMatrix);
 
     matrix matWV, matWVP;
@@ -92,7 +92,9 @@ PS_OUT PS_MAIN(PS_IN In)
 
     if (Out.vColor.a < 0.1f)
         discard;
+    
     Out.iID = g_ID;
+    
     return Out;
 }
 

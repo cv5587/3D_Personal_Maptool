@@ -40,7 +40,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const wstring& strLayerTag)
 {
 	CFreeCamera::FREE_CAMERA_DESC		CameraDesc{};
 
-	CameraDesc.fSensor = 0.05f;
+	CameraDesc.fSensor = 0.008f;
 	CameraDesc.vEye = _float4(0.0f, 30.f, -25.f, 1.f);
 	CameraDesc.vAt = _float4(0.0f, 0.f, 0.f, 1.f);
 	CameraDesc.fFovy = XMConvertToRadians(60.0f);
@@ -61,16 +61,13 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const wstring& strLayerTag)
 	_int sTerrainUV[2] = { 1025	,	1025};
 	CImGuiManager::GetInstance()->Make_Terrain(sTerrainUV);
 
-	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Terrain"))))
-	//	return E_FAIL;
 	
 	return S_OK;
 }
 
 HRESULT CLevel_GamePlay::Ready_Layer_Environment(const wstring& strLayerTag)
 {
-	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_CliffA"))))
-	//	return E_FAIL;
+
 
 	return S_OK;
 }
@@ -83,30 +80,24 @@ HRESULT CLevel_GamePlay::Ready_LandObjects()
 	LandObjDesc.pTerrainVIBuffer = dynamic_cast<CVIBuffer*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), TEXT("Com_VIBuffer")));
 
 
-//	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"), &LandObjDesc)))
-//		return E_FAIL;
+	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"), &LandObjDesc)))
+		return E_FAIL;
 
-//	if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"), &LandObjDesc)))
-//		return E_FAIL;
+	if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"), &LandObjDesc)))
+		return E_FAIL;
 
 	return S_OK;
 }
 
 HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring& strLayerTag, CLandObject::LANDOBJ_DESC* pLandObjDesc)
 {
-	pLandObjDesc->ModelTag = TEXT("Prototype_Component_Model_Rabbit");
-	pLandObjDesc->ProtoTypeTag = TEXT("Prototype_GameObject_Monster");
-	XMStoreFloat4x4(&pLandObjDesc->vPrePosition,XMMatrixIdentity());
+	//pLandObjDesc->ModelTag = TEXT("Prototype_Component_Model_Rabbit");
+	//pLandObjDesc->ProtoTypeTag = TEXT("Prototype_GameObject_Monster");
+	//XMStoreFloat4x4(&pLandObjDesc->vPrePosition,XMMatrixIdentity());
 
-		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Monster"), pLandObjDesc)))
-			return E_FAIL;
+	//	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Monster"), pLandObjDesc)))
+	//		return E_FAIL;
 
-		pLandObjDesc->ModelTag = TEXT("Prototype_Component_Model_Revolver");
-		pLandObjDesc->ProtoTypeTag = TEXT("Prototype_GameObject_Monster");
-		XMStoreFloat4x4(&pLandObjDesc->vPrePosition, XMMatrixIdentity());
-
-		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Monster"), pLandObjDesc)))
-			return E_FAIL;
 	return S_OK;
 }
 
@@ -115,7 +106,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Player(const wstring& strLayerTag, CLandObj
 	pLandObjDesc->ModelTag = TEXT("Prototype_Component_Model_Player");
 	pLandObjDesc->ProtoTypeTag = TEXT("Prototype_GameObject_Player");
 	
-	_matrix PreMatrix = XMMatrixIdentity() * XMMatrixTranslation(20.f, 0.f, 20.f);	
+	_matrix PreMatrix = XMMatrixIdentity();
 	XMStoreFloat4x4(&pLandObjDesc->vPrePosition, PreMatrix);
 
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Player"), pLandObjDesc)))

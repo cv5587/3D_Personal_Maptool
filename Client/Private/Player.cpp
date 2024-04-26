@@ -54,6 +54,9 @@ void CPlayer::Priority_Tick(_float fTimeDelta)
 {
 	for (auto& pPartObject : m_PartObjects)
 		pPartObject->Priority_Tick(fTimeDelta);
+
+	m_pNavigationCom->Set_Cells(dynamic_cast<CNavigation*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), TEXT("Com_Navigation")))->Get_Cells());
+
 }
 
 void CPlayer::Tick(_float fTimeDelta)
@@ -72,15 +75,19 @@ void CPlayer::Tick(_float fTimeDelta)
 		Set_State(PLAYERSTATE::PLAYER_UNEQUIP);
 	}
 
-	m_pStateMachine->Update(this, fTimeDelta);
-	
+	if(m_pGameInstance->Get_DIKeyState_Once(DIK_E))
+	{
+		m_KeyInput = !m_KeyInput;
+	}
+
+	if(!m_KeyInput)
+		m_pStateMachine->Update(this, fTimeDelta);
 
 	if (FAILED(__super::SetUp_OnTerrain(m_pTransformCom)))
 		return;
 
 	for (auto& pPartObject : m_PartObjects)
 		pPartObject->Tick(fTimeDelta);
-
 
 }
 
@@ -95,11 +102,25 @@ void CPlayer::Late_Tick(_float fTimeDelta)
 HRESULT CPlayer::Render()
 {
 
+#ifdef _DEBUG
+	m_pNavigationCom->Render();
+#endif
+
 	return S_OK;
 }
 
 HRESULT CPlayer::Add_Components()
 {
+	/* For.Com_Navigation */
+	CNavigation::NAVIGATION_DESC	NavigationDesc{};
+
+	NavigationDesc.iCurrentCellIndex = 0;
+
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Navigation"),
+		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom), &NavigationDesc)))
+		return E_FAIL;
+
+	
 
 	return S_OK;
 }
@@ -149,42 +170,42 @@ HRESULT CPlayer::Add_PartObjects()
 
 void CPlayer::Go_Straight(_float fTimeDelta)
 {
-	m_pTransformCom->Go_Straight(fTimeDelta);
+	m_pTransformCom->Go_Straight(fTimeDelta,m_pNavigationCom);
 }
 
 void CPlayer::Go_Backward(_float fTimeDelta)
 {
-	m_pTransformCom->Go_Backward(fTimeDelta);
+	m_pTransformCom->Go_Backward(fTimeDelta, m_pNavigationCom);
 }
 
 void CPlayer::Go_Left(_float fTimeDelta)
 {
-	m_pTransformCom->Go_Left(fTimeDelta);
+	m_pTransformCom->Go_Left(fTimeDelta, m_pNavigationCom);
 }
 
 void CPlayer::Go_Right(_float fTimeDelta)
 {
-	m_pTransformCom->Go_Right(fTimeDelta);
+	m_pTransformCom->Go_Right(fTimeDelta, m_pNavigationCom);
 }
 
 void CPlayer::Go_LeftStraight(_float fTimeDelta)
 {
-	m_pTransformCom->Go_LeftStraight(fTimeDelta);
+	m_pTransformCom->Go_LeftStraight(fTimeDelta, m_pNavigationCom);
 }
 
 void CPlayer::Go_RightStraight(_float fTimeDelta)
 {
-	m_pTransformCom->Go_RightStraight(fTimeDelta);
+	m_pTransformCom->Go_RightStraight(fTimeDelta, m_pNavigationCom);
 }
 
 void CPlayer::Go_LeftBackward(_float fTimeDelta)
 {
-	m_pTransformCom->Go_LeftBackward(fTimeDelta);
+	m_pTransformCom->Go_LeftBackward(fTimeDelta, m_pNavigationCom);
 }
 
 void CPlayer::Go_RightBackward(_float fTimeDelta)
 {
-	m_pTransformCom->Go_RightBackward(fTimeDelta);
+	m_pTransformCom->Go_RightBackward(fTimeDelta, m_pNavigationCom);
 }
 
 void CPlayer::Set_DeltaValue(_float _fSpeedPerSec, _float _fRotationPerSec)
@@ -228,11 +249,15 @@ void CPlayer::Free()
 {
 	__super::Free();
 
+	Safe_Release(m_pNavigationCom);
+
 	for (auto& pPartObject : m_PartObjects)
 		Safe_Release(pPartObject);
 
 	m_PartObjects.clear();
+
 	Safe_Release(m_pStateMachine);
+
 	CStateMachine::DestroyInstance();
 
 }

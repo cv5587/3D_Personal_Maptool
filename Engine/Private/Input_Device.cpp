@@ -17,6 +17,24 @@ _byte CInput_Device::Get_DIKeyState_Once(_ubyte byKeyID)
         key_down = false; 
 		return 0x00;
     } 
+
+	return 0x00;
+}
+
+_byte CInput_Device::Get_DIMouseState_Once(MOUSEKEYSTATE eMouse)
+{
+	if (!mouse_down && KEYDOWN(m_tMouseState.rgbButtons, eMouse))
+	{
+		mouse_down = true;
+		return Get_DIMouseState(eMouse);
+	}
+	else if (mouse_down && !KEYDOWN(m_tMouseState.rgbButtons, eMouse))
+	{
+		mouse_down = false;
+		return 0x00;
+	}
+
+	return 0x00;
 }
 
 HRESULT CInput_Device::Ready_InputDev(HINSTANCE hInst, HWND hWnd)

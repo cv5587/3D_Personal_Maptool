@@ -18,6 +18,10 @@ void CLevel_Manager::Tick(_float fTimeDelta)
 	m_pCurrentLevel->Tick(fTimeDelta);
 }
 
+void CLevel_Manager::Render()
+{
+}
+
 HRESULT CLevel_Manager::Open_Level(_uint iLevelIndex, CLevel * pNewLevel)
 {
 	if (nullptr == pNewLevel)

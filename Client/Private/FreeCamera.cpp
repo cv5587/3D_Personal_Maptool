@@ -42,13 +42,13 @@ void CFreeCamera::Tick(_float fTimeDelta)
 
 	if (!m_bTab)
 	{
-	if (m_pGameInstance->Get_DIKeyState(DIK_LEFT) )
+	if (m_pGameInstance->Get_DIKeyState(DIK_A) )
 		m_pTransformCom->Go_Left(fTimeDelta);
-	if (m_pGameInstance->Get_DIKeyState(DIK_RIGHT) )
+	if (m_pGameInstance->Get_DIKeyState(DIK_D) )
 		m_pTransformCom->Go_Right(fTimeDelta);
-	if (m_pGameInstance->Get_DIKeyState(DIK_UP) )
+	if (m_pGameInstance->Get_DIKeyState(DIK_W) )
 		m_pTransformCom->Go_Straight(fTimeDelta);
-	if (m_pGameInstance->Get_DIKeyState(DIK_DOWN) )
+	if (m_pGameInstance->Get_DIKeyState(DIK_S) )
 		m_pTransformCom->Go_Backward(fTimeDelta);
 
 

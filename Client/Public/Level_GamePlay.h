@@ -15,7 +15,6 @@ public:
 	virtual HRESULT Initialize() override;
 	virtual void Tick(_float fTimeDelta) override;
 
-
 private:
 	HRESULT Ready_Layer_Camera(const wstring& strLayerTag);
 	HRESULT Ready_Layer_BackGround(const wstring& strLayerTag);

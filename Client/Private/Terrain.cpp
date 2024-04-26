@@ -43,6 +43,8 @@ void CTerrain::Tick(_float fTimeDelta)
 
 void CTerrain::Late_Tick(_float fTimeDelta)
 {
+    m_pNavigationCom->Update(m_pTransformCom->Get_WorldFloat4x4());
+
     m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
 }
 
@@ -55,16 +57,18 @@ HRESULT CTerrain::Render()
     m_pVIBufferCom->Bind_Buffers();
     m_pVIBufferCom->Render();
 
+#ifdef _DEBUG
+
+    m_pNavigationCom->Render();
+
+#endif
+
     return S_OK;
 }
 
 HRESULT CTerrain::Add_Components()
 {
     /* For.Com_VIBuffer */
-    //if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Terrain"),
-    //    CVIBuffer_Terrain::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Terrain/Height1.bmp"), pTerrainUV))))
-    //    return E_FAIL;
-
     if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Terrain"),
         TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom), m_TerrainUV)))
         return E_FAIL;
@@ -79,6 +83,11 @@ HRESULT CTerrain::Add_Components()
         TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
         return E_FAIL;
 
+
+    /* For.Com_Navigation */
+    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Navigation"),
+        TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom))))
+        return E_FAIL;
 
     return S_OK;
 }
@@ -127,6 +136,7 @@ void CTerrain::Free()
 {
     __super::Free();
 
+    Safe_Release(m_pNavigationCom);
     Safe_Release(m_pShaderCom);
     Safe_Release(m_pTextureCom);
     Safe_Release(m_pVIBufferCom);

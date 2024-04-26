@@ -55,20 +55,6 @@ HRESULT CData_Manager::Load_Data(_uint iLevelIndex)
 		_uint iReadLevel=0;
 		fin.read((char*)&iReadLevel, sizeof(_uint));
 
-		//if(iReadLevel!= m_CurrentLevel)
-		//{
-		//	
-		//	m_CurrentLevel = iReadLevel;
-
-		//	if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, (LEVEL)m_CurrentLevel))))
-		//		return E_FAIL;
-		//}
-		//else
-		//{
-		//	m_pGameInstance->Clear_CloneData(iReadLevel);
-		//	m_pTerrainMgr->Terrain_Release();
-		//}
-
 		m_pGameInstance->Clear_CloneData(iReadLevel);
 		m_pTerrainMgr->Terrain_Release();
 
@@ -139,7 +125,7 @@ HRESULT CData_Manager::Load_Data(_uint iLevelIndex)
 	//툴에서는 카메라를 제작해주지만 인게임으로 넘어가서는 플레이어 생성시 카메라 자동생성으로 제작하기.
 	CFreeCamera::FREE_CAMERA_DESC		CameraDesc{};
 
-	CameraDesc.fSensor = 0.05f;
+	CameraDesc.fSensor = 0.02f;
 	CameraDesc.vEye = _float4(0.0f, 30.f, -25.f, 1.f);
 	CameraDesc.vAt = _float4(0.0f, 0.f, 0.f, 1.f);
 	CameraDesc.fFovy = XMConvertToRadians(60.0f);

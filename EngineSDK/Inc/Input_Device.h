@@ -17,13 +17,14 @@ private:
 	virtual ~CInput_Device(void) = default;
 
 public:
-	_byte	Get_DIKeyState(_ubyte byKeyID) { return KEYDOWN(m_byKeyState,byKeyID); }
+	_byte	Get_DIKeyState(_ubyte byKeyID) 
+	{ return KEYDOWN(m_byKeyState,byKeyID); }
 	_byte		Get_DIKeyState_Once(_ubyte byKeyID);
 	_byte	Get_DIMouseState(MOUSEKEYSTATE eMouse)
 	{
-		return m_tMouseState.rgbButtons[eMouse];
+		return KEYDOWN(m_tMouseState.rgbButtons,eMouse);
 	}
-
+	_byte	Get_DIMouseState_Once(MOUSEKEYSTATE eMouse);
 	_long	Get_DIMouseMove(MOUSEMOVESTATE eMouseState)
 	{
 		return *(((_long*)&m_tMouseState) + eMouseState);
@@ -44,6 +45,7 @@ private:
 	_byte					m_byKeyState[256];		// 키보드에 있는 모든 키값을 저장하기 위한 변수
 	DIMOUSESTATE			m_tMouseState;
 	_bool key_down = false;
+	_bool mouse_down = { false };
 public:
 	static CInput_Device* Create(HINSTANCE hInst, HWND hWnd);
 	virtual void	Free(void);

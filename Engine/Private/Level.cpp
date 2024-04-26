@@ -20,6 +20,7 @@ void CLevel::Tick(_float fTimeDelta)
 {
 }
 
+
 void CLevel::Free()
 {
 	Safe_Release(m_pGameInstance);

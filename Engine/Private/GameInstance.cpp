@@ -105,7 +105,9 @@ HRESULT CGameInstance::Draw(const _float4 & vClearColor)
 	if (FAILED(Clear_Texture(TextureType::HitIDTexture, &pint)))
 		return E_FAIL;
 
+
 	m_pRenderer->Draw();	
+
 
 	return S_OK;
 }
@@ -182,6 +184,11 @@ _byte CGameInstance::Get_DIMouseState(MOUSEKEYSTATE eMouse)
 _long CGameInstance::Get_DIMouseMove(MOUSEMOVESTATE eMouseState)
 {
 	return m_pInput_Device->Get_DIMouseMove(eMouseState);
+}
+
+_byte CGameInstance::Get_DIMouseState_Once(MOUSEKEYSTATE eMouse)
+{
+	return m_pInput_Device->Get_DIMouseState_Once(eMouse);
 }
 
 _float CGameInstance::Get_TimeDelta(const _tchar * pTimerTag)

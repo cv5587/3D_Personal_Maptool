@@ -3,6 +3,12 @@
 #include "Client_Defines.h"
 #include "LandObject.h"
 #include "Body_Player.h"
+
+BEGIN(Engine)
+class CCollider;
+class CNavigation;
+END
+
 BEGIN(Client)
 
 class CPlayer final : public CLandObject
@@ -50,14 +56,14 @@ public:
 	void Set_UnEquip() {
 		m_eEquip = PLAYEREQUIP::EQUIP_NONE;
 	}
-	void End_Change(){ m_bChangeEquip = false; }
+	void End_Change() { m_bChangeEquip = false; }
 
 	const PLAYERCONDITION isCondition() { return m_eCondition; }
 	const PLAYEREQUIP			isEquip() { return m_eEquip; }
 
 	const _bool						isEquipChange() { return m_bChangeEquip; }
 	const _bool						isAnimFinished() { return m_bAnimFinished; }
-	
+
 private:
 	vector<class CGameObject*>		m_PartObjects;
 	PLAYERSTATE								m_eState = { PLAYERSTATE::PLAYER_IDLE };
@@ -68,7 +74,7 @@ private:
 	_bool m_bAnimFinished = { true };
 
 	class CNavigation* m_pNavigationCom = { nullptr };
-
+	class CCollider* m_pColliderCom = { nullptr };
 
 	_bool m_KeyInput = {true};
 public:

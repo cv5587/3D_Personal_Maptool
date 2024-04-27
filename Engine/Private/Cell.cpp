@@ -79,6 +79,7 @@ _bool CCell::isIn(_fvector vPoint, _int* pNeighborIndex)
 		vSour = vPoint - XMLoadFloat3(&m_vPoints[i]);
 
 		_vector		vLine = XMLoadFloat3(&m_vPoints[(i + 1) % POINT_END]) - XMLoadFloat3(&m_vPoints[i]);
+		//2차원 외적
 		vDest = XMVectorSet(XMVectorGetZ(vLine) * -1.f, 0.f, XMVectorGetX(vLine), 0.f);
 
 		if (0 < XMVectorGetX(XMVector3Dot(XMVector3Normalize(vSour), XMVector3Normalize(vDest))))
@@ -155,6 +156,11 @@ HRESULT CCell::Render()
 	return S_OK;
 }
 #endif
+
+_float CCell::Set_OnCell(_float3 vLocalPos)
+{
+	return m_pVIBuffer->Compute_Height(vLocalPos);
+}
 
 CCell * CCell::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _float3 * pPoints, _int iIndex)
 {

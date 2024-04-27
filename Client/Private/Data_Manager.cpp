@@ -102,8 +102,17 @@ HRESULT CData_Manager::Load_Data(_uint iLevelIndex)
 					if (FAILED(m_pGameInstance->Add_CloneObject(iReadLevel, wLayer, strPrototypeTag, &pDesc)))
 						return E_FAIL;
 				}
-				else//몬스터 ,플레이어 설정 (몬스터는 터레인만 추가, 플레이어는 터레인,파츠(고정값이므로 작업필요 ㄴ))
+				else if (TEXT("Layer_Player") == wLayer)
 				{
+					//암것도 하지마
+				}
+				else if (TEXT("Layer_Camera") == wLayer)
+				{
+					//암것도 하지마
+				}
+				else//몬스터 , 설정 (몬스터는 터레인만 추가,)
+				{
+
 					CLandObject::LANDOBJ_DESC		LandObjDesc{};
 
 					LandObjDesc.pTerrainTransform = dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), TEXT("Com_Transform")));

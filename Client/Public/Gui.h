@@ -37,13 +37,13 @@ private:
 	class CGameObject* m_pPickObject = { nullptr };
 
 	class CNavigation* m_pNavigationCom = nullptr;
-
 private:
 	_int m_iObjectID = { 0 };
 	_bool m_CellMode = { false };
 	_float3 m_Points[3] = {};
 	_float m_SnapReach = { 1.f };
 	_int		m_CellIndex = { 0 };
+	_int* m_PlayerCell = { nullptr };
 private:
 	_vector Picking_HitScreen();
 	void EditTransform(_float* cameraView, _float* cameraProjection, _float* matrix);

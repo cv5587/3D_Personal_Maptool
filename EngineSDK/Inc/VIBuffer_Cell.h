@@ -16,6 +16,10 @@ public:
 	virtual HRESULT Initialize(void* pArg) override;
 
 public:
+	virtual _float Compute_Height(const _float3& vLocalPos);
+
+
+public:
 	static CVIBuffer_Cell* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _float3* pPositions);
 	virtual CComponent* Clone(void* pArg) override;
 	virtual void Free() override;

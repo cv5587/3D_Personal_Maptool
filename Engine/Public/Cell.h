@@ -47,7 +47,8 @@ private:
 	_float3				m_vPoints[POINT_END] = {};
 	_int					m_iIndex = { 0 };
 	_int					m_iNeighborIndices[LINE_END] = { -1, -1, -1 };
-
+public:
+	_float Set_OnCell(_float3 vLocalPos);
 #ifdef _DEBUG
 
 private:

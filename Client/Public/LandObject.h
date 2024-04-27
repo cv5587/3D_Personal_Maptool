@@ -16,6 +16,8 @@ public:
 	{
 		CTransform* pTerrainTransform;
 		CVIBuffer* pTerrainVIBuffer;
+
+		CTransform* pNavigationTransform;
 	}LANDOBJ_DESC;
 protected:
 	CLandObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

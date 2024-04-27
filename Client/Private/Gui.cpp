@@ -206,6 +206,7 @@ HRESULT CGui::Update_UI(_float fTimeDelta)
 	}
 
 	if (ImGui::Button("Delete_Object"))
+
 	{
 		if (nullptr != m_pPickObject)
 		{
@@ -221,7 +222,9 @@ HRESULT CGui::Update_UI(_float fTimeDelta)
 	if (ImGui::TreeNode("Navigation"))
 	{
 		if (nullptr == m_pNavigationCom)
+		{
 			m_pNavigationCom = dynamic_cast<CNavigation*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), TEXT("Com_Navigation")));
+		}
 
 		if (ImGui::Button("Nave_Cellmode"))
 		{
@@ -236,6 +239,9 @@ HRESULT CGui::Update_UI(_float fTimeDelta)
 			ImGui::SeparatorText("Make Cell Mode:");
 		else
 			ImGui::SeparatorText(" ");
+
+		if(nullptr	!=		m_PlayerCell)
+			ImGui::Text("Player Cell Index: (%d)", *m_PlayerCell);
 
 		ImGui::NewLine();
 		if (ImGui::Button("Undo_Cell"))
@@ -279,6 +285,8 @@ HRESULT CGui::Update_UI(_float fTimeDelta)
 
 					if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Prototype_GameObject_Player"), &LandObjDesc)))
 						return E_FAIL;
+
+					m_PlayerCell = dynamic_cast<CNavigation*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Navigation")))->Get_CurrentCell();
 
 				}
 				 if (m_pGameInstance->Get_DIMouseState_Once(DIM_LB))

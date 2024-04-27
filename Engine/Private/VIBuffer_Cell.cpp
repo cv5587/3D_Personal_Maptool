@@ -30,12 +30,19 @@ HRESULT CVIBuffer_Cell::Initialize_Prototype(const _float3* pPositions)
 	m_BufferDesc.MiscFlags = 0;
 	m_BufferDesc.StructureByteStride = m_iVertexStride;
 
+	m_pVertexPositions = new _float4[m_iNumVertices];
+	ZeroMemory(m_pVertexPositions, sizeof(_float4) * m_iNumVertices);
+
 	VTXPOS* pVertices = new VTXPOS[m_iNumVertices];
 	ZeroMemory(pVertices, sizeof(VTXPOS) * m_iNumVertices);
 
 	pVertices[0].vPosition = pPositions[0];
 	pVertices[1].vPosition = pPositions[1];
 	pVertices[2].vPosition = pPositions[2];
+
+	m_pVertexPositions[0] = _float4(pVertices[0].vPosition.x, pVertices[0].vPosition.y, pVertices[0].vPosition.z, 1.f);
+	m_pVertexPositions[1] = _float4(pVertices[1].vPosition.x, pVertices[1].vPosition.y, pVertices[1].vPosition.z, 1.f);
+	m_pVertexPositions[2] = _float4(pVertices[2].vPosition.x, pVertices[2].vPosition.y, pVertices[2].vPosition.z, 1.f);
 
 
 	m_InitialData.pSysMem = pVertices;
@@ -77,6 +84,22 @@ HRESULT CVIBuffer_Cell::Initialize_Prototype(const _float3* pPositions)
 HRESULT CVIBuffer_Cell::Initialize(void* pArg)
 {
 	return S_OK;
+}
+
+_float CVIBuffer_Cell::Compute_Height(const _float3& vLocalPos)
+{
+	_vector		vPlane = XMVectorZero();
+
+	vPlane = XMPlaneFromPoints(XMLoadFloat4(&m_pVertexPositions[0]),
+														XMLoadFloat4(&m_pVertexPositions[1]),
+														XMLoadFloat4(&m_pVertexPositions[2]));
+	
+
+	/*
+	ax + by + cz + d = 0
+	y = (-ax - cz - d) / b
+	*/
+	return (-XMVectorGetX(vPlane) * vLocalPos.x - XMVectorGetZ(vPlane) * vLocalPos.z - XMVectorGetW(vPlane)) / XMVectorGetY(vPlane);
 }
 
 CVIBuffer_Cell* CVIBuffer_Cell::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _float3* pPositions)

@@ -1,17 +1,8 @@
+#include "Engine_Shader_Defines.hlsli"
 
 /* 컨스턴트 테이블(상수테이블) */
 matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 texture2D g_Texture;
-
-sampler LinearSampler = sampler_state
-{
-    filter = min_mag_mip_linear;
-    //타일설정
-    AddressU = wrap;
-    AddressV = wrap;
-};
-
-
 
 struct VS_IN
 {
@@ -84,6 +75,10 @@ technique11 DefaultTechnique
 	/* 특정 렌더링을 수행할 때 적용해야할 셰이더 기법의 셋트들의 차이가 있다. */
     pass DefaultPass
     {
+        SetRasterizerState(RS_NoneCull); //그리는 모드 . 컬링 모드 , 
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);//블렌딩 안행! 알파테스트 할거임
+
 		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;

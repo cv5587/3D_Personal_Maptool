@@ -31,6 +31,7 @@ public:
 	void Snap_Point(_vector vPoint,_float3* StorePoint,_float SnapReach);
 	//툴용
 public:
+	_int* Get_CurrentCell() { return &m_iCurrentCellIndex; }
 	void Delete_Index(_int CellIndex);
 	void Save_Data();
 	void Load_Data();
@@ -39,6 +40,9 @@ public:
 	vector<class CCell*> Get_Cells() {
 		return m_Cells;
 	}
+	//네비 올라타기
+public://월드 받아와서 계산하기. 트랜스폼 가져와서 바로 적용.
+	HRESULT Set_OnNavigation(class CTransform* pTransform);
 
 #ifdef _DEBUG
 public:

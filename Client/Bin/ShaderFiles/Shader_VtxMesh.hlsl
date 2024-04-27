@@ -1,22 +1,8 @@
+#include "Engine_Shader_Defines.hlsli"
 
 /* 컨스턴트 테이블(상수테이블) */
 matrix		g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 texture2D	g_Texture;
-
-sampler PointSampler = sampler_state
-{
-	filter = min_mag_mip_Point;
-    AddressU = wrap;
-    AddressU = wrap;
-};
-
-
-sampler LinearSampler = sampler_state
-{
-	filter = min_mag_mip_linear;
-	AddressU = wrap;
-	AddressV = wrap;
-};
 
 
 

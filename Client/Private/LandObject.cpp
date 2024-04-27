@@ -73,6 +73,7 @@ HRESULT CLandObject::SetUp_OnTerrain(CTransform* pTransform)
 	return S_OK;
 }
 
+
 void CLandObject::Free()
 {
 	__super::Free();

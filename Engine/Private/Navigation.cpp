@@ -4,6 +4,7 @@
 #include "Shader.h"
 #include "GameInstance.h"
 #include "VIBuffer_Cell.h"
+#include "Transform.h"
 
 _float4x4	CNavigation::m_WorldMatrix{};
 
@@ -223,6 +224,23 @@ void CNavigation::Load_Data()
 void CNavigation::Undo_Cell()
 {
 	m_Cells.pop_back();
+}
+//틱으로 월드 받아오고나서 할것
+HRESULT CNavigation::Set_OnNavigation(CTransform* pTransform)
+{
+	_vector vWorldPos = pTransform->Get_State(CTransform::STATE_POSITION);
+	
+	_float3 vLocalPos;	
+	XMStoreFloat3(&vLocalPos, XMVector3TransformCoord(vWorldPos, XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_WorldMatrix))));	
+
+	if (-1 == m_iCurrentCellIndex)
+		return S_OK;
+
+	vLocalPos.y=m_Cells[m_iCurrentCellIndex]->Set_OnCell(vLocalPos);
+
+	pTransform->Set_State(CTransform::STATE_POSITION, XMVector3TransformCoord(XMLoadFloat3(&vLocalPos), XMLoadFloat4x4(&m_WorldMatrix)));
+
+	return S_OK;
 }
 
 #ifdef _DEBUG

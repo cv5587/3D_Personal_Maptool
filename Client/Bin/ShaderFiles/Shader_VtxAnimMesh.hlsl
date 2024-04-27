@@ -1,3 +1,4 @@
+#include "Engine_Shader_Defines.hlsli"
 
 /* 컨스턴트 테이블(상수테이블) */
 matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
@@ -6,20 +7,6 @@ texture2D g_Texture;
 /* 이 메시에게 영향을 주는 뼈들. */
 matrix g_BoneMatrices[512];
 int g_ID;
-sampler PointSampler = sampler_state
-{
-    filter = min_mag_mip_Point;
-    aDDRESSu = WRAP;
-    aDDRESSV = WRAP;
-};
-
-
-sampler LinearSampler = sampler_state
-{
-    filter = min_mag_mip_linear;
-    AddressU = wrap;
-    AddressV = wrap;
-};
 
 
 

@@ -40,7 +40,6 @@ HRESULT CPlayer::Initialize(void* pArg)
 	m_pStateMachine->Initialize();
 
 	m_pStateMachine->Set_CurrentState(this, PLAYER_IDLE);
-	//Set_Equip(PLAYEREQUIP::EQUIP_NONE);
 
 	if (FAILED(Add_PartObjects()))
 		return E_FAIL;
@@ -83,11 +82,15 @@ void CPlayer::Tick(_float fTimeDelta)
 	if(!m_KeyInput)
 		m_pStateMachine->Update(this, fTimeDelta);
 
-	if (FAILED(__super::SetUp_OnTerrain(m_pTransformCom)))
-		return;
+	//if (FAILED(__super::SetUp_OnTerrain(m_pTransformCom)))
+	//	return;
+
+	m_pNavigationCom->Set_OnNavigation(m_pTransformCom);
 
 	for (auto& pPartObject : m_PartObjects)
 		pPartObject->Tick(fTimeDelta);
+
+	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 
 }
 
@@ -103,6 +106,7 @@ HRESULT CPlayer::Render()
 {
 
 #ifdef _DEBUG
+	m_pColliderCom->Render();
 	m_pNavigationCom->Render();
 #endif
 
@@ -111,6 +115,18 @@ HRESULT CPlayer::Render()
 
 HRESULT CPlayer::Add_Components()
 {
+	/* For.Com_Collider */
+	CBounding_AABB::BOUNDING_AABB_DESC		ColliderDesc{};
+
+	ColliderDesc.eType = CCollider::TYPE_AABB;
+	ColliderDesc.vExtents = _float3(0.3f, 0.7f, 0.3f);//aabb 조절가능
+	ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vExtents.y, 0.f);
+
+
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider"),
+		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
+		return E_FAIL;
+
 	/* For.Com_Navigation */
 	CNavigation::NAVIGATION_DESC	NavigationDesc{};
 
@@ -251,6 +267,8 @@ void CPlayer::Free()
 
 	Safe_Release(m_pNavigationCom);
 
+	Safe_Release(m_pColliderCom);
+
 	for (auto& pPartObject : m_PartObjects)
 		Safe_Release(pPartObject);
 
@@ -259,5 +277,4 @@ void CPlayer::Free()
 	Safe_Release(m_pStateMachine);
 
 	CStateMachine::DestroyInstance();
-
 }

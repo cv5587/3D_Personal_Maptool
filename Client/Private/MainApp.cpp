@@ -98,6 +98,7 @@ HRESULT CMainApp::Ready_Prototype_GameObject()
 
 HRESULT CMainApp::Ready_Prototype_Component()
 {
+	/*For.Prototypr_Component_Navigation*/
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Navigation"),
 		CNavigation::Create(m_pDevice, m_pContext))))
 		return E_FAIL;

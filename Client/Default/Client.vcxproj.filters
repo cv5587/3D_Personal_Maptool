@@ -118,6 +118,9 @@
     <Filter Include="94. StateMachine\State\Player\State_UnEquip">
       <UniqueIdentifier>{1a5c5f12-a26b-450e-9013-b28005c7dc95}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\04.Item">
+      <UniqueIdentifier>{9b8f2f93-ca3b-470a-9c54-d959d50a7e8a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -264,6 +267,9 @@
     <ClInclude Include="..\Public\State_UnEquip.h">
       <Filter>94. StateMachine\State\Player\State_UnEquip</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Item.h">
+      <Filter>02.GameObjects\04.Item</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -395,6 +401,9 @@
     <ClCompile Include="..\Private\State_UnEquip.cpp">
       <Filter>94. StateMachine\State\Player\State_UnEquip</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Item.cpp">
+      <Filter>02.GameObjects\04.Item</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -428,6 +437,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMeshID.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMeshTreeID.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

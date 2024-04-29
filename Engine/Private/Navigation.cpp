@@ -29,28 +29,28 @@ CNavigation::CNavigation(const CNavigation& rhs)
 
 HRESULT CNavigation::Initialize_Prototype(const wstring& strNavigationDataFile)
 {
-	_ulong		dwByte = {};
-	HANDLE		hFile = CreateFile(strNavigationDataFile.c_str(), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
-	if (0 == hFile)
-		return E_FAIL;
+	//_ulong		dwByte = {};
+	//HANDLE		hFile = CreateFile(strNavigationDataFile.c_str(), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+	//if (0 == hFile)
+	//	return E_FAIL;
 
-	_float3		vPoint[CCell::POINT_END] = {};
+	//_float3		vPoint[CCell::POINT_END] = {};
 
-	while (true)
-	{
-		ReadFile(hFile, vPoint, sizeof(_float3) * CCell::POINT_END, &dwByte, nullptr);
+	//while (true)
+	//{
+	//	ReadFile(hFile, vPoint, sizeof(_float3) * CCell::POINT_END, &dwByte, nullptr);
 
-		if (0 == dwByte)
-			break;
+	//	if (0 == dwByte)
+	//		break;
 
-		CCell* pCell = CCell::Create(m_pDevice, m_pContext, vPoint, m_Cells.size());
-		if (nullptr == pCell)
-			return E_FAIL;
+	//	CCell* pCell = CCell::Create(m_pDevice, m_pContext, vPoint, m_Cells.size());
+	//	if (nullptr == pCell)
+	//		return E_FAIL;
 
-		m_Cells.emplace_back(pCell);
-	}
+	//	m_Cells.emplace_back(pCell);
+	//}
 
-	CloseHandle(hFile);
+	//CloseHandle(hFile);
 
 	if (FAILED(SetUp_Neighbors()))
 		return E_FAIL;
@@ -223,7 +223,12 @@ void CNavigation::Load_Data()
 
 void CNavigation::Undo_Cell()
 {
+	_int iCellIndex = m_Cells.size() - 1;
 	m_Cells.pop_back();
+	for (size_t i = 0; i < m_Cells.size(); i++)
+	{
+		m_Cells[i]->NeighborSort(iCellIndex);
+	}
 }
 //틱으로 월드 받아오고나서 할것
 HRESULT CNavigation::Set_OnNavigation(CTransform* pTransform)

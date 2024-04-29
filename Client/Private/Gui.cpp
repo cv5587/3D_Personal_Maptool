@@ -9,6 +9,7 @@
 #include "LandObject.h"
 #include "Component_Manager.h"
 #include "LandObject.h"
+#include "Item.h"
 
 static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::TRANSLATE);
 bool useWindow = false;
@@ -105,7 +106,7 @@ HRESULT CGui::Update_UI(_float fTimeDelta)
 	{
 
 		{
-			const char* objects[] = { "CliffA","Charcoal","Stone","RockBigA" ,"RockBigB" ,"RockBigC" ,"RockBigD" 
+			const char* objects[] = { "CliffA","Charcoal","RockBigA" ,"RockBigB" ,"RockBigC" ,"RockBigD" 
 				,"PinTreeLogA","PinTreeLogB" ,"PinTreeLogC" ,"PinTreeLogD" ,"PinTreeLogE"
 			,"PinTreeSingleA","PinTreeSingleB" ,"PinTreeSingleC" ,"PinTreeSingleD" ,"PinTreeSingleE" ,"PinTreeSingleF" ,"PinTreeSingleG" ,"PinTreeSingleH" ,"PinTreeSingleI" ,"PinTreeSingleJ","PinTreeSingleK","PinTreeSingleL","PinTreeSingleM","PinTreeSingleN"
 			,"PinTreeRootA"};
@@ -152,7 +153,60 @@ HRESULT CGui::Update_UI(_float fTimeDelta)
 		ImGui::TreePop();
 	}
 
+	const char* szItem = "Item";
+	if (ImGui::TreeNode(szItem))
+	{
 
+		{
+			const char* objects[] = { "Stone" };
+			static int object_current = 0;
+			ImGui::ListBox("List", &object_current, objects, IM_ARRAYSIZE(objects));
+
+			ImGui::NewLine();
+			if (ImGui::Button("ObjectCreate"))
+			{
+				char szLayername[MAX_PATH] = "Layer_";
+				strcat_s(szLayername, szItem);
+				ZeroMemory(m_szLayerPath, sizeof(_tchar) * MAX_PATH);
+				MultiByteToWideChar(CP_ACP, 0, szLayername, strlen(szLayername), m_szLayerPath, MAX_PATH);
+
+				char szobjectname[MAX_PATH] = "Prototype_GameObject_";
+				strcat_s(szobjectname, szItem);
+				ZeroMemory(m_szRealFullPath, sizeof(_tchar) * MAX_PATH);
+				MultiByteToWideChar(CP_ACP, 0, szobjectname, strlen(szobjectname), m_szRealFullPath, MAX_PATH);
+
+				char szComponentname[MAX_PATH] = "Prototype_Component_Model_";
+				strcat_s(szComponentname, objects[object_current]);
+				wstring wstr(szComponentname, szComponentname + strlen(szComponentname));
+				m_ComponentTag = wstr;
+
+				char szItemName[MAX_PATH] = "";
+				strcpy_s(szItemName, objects[object_current]);
+				wstring itemname(szItemName, szItemName + strlen(szItemName));	
+
+				m_ItemName = itemname;
+
+				m_bMakeItem = true;
+			}
+
+			if (ImGui::Button("ObjectBinary"))
+			{
+				char szProtoname[MAX_PATH] = "Prototype_Component_Model_";
+				strcat_s(szProtoname, objects[object_current]);
+
+				wstring wstr(szProtoname, szProtoname + strlen(szProtoname));
+				wstring filepath = TEXT("../Bin/bin/");
+				wstring Ext = TEXT(".bin");
+				filepath = filepath + wstr + Ext;
+				m_ComponentTag = wstr;
+				if (FAILED(m_pGameInstance->Save_Binary(LEVEL_GAMEPLAY, wstr, filepath)))
+					return E_FAIL;
+			}
+		}
+
+		ImGui::NewLine();
+		ImGui::TreePop();
+	}
 
 	const char* szMoster = "Monster";
 	if (ImGui::TreeNode(szMoster))
@@ -372,7 +426,37 @@ HRESULT CGui::Update_UI(_float fTimeDelta)
 		
 		m_bInputObject = !m_bInputObject;
 	}
+	//아이템 생성
+	if (m_bMakeItem && (m_pGameInstance->Get_DIMouseState(DIM_LB) & 0x80) && (m_pGameInstance->Get_DIKeyState(DIK_LCONTROL) & 0x80))
+	{
+		CItem::ITEM_DESC ItemDesc{};	
 
+		ItemDesc.ProtoTypeTag = m_szRealFullPath;
+		ItemDesc.ModelTag = m_ComponentTag;
+		
+
+
+		_vector Pick_Point = Picking_HitScreen();
+		if (0 < Pick_Point.m128_f32[0])
+		{
+			_matrix PrePosition = XMMatrixIdentity();
+			PrePosition.r[3] = Pick_Point;
+			XMStoreFloat4x4(&(ItemDesc.vPrePosition), PrePosition);
+
+			CItem::ITEM_DESC* pItemDesc{};	
+			pItemDesc = static_cast<CItem::ITEM_DESC*>(Check_Model(&ItemDesc));
+			if (nullptr == pItemDesc)
+				return E_FAIL;
+
+			if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, m_szLayerPath, m_szRealFullPath, pItemDesc)))
+				return E_FAIL;
+
+			m_bMakeObject = false;
+		}
+	}
+
+
+	//자연물 생성,몬스터 생성
 	if (m_bMakeObject &&(m_pGameInstance->Get_DIMouseState(DIM_LB) & 0x80)&&(m_pGameInstance->Get_DIKeyState(DIK_LCONTROL) & 0x80))	
 	{
 		
@@ -480,16 +564,7 @@ void CGui::EditTransform(_float* cameraView, _float* cameraProjection, _float* m
 
 	ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
 	
-	
-	//ImGuizmo::DrawGrid(cameraView, cameraProjection, identityMatrix, 100.f);
-	//ImGuizmo::DrawCubes(cameraView, cameraProjection, &objectMatrix[0][0], gizmoCount);
 	ImGuizmo::Manipulate(cameraView, cameraProjection, mCurrentGizmoOperation, mCurrentGizmoMode, matrix, NULL, useSnap ? &snap[0] : NULL, boundSizing ? bounds : NULL, boundSizingSnap ? boundsSnap : NULL);
-	//_vector CamPosition=m_pGameInstance->Get_CamPosition();
-	//_vector ObPosition = dynamic_cast<CTransform*>(m_pPickObject->Get_Transform())->Get_State(CTransform::STATE_POSITION);	
-	//_vector CamDistance=XMVector3Length(ObPosition-CamPosition);
-	//float camDistance = 8.f;
-	//ImGuizmo::ViewManipulate(cameraView, camDistance, ImVec2(viewManipulateRight - 128, viewManipulateTop), ImVec2(128, 128), 0x10101010);
-	//m_pGameInstance->Set_Transform(CPipeLine::TS_CAMWORLD, XMMatrixInverse(nullptr,XMLoadFloat4x4((_float4x4*)cameraView)));
 	if (useWindow)
 	{
 		ImGui::PopStyleColor(1);
@@ -573,6 +648,23 @@ HRESULT CGui::Add_Component(_uint iPrototypeLevelIndex, const wstring& strProtot
 void CGui::Make_Terrain(void* pArg)
 {
 	m_pTerrainManager->Clone_Terrain(pArg);
+}
+
+void* CGui::Check_Model(void* pArg)
+{
+	wstring ModelTag = static_cast<CGameObject::GAMEOBJECT_DESC*>(pArg)->ModelTag;
+	if (ModelTag == TEXT("Prototype_Component_Model_Stone"))
+	{
+		CItem::ITEM_DESC* itemDesc=static_cast<CItem::ITEM_DESC*>(pArg);	
+
+		itemDesc->ItemName = TEXT("Stone");
+		itemDesc->ItemType = (_uint)CItem::ITEMTYPE::ITEM_STUFF;
+		itemDesc->iQuantity = 1;
+		return itemDesc;
+	}
+
+
+	return nullptr;
 }
 
 void CGui::Free()

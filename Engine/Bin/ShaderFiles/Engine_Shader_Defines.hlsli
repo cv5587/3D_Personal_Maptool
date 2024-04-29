@@ -23,7 +23,7 @@ RasterizerState		RS_Default
 	FrontCounterClockwise = false;
 };
 
-RasterizerState RS_NoneCull
+RasterizerState RS_NoneCull//나무는 이걸로 나머지는 위
 {
     FillMode = SOLID;
     CullMode = None;

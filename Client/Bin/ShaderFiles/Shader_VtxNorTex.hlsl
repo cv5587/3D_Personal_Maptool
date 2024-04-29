@@ -75,7 +75,7 @@ technique11 DefaultTechnique
 	/* 특정 렌더링을 수행할 때 적용해야할 셰이더 기법의 셋트들의 차이가 있다. */
     pass DefaultPass
     {
-        SetRasterizerState(RS_NoneCull); //그리는 모드 . 컬링 모드 , 
+        SetRasterizerState(RS_Default); //그리는 모드 . 컬링 모드 , 
         SetDepthStencilState(DSS_Default, 0);
         SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);//블렌딩 안행! 알파테스트 할거임
 

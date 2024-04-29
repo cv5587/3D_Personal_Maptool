@@ -201,6 +201,7 @@
     <ClInclude Include="..\Public\Imgui\imstb_rectpack.h" />
     <ClInclude Include="..\Public\Imgui\imstb_textedit.h" />
     <ClInclude Include="..\Public\Imgui\imstb_truetype.h" />
+    <ClInclude Include="..\Public\Item.h" />
     <ClInclude Include="..\Public\LandObject.h" />
     <ClInclude Include="..\Public\Level_GamePlay.h" />
     <ClInclude Include="..\Public\Level_Loading.h" />
@@ -247,6 +248,7 @@
     <ClCompile Include="..\Private\Imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="..\Private\Imgui\imgui_tables.cpp" />
     <ClCompile Include="..\Private\Imgui\imgui_widgets.cpp" />
+    <ClCompile Include="..\Private\Item.cpp" />
     <ClCompile Include="..\Private\LandObject.cpp" />
     <ClCompile Include="..\Private\Level_GamePlay.cpp" />
     <ClCompile Include="..\Private\Level_Loading.cpp" />
@@ -292,6 +294,7 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimMesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMeshID.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMeshTreeID.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNorTex.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPosTex.hlsl" />
   </ItemGroup>

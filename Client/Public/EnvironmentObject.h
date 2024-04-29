@@ -10,7 +10,7 @@ BEGIN(Client)
 class CEnvironmentObject :
     public CGameObject
 {
-private:
+protected:
 	CEnvironmentObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CEnvironmentObject(const CGameObject& rhs);
 	virtual ~CEnvironmentObject() = default;
@@ -23,7 +23,7 @@ public:
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
-private:
+protected:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 

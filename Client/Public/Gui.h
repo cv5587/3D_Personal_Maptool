@@ -31,9 +31,12 @@ private:
 private:
 	_bool		m_bInputObject = { false };
 	_bool		m_bMakeObject = { false };
+	_bool		m_bMakeItem = { false };
 	_tchar		m_szRealFullPath[MAX_PATH] = TEXT("");
 	_tchar		m_szLayerPath[MAX_PATH] = TEXT("");
 	wstring		m_ComponentTag;
+	wstring		m_ItemName;
+
 	class CGameObject* m_pPickObject = { nullptr };
 
 	class CNavigation* m_pNavigationCom = nullptr;
@@ -54,6 +57,8 @@ private:
 		class CComponent** ppOut, void* pArg = nullptr);
 public:
 	void Make_Terrain(void* pArg);
+private:
+	void* Check_Model(void* pArg);
 public:
 	virtual void Free() override;
 };

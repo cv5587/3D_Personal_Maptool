@@ -271,7 +271,7 @@ HRESULT CObject_Manager::Save_Level(_uint iLevelIndex)
 			wstring wLayer(Layer);
 
 			//카메라랑 플레이어도 가져 가게 조절
-			if (TEXT("Layer_Camera") != wLayer || TEXT("Layer_Player") != wLayer)
+			if (TEXT("Layer_Camera") != wLayer)
 			{
 				fout.write((char*)Layer, sizeof(_tchar) * MAX_PATH);
 				if (FAILED(pLayer.second->Save_Data(&fout)))	

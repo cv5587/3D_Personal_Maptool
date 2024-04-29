@@ -23,6 +23,7 @@ HRESULT CEnvironmentObject::Initialize(void* pArg)
 
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
+
     m_pTransformCom->Set_State_Matrix(XMLoadFloat4x4(&pDesc->vPrePosition));
 
     if (FAILED(Add_Components()))
@@ -75,10 +76,23 @@ HRESULT CEnvironmentObject::Add_Components()
         TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
         return E_FAIL;
 
-    /* For.Com_Shader */
-    if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxMeshID"),
-        TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
-        return E_FAIL;
+
+    /* For.Com_Shader *///나무 검사
+    wstring CompareName = TEXT("Pin");
+    if (m_ModelTag.substr(26, 3) == CompareName)
+    {
+        if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxMeshTreeID"),
+            TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
+            return E_FAIL;
+    }
+    else
+    {
+        if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxMeshID"),
+            TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
+            return E_FAIL;
+    }
+
+   
 
     return S_OK;
 }

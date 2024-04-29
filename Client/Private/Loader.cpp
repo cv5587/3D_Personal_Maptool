@@ -9,6 +9,7 @@
 #include "Player.h"
 #include "Body_Player.h"
 #include "Weapon.h"
+#include "Item.h"
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice{ pDevice }
@@ -312,7 +313,7 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 	//	return E_FAIL;
 
 	//		/*통나무 A~E*/
-	//PreTransformMatrix =  XMMatrixIdentity() * XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	//PreTransformMatrix =  XMMatrixIdentity() * XMMatrixScaling(0.002f, 0.002f, 0.002f);
 	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_PinTreeLogA"),
 	//	CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, CAnimation::OBJ_ENVIRONMENT, "../Bin/Asset2D/EnvironmentObject/PineTree/PinTreeLogA.fbx", PreTransformMatrix))))
 	//	return E_FAIL;
@@ -335,7 +336,7 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 
 
 	///*나무 A~N*/
-	//PreTransformMatrix = XMMatrixIdentity() * XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	//PreTransformMatrix = XMMatrixIdentity() * XMMatrixScaling(0.002f, 0.002f, 0.002f);
 	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_PinTreeSingleA"),
 	//	CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, CAnimation::OBJ_ENVIRONMENT, "../Bin/Asset2D/EnvironmentObject/PineTree/PinTreeSingleA.fbx", PreTransformMatrix))))
 	//	return E_FAIL;
@@ -394,7 +395,7 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 
 
 	///*나무뿌리 A*/
-	//PreTransformMatrix = XMMatrixIdentity() * XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	//PreTransformMatrix = XMMatrixIdentity() * XMMatrixScaling(0.002f, 0.002f, 0.002f);
 	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_PinTreeRootA"),
 	//	CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, CAnimation::OBJ_ENVIRONMENT, "../Bin/Asset2D/EnvironmentObject/PineTree/PinTreeRootA.fbx", PreTransformMatrix))))
 	//	return E_FAIL;
@@ -422,6 +423,11 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 	/* For.Prototype_Component_Shader_VtxMeshID */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxMeshID"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxMeshID.hlsl"), VTXMESH::Elements, VTXMESH::iNumElements))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Shader_VtxMeshTreeID */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxMeshTreeID"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxMeshTreeID.hlsl"), VTXMESH::Elements, VTXMESH::iNumElements))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Shader_VtxAnimMesh */
@@ -473,6 +479,12 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Weapon"),
 		CWeapon::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+	/* For.Prototype_GameObject_Item */
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Item"),
+		CItem::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 

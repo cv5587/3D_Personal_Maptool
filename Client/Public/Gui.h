@@ -32,6 +32,7 @@ private:
 	_bool		m_bInputObject = { false };
 	_bool		m_bMakeObject = { false };
 	_bool		m_bMakeItem = { false };
+	_bool		m_bMakeMonster = { false };
 	_tchar		m_szRealFullPath[MAX_PATH] = TEXT("");
 	_tchar		m_szLayerPath[MAX_PATH] = TEXT("");
 	wstring		m_ComponentTag;

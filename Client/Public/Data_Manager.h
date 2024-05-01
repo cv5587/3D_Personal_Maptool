@@ -19,8 +19,7 @@ private:
 	_uint m_CurrentLevel = { (_uint)LEVEL_END };
 public:
 	HRESULT Load_Data(_uint iLevelIndex);
-private:
-	void* Check_Model(void* pArg);
+
 public:
 	HRESULT Initialize();
 	static CData_Manager* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CTerrainManager* pTerrainManager);

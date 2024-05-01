@@ -1,5 +1,6 @@
 #include "..\Public\Layer.h"
 #include "GameObject.h"
+#include "Item.h"
 
 CLayer::CLayer()
 {
@@ -126,6 +127,22 @@ HRESULT CLayer::Save_Data(ofstream* fout)
 
 		for (auto& pGameObject : m_GameObjects)
 			pGameObject->Save_Data(fout);
+	}
+	else
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLayer::Save_ItemData(ofstream* fout)
+{
+	if (!fout->fail())
+	{
+		_uint iObjectSize = m_GameObjects.size();
+		fout->write((char*)&iObjectSize, sizeof(_uint));
+
+		for (auto& pGameObject : m_GameObjects)
+			dynamic_cast<CItem*>(pGameObject)->Save_Data(fout);
 	}
 	else
 		return E_FAIL;

@@ -29,6 +29,7 @@ public:
 
 public:
 	HRESULT Save_Data(ofstream* fout);	
+	HRESULT Save_ItemData(ofstream* fout);	
 private:
 	list<class CGameObject* >		m_GameObjects;
 	vector< const _float4x4*>		m_ObPosition;

@@ -1,5 +1,6 @@
 #include "..\Public\Object_Manager.h"
 #include "GameObject.h"
+#include "Item.h"
 #include "Layer.h"
 
 CObject_Manager::CObject_Manager()
@@ -49,6 +50,8 @@ HRESULT CObject_Manager::Add_CloneObject(_uint iLevelIndex, const wstring& strLa
 		return E_FAIL;
 
 	CLayer* pLayer = Find_Layer(iLevelIndex, strLayerTag);
+
+
 
 
 
@@ -270,13 +273,21 @@ HRESULT CObject_Manager::Save_Level(_uint iLevelIndex)
 			wsprintf(Layer, pLayer.first.c_str());
 			wstring wLayer(Layer);
 
-			//카메라랑 플레이어도 가져 가게 조절
-			if (TEXT("Layer_Camera") != wLayer)
+			// 플레이어도 가져 가게 조절
+			//아이템만 다르게 가져 갈거임
+			if (TEXT("Layer_Item") == wLayer)
+			{
+				fout.write((char*)Layer, sizeof(_tchar) * MAX_PATH);
+				if (FAILED(pLayer.second->Save_ItemData(&fout)))
+					return E_FAIL;
+			}
+			else if (TEXT("Layer_Camera") != wLayer)
 			{
 				fout.write((char*)Layer, sizeof(_tchar) * MAX_PATH);
 				if (FAILED(pLayer.second->Save_Data(&fout)))	
 					return E_FAIL;
 			}
+			
 		}
 	}
 

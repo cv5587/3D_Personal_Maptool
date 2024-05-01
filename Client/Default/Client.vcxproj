@@ -183,6 +183,7 @@
     <ClInclude Include="..\Public\Data_Manager.h" />
     <ClInclude Include="..\Public\EnvironmentObject.h" />
     <ClInclude Include="..\Public\FreeCamera.h" />
+    <ClInclude Include="..\Public\GEARItem.h" />
     <ClInclude Include="..\Public\Gui.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
@@ -201,7 +202,6 @@
     <ClInclude Include="..\Public\Imgui\imstb_rectpack.h" />
     <ClInclude Include="..\Public\Imgui\imstb_textedit.h" />
     <ClInclude Include="..\Public\Imgui\imstb_truetype.h" />
-    <ClInclude Include="..\Public\Item.h" />
     <ClInclude Include="..\Public\LandObject.h" />
     <ClInclude Include="..\Public\Level_GamePlay.h" />
     <ClInclude Include="..\Public\Level_Loading.h" />
@@ -237,6 +237,7 @@
     <ClCompile Include="..\Private\Data_Manager.cpp" />
     <ClCompile Include="..\Private\EnvironmentObject.cpp" />
     <ClCompile Include="..\Private\FreeCamera.cpp" />
+    <ClCompile Include="..\Private\GEARItem.cpp" />
     <ClCompile Include="..\Private\Gui.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
@@ -248,7 +249,6 @@
     <ClCompile Include="..\Private\Imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="..\Private\Imgui\imgui_tables.cpp" />
     <ClCompile Include="..\Private\Imgui\imgui_widgets.cpp" />
-    <ClCompile Include="..\Private\Item.cpp" />
     <ClCompile Include="..\Private\LandObject.cpp" />
     <ClCompile Include="..\Private\Level_GamePlay.cpp" />
     <ClCompile Include="..\Private\Level_Loading.cpp" />

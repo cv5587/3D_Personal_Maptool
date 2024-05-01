@@ -49,7 +49,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const wstring& strLayerTag)
 	CameraDesc.fFar = 3000.f;
 	CameraDesc.fSpeedPerSec = 50.f;
 	CameraDesc.fRotationPerSec = XMConvertToRadians(90.f);
-	XMStoreFloat4x4(&CameraDesc.vPrePosition, XMMatrixIdentity());
+	XMStoreFloat4x4(&CameraDesc.vPrePosition, XMMatrixTranslation(0.f, 100.f, 0.f));
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_FreeCamera"), &CameraDesc)))
 		return E_FAIL;
 

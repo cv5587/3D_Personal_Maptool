@@ -7,30 +7,29 @@ CInput_Device::CInput_Device(void)
 _byte CInput_Device::Get_DIKeyState_Once(_ubyte byKeyID)
 {
 
-    if (!key_down && KEYDOWN(m_byKeyState, byKeyID))
+	if (!m_bKeyDown && KEYDOWN(m_byKeyState, byKeyID))
 	{
-        key_down = true; 
+		m_bKeyDown = true;
 		return Get_DIKeyState(byKeyID);
-    } 
-	else if (key_down && !KEYDOWN(m_byKeyState, byKeyID))
+	}
+	else if (m_bKeyDown && !KEYDOWN(m_byKeyState, byKeyID))
 	{
-        key_down = false; 
+		m_bKeyDown = false;
 		return 0x00;
-    } 
-
+	}
 	return 0x00;
 }
 
 _byte CInput_Device::Get_DIMouseState_Once(MOUSEKEYSTATE eMouse)
 {
-	if (!mouse_down && KEYDOWN(m_tMouseState.rgbButtons, eMouse))
+	if (!m_bMouseDown[eMouse] && MOUSEDOWN(m_tMouseState.rgbButtons, eMouse))
 	{
-		mouse_down = true;
+		m_bMouseDown[eMouse] = true;
 		return Get_DIMouseState(eMouse);
 	}
-	else if (mouse_down && !KEYDOWN(m_tMouseState.rgbButtons, eMouse))
+	else if (m_bMouseDown[eMouse] && !MOUSEDOWN(m_tMouseState.rgbButtons, eMouse))
 	{
-		mouse_down = false;
+		m_bMouseDown[eMouse] = false;
 		return 0x00;
 	}
 

@@ -267,7 +267,7 @@
     <ClInclude Include="..\Public\State_UnEquip.h">
       <Filter>94. StateMachine\State\Player\State_UnEquip</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Item.h">
+    <ClInclude Include="..\Public\GEARItem.h">
       <Filter>02.GameObjects\04.Item</Filter>
     </ClInclude>
   </ItemGroup>
@@ -401,7 +401,7 @@
     <ClCompile Include="..\Private\State_UnEquip.cpp">
       <Filter>94. StateMachine\State\Player\State_UnEquip</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Item.cpp">
+    <ClCompile Include="..\Private\GEARItem.cpp">
       <Filter>02.GameObjects\04.Item</Filter>
     </ClCompile>
   </ItemGroup>

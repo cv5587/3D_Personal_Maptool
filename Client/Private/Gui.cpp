@@ -9,7 +9,7 @@
 #include "LandObject.h"
 #include "Component_Manager.h"
 #include "LandObject.h"
-#include "Item.h"
+#include "GEARItem.h"
 
 static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::TRANSLATE);
 bool useWindow = false;
@@ -114,24 +114,31 @@ HRESULT CGui::Update_UI(_float fTimeDelta)
 			ImGui::ListBox("List", &object_current, objects, IM_ARRAYSIZE(objects));
 			
 		ImGui::NewLine();
+
+		if(m_bMakeObject)
+		{
+			char szLayername[MAX_PATH] = "Layer_";
+			strcat_s(szLayername, szObject);
+			ZeroMemory(m_szLayerPath, sizeof(_tchar) * MAX_PATH);
+			MultiByteToWideChar(CP_ACP, 0, szLayername, strlen(szLayername), m_szLayerPath, MAX_PATH);
+
+			char szObjectname[MAX_PATH] = "Prototype_GameObject_";
+			strcat_s(szObjectname, szObject);
+			ZeroMemory(m_szRealFullPath, sizeof(_tchar) * MAX_PATH);
+			MultiByteToWideChar(CP_ACP, 0, szObjectname, strlen(szObjectname), m_szRealFullPath, MAX_PATH);
+
+			char szComponentname[MAX_PATH] = "Prototype_Component_Model_";
+			strcat_s(szComponentname, objects[object_current]);
+			wstring wstr(szComponentname, szComponentname + strlen(szComponentname));
+			m_ComponentTag = wstr;
+		}
+		
+
 			if (ImGui::Button("ObjectCreate") )
 			{
-				char szLayername[MAX_PATH] = "Layer_";
-				strcat_s(szLayername, szObject);
-				ZeroMemory(m_szLayerPath, sizeof(_tchar) * MAX_PATH);
-				MultiByteToWideChar(CP_ACP, 0, szLayername, strlen(szLayername), m_szLayerPath, MAX_PATH);
-
-				char szObjectname[MAX_PATH] = "Prototype_GameObject_";
-				strcat_s(szObjectname, szObject);
-				ZeroMemory(m_szRealFullPath, sizeof(_tchar) * MAX_PATH);
-				MultiByteToWideChar(CP_ACP, 0, szObjectname, strlen(szObjectname), m_szRealFullPath, MAX_PATH);
-				
-				char szComponentname[MAX_PATH] = "Prototype_Component_Model_";
-				strcat_s(szComponentname, objects[object_current]);	
-				wstring wstr(szComponentname, szComponentname + strlen(szComponentname));
-				m_ComponentTag = wstr;
-
 				m_bMakeObject = true;
+				m_bMakeItem = false;
+				m_bMakeMonster = false;
 			}
 
 			if (ImGui::Button("ObjectBinary"))
@@ -163,7 +170,7 @@ HRESULT CGui::Update_UI(_float fTimeDelta)
 			ImGui::ListBox("List", &object_current, objects, IM_ARRAYSIZE(objects));
 
 			ImGui::NewLine();
-			if (ImGui::Button("ObjectCreate"))
+			if (m_bMakeItem)
 			{
 				char szLayername[MAX_PATH] = "Layer_";
 				strcat_s(szLayername, szItem);
@@ -171,6 +178,9 @@ HRESULT CGui::Update_UI(_float fTimeDelta)
 				MultiByteToWideChar(CP_ACP, 0, szLayername, strlen(szLayername), m_szLayerPath, MAX_PATH);
 
 				char szobjectname[MAX_PATH] = "Prototype_GameObject_";
+				char szobpoint[MAX_PATH] = "GEAR";
+
+				strcat_s(szobjectname, szobpoint);
 				strcat_s(szobjectname, szItem);
 				ZeroMemory(m_szRealFullPath, sizeof(_tchar) * MAX_PATH);
 				MultiByteToWideChar(CP_ACP, 0, szobjectname, strlen(szobjectname), m_szRealFullPath, MAX_PATH);
@@ -182,11 +192,17 @@ HRESULT CGui::Update_UI(_float fTimeDelta)
 
 				char szItemName[MAX_PATH] = "";
 				strcpy_s(szItemName, objects[object_current]);
-				wstring itemname(szItemName, szItemName + strlen(szItemName));	
+				wstring itemname(szItemName, szItemName + strlen(szItemName));
 
 				m_ItemName = itemname;
+			}
+		
 
+			if (ImGui::Button("ObjectCreate"))
+			{
 				m_bMakeItem = true;
+				m_bMakeObject = false;
+				m_bMakeMonster = false;
 			}
 
 			if (ImGui::Button("ObjectBinary"))
@@ -219,24 +235,30 @@ HRESULT CGui::Update_UI(_float fTimeDelta)
 
 
 			ImGui::NewLine();
-			if (ImGui::Button("MonsterCreate"))
+			if (m_bMakeMonster)
 			{
 				char szLayername[MAX_PATH] = "Layer_";
 				strcat_s(szLayername, szMoster);
-				ZeroMemory(m_szLayerPath, sizeof(_tchar) * MAX_PATH);
+				ZeroMemory(m_szLayerPath, sizeof(_tchar)* MAX_PATH);
 				MultiByteToWideChar(CP_ACP, 0, szLayername, strlen(szLayername), m_szLayerPath, MAX_PATH);
 
 				char szMonstername[MAX_PATH] = "Prototype_GameObject_";
 				strcat_s(szMonstername, szMoster);
-				ZeroMemory(m_szRealFullPath, sizeof(_tchar) * MAX_PATH);
+				ZeroMemory(m_szRealFullPath, sizeof(_tchar)* MAX_PATH);
 				MultiByteToWideChar(CP_ACP, 0, szMonstername, strlen(szMonstername), m_szRealFullPath, MAX_PATH);
 
 				char szComponentname[MAX_PATH] = "Prototype_Component_Model_";
 				strcat_s(szComponentname, Monsters[Monster_current]);
 				wstring wstr(szComponentname, szComponentname + strlen(szComponentname));
 				m_ComponentTag = wstr;
+			}
+			
 
-				m_bMakeObject = true;
+			if (ImGui::Button("MonsterCreate"))
+			{
+				m_bMakeMonster = true;
+				m_bMakeItem = false;
+				m_bMakeObject = false;
 			}
 
 			if (ImGui::Button("ObjectBinary"))
@@ -257,6 +279,22 @@ HRESULT CGui::Update_UI(_float fTimeDelta)
 		ImGui::NewLine();
 
 		ImGui::TreePop();
+	}
+
+	if (m_bMakeObject)
+		ImGui::SeparatorText("Make ObjCreate Mode");
+	else if(m_bMakeItem)
+		ImGui::SeparatorText("Make ItemCreate Mode ");
+	else if(m_bMakeMonster)
+		ImGui::SeparatorText("Make MonsterCreate Mode ");
+	else 
+		ImGui::SeparatorText("");
+
+	if (ImGui::Button("EditMode"))
+	{
+		m_bMakeMonster = false;
+		m_bMakeItem = false;
+		m_bMakeObject = false;
 	}
 
 	if (ImGui::Button("Delete_Object"))
@@ -427,7 +465,7 @@ HRESULT CGui::Update_UI(_float fTimeDelta)
 		m_bInputObject = !m_bInputObject;
 	}
 	//아이템 생성
-	if (m_bMakeItem && (m_pGameInstance->Get_DIMouseState(DIM_LB) & 0x80) && (m_pGameInstance->Get_DIKeyState(DIK_LCONTROL) & 0x80))
+	if (m_bMakeItem && (m_pGameInstance->Get_DIMouseState_Once(DIM_LB) & 0x80) && (m_pGameInstance->Get_DIKeyState(DIK_LCONTROL) & 0x80))
 	{
 		CItem::ITEM_DESC ItemDesc{};	
 
@@ -451,13 +489,13 @@ HRESULT CGui::Update_UI(_float fTimeDelta)
 			if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, m_szLayerPath, m_szRealFullPath, pItemDesc)))
 				return E_FAIL;
 
-			m_bMakeObject = false;
+			//m_bMakeItem = false;
 		}
 	}
 
 
 	//자연물 생성,몬스터 생성
-	if (m_bMakeObject &&(m_pGameInstance->Get_DIMouseState(DIM_LB) & 0x80)&&(m_pGameInstance->Get_DIKeyState(DIK_LCONTROL) & 0x80))	
+	if (m_bMakeObject &&(m_pGameInstance->Get_DIMouseState_Once(DIM_LB) & 0x80)&&(m_pGameInstance->Get_DIKeyState(DIK_LCONTROL) & 0x80))
 	{
 		
 		CLandObject::LANDOBJ_DESC		LandObjDesc{};
@@ -478,11 +516,35 @@ HRESULT CGui::Update_UI(_float fTimeDelta)
 				if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, m_szLayerPath, m_szRealFullPath, &LandObjDesc) ))
 					return E_FAIL;
 		
-				m_bMakeObject = false;
+				//m_bMakeObject = false;
 			}
 	}
 	
-	if ( (m_pGameInstance->Get_DIKeyState(DIK_LALT))&&(m_pGameInstance->Get_DIMouseState(DIM_LB)) )
+	if (m_bMakeMonster && (m_pGameInstance->Get_DIMouseState_Once(DIM_LB) & 0x80) && (m_pGameInstance->Get_DIKeyState(DIK_LCONTROL) & 0x80))
+	{
+
+		CLandObject::LANDOBJ_DESC		LandObjDesc{};
+
+		LandObjDesc.pTerrainTransform = dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), TEXT("Com_Transform")));
+		LandObjDesc.pTerrainVIBuffer = dynamic_cast<CVIBuffer*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), TEXT("Com_VIBuffer")));
+
+		_vector Pick_Point = Picking_HitScreen();
+
+		LandObjDesc.ProtoTypeTag = m_szRealFullPath;
+		LandObjDesc.ModelTag = m_ComponentTag;
+
+		if (0 < Pick_Point.m128_f32[0])
+		{
+			_matrix PrePosition = XMMatrixIdentity();
+			PrePosition.r[3] = Pick_Point;
+			XMStoreFloat4x4(&LandObjDesc.vPrePosition, PrePosition);
+			if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, m_szLayerPath, m_szRealFullPath, &LandObjDesc)))
+				return E_FAIL;
+
+			//m_bMakeObject = false;
+		}
+	}
+	if ((m_pGameInstance->Get_DIMouseState_Once(DIM_LB))&& (m_pGameInstance->Get_DIKeyState(DIK_LALT)) )
 	{
 		m_pPickObject=m_pGameInstance->FindID_CloneObject(LEVEL_GAMEPLAY,  m_pGameInstance->Picking_IDScreen());
 
@@ -655,11 +717,14 @@ void* CGui::Check_Model(void* pArg)
 	wstring ModelTag = static_cast<CGameObject::GAMEOBJECT_DESC*>(pArg)->ModelTag;
 	if (ModelTag == TEXT("Prototype_Component_Model_Stone"))
 	{
-		CItem::ITEM_DESC* itemDesc=static_cast<CItem::ITEM_DESC*>(pArg);	
+		CGEARItem::GEARITEM_DESC* itemDesc = static_cast<CGEARItem::GEARITEM_DESC*>(pArg);
 
 		itemDesc->ItemName = TEXT("Stone");
-		itemDesc->ItemType = (_uint)CItem::ITEMTYPE::ITEM_STUFF;
+		itemDesc->ItemType[0] = (_uint)CItem::ITEMTYPE::ITEM_STUFF;
+		itemDesc->ItemType[1] = (_uint)CItem::ITEMTYPE::ITEM_END;
 		itemDesc->iQuantity = 1;
+		itemDesc->fSpeedPerSec = 2.f;
+		itemDesc->fRotationPerSec = XMConvertToRadians(120.f);
 		return itemDesc;
 	}
 

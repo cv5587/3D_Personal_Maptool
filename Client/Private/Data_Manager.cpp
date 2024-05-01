@@ -5,7 +5,7 @@
 #include "LandObject.h"	
 #include "FreeCamera.h"
 #include "Level_Loading.h"
-#include "Item.h"
+#include "GEARItem.h"
 CData_Manager::CData_Manager(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,CTerrainManager* pTerrainManager)
 	:m_pGameInstance{CGameInstance::GetInstance()}
 	,m_pTerrainMgr{pTerrainManager}
@@ -114,18 +114,21 @@ HRESULT CData_Manager::Load_Data(_uint iLevelIndex)
 				else if (TEXT("Layer_Item") == wLayer)
 				{
 					CItem::ITEM_DESC ItemDesc{};
-
+					
 					ItemDesc.ProtoTypeTag = strPrototypeTag;
 					ItemDesc.ModelTag = strModelTag;
 					ItemDesc.vPrePosition = fWorldPosition;
 
-					CItem::ITEM_DESC* pItemDesc{};
-					pItemDesc = static_cast<CItem::ITEM_DESC*>(Check_Model(&ItemDesc));
+					_tchar ItemName[MAX_PATH] = TEXT("");
+					fin.read((char*)ItemName, sizeof(_tchar) * MAX_PATH);
+					wstring wItemName(ItemName);
 
-					if (nullptr == pItemDesc)
-						return E_FAIL;
+					ItemDesc.ItemName = wItemName;
+					fin.read((char*)&ItemDesc.iQuantity, sizeof(_uint));
+					fin.read((char*)&ItemDesc.ItemType[0], sizeof(_uint));
+					fin.read((char*)&ItemDesc.ItemType[1], sizeof(_uint));
 
-					if (FAILED(m_pGameInstance->Add_CloneObject(iReadLevel, wLayer, strPrototypeTag, pItemDesc)))
+					if (FAILED(m_pGameInstance->Add_CloneObject(iReadLevel, wLayer, strPrototypeTag, &ItemDesc)))
 						return E_FAIL;
 
 
@@ -166,7 +169,7 @@ HRESULT CData_Manager::Load_Data(_uint iLevelIndex)
 	XMStoreFloat4x4(&CameraDesc.vPrePosition, XMMatrixIdentity());
 	CameraDesc.ProtoTypeTag = TEXT("Prototype_GameObject_FreeCamera");
 	CameraDesc.ModelTag = TEXT("");
-
+	XMStoreFloat4x4(&CameraDesc.vPrePosition, XMMatrixTranslation(0.f, 100.f, 0.f));
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Camera"), TEXT("Prototype_GameObject_FreeCamera"), &CameraDesc)))
 		return E_FAIL;
 
@@ -174,23 +177,6 @@ HRESULT CData_Manager::Load_Data(_uint iLevelIndex)
 	return S_OK;
 }
 
-void* CData_Manager::Check_Model(void* pArg)
-{
-
-	wstring ModelTag = static_cast<CGameObject::GAMEOBJECT_DESC*>(pArg)->ModelTag;
-	if (ModelTag == TEXT("Prototype_Component_Model_Stone"))
-	{
-		CItem::ITEM_DESC* itemDesc = static_cast<CItem::ITEM_DESC*>(pArg);
-
-		itemDesc->ItemName = TEXT("Stone");
-		itemDesc->ItemType = (_uint)CItem::ITEMTYPE::ITEM_STUFF;
-		itemDesc->iQuantity = 1;
-		return itemDesc;
-	}
-
-
-	return nullptr;
-}
 
 
 HRESULT CData_Manager::Initialize()

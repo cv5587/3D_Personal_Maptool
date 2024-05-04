@@ -9,7 +9,7 @@
 #include "LandObject.h"
 #include "Component_Manager.h"
 #include "LandObject.h"
-#include "GEARItem.h"
+#include "GEARStone.h"
 
 static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::TRANSLATE);
 bool useWindow = false;
@@ -181,7 +181,7 @@ HRESULT CGui::Update_UI(_float fTimeDelta)
 				char szobpoint[MAX_PATH] = "GEAR";
 
 				strcat_s(szobjectname, szobpoint);
-				strcat_s(szobjectname, szItem);
+				strcat_s(szobjectname, objects[object_current]);
 				ZeroMemory(m_szRealFullPath, sizeof(_tchar) * MAX_PATH);
 				MultiByteToWideChar(CP_ACP, 0, szobjectname, strlen(szobjectname), m_szRealFullPath, MAX_PATH);
 
@@ -717,7 +717,7 @@ void* CGui::Check_Model(void* pArg)
 	wstring ModelTag = static_cast<CGameObject::GAMEOBJECT_DESC*>(pArg)->ModelTag;
 	if (ModelTag == TEXT("Prototype_Component_Model_Stone"))
 	{
-		CGEARItem::GEARITEM_DESC* itemDesc = static_cast<CGEARItem::GEARITEM_DESC*>(pArg);
+		CGEARStone::GEARITEM_DESC* itemDesc = static_cast<CGEARStone::GEARITEM_DESC*>(pArg);
 
 		itemDesc->ItemName = TEXT("Stone");
 		itemDesc->ItemType[0] = (_uint)CItem::ITEMTYPE::ITEM_STUFF;

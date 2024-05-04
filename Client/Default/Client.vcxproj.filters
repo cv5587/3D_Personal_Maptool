@@ -121,6 +121,9 @@
     <Filter Include="02.GameObjects\04.Item">
       <UniqueIdentifier>{9b8f2f93-ca3b-470a-9c54-d959d50a7e8a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\04.Item\Stone">
+      <UniqueIdentifier>{27f706d5-da75-48f1-bbda-1492b84b44ea}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -267,8 +270,8 @@
     <ClInclude Include="..\Public\State_UnEquip.h">
       <Filter>94. StateMachine\State\Player\State_UnEquip</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\GEARItem.h">
-      <Filter>02.GameObjects\04.Item</Filter>
+    <ClInclude Include="..\Public\GEARStone.h">
+      <Filter>02.GameObjects\04.Item\Stone</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -401,8 +404,8 @@
     <ClCompile Include="..\Private\State_UnEquip.cpp">
       <Filter>94. StateMachine\State\Player\State_UnEquip</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\GEARItem.cpp">
-      <Filter>02.GameObjects\04.Item</Filter>
+    <ClCompile Include="..\Private\GEARStone.cpp">
+      <Filter>02.GameObjects\04.Item\Stone</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

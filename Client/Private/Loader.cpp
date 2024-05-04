@@ -9,7 +9,7 @@
 #include "Player.h"
 #include "Body_Player.h"
 #include "Weapon.h"
-#include "GEARItem.h"
+#include "GEARStone.h"
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice{ pDevice }
@@ -480,9 +480,9 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CWeapon::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	/* For.Prototype_GameObject_Item */
-	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_GEARItem"),
-		CGEARItem::Create(m_pDevice, m_pContext))))
+	/* For.Prototype_GameObject_GEARStone */
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_GEARStone"),
+		CGEARStone::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 

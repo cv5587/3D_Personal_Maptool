@@ -1,22 +1,23 @@
-#include "GEARItem.h"
+#include "GEARStone.h"
 
 #include "GameInstance.h"
-CGEARItem::CGEARItem(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+
+CGEARStone::CGEARStone(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CItem{ pDevice,pContext }
 {
 }
 
-CGEARItem::CGEARItem(const CGEARItem& rhs)
+CGEARStone::CGEARStone(const CGEARStone& rhs)
 	:CItem{ rhs }
 {
 }
 
-HRESULT CGEARItem::Initialize_Prototype()
+HRESULT CGEARStone::Initialize_Prototype()
 {
 	return S_OK;
 }
 
-HRESULT CGEARItem::Initialize(void* pArg)
+HRESULT CGEARStone::Initialize(void* pArg)
 {
 
 	GAMEOBJECT_DESC* pDesc = (GAMEOBJECT_DESC*)pArg;
@@ -37,20 +38,20 @@ HRESULT CGEARItem::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CGEARItem::Priority_Tick(_float fTimeDelta)
+void CGEARStone::Priority_Tick(_float fTimeDelta)
 {
 }
 
-void CGEARItem::Tick(_float fTimeDelta)
+void CGEARStone::Tick(_float fTimeDelta)
 {
 }
 
-void CGEARItem::Late_Tick(_float fTimeDelta)
+void CGEARStone::Late_Tick(_float fTimeDelta)
 {
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
 }
 
-HRESULT CGEARItem::Render()
+HRESULT CGEARStone::Render()
 {
 
 	if (FAILED(Bind_ShaderResources()))
@@ -74,7 +75,7 @@ HRESULT CGEARItem::Render()
 	return S_OK;
 }
 
-HRESULT CGEARItem::Add_Components()
+HRESULT CGEARStone::Add_Components()
 {
 	/* For.Com_Model */
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, m_ModelTag,
@@ -90,7 +91,7 @@ HRESULT CGEARItem::Add_Components()
 	return S_OK;
 }
 
-HRESULT CGEARItem::Bind_ShaderResources()
+HRESULT CGEARStone::Bind_ShaderResources()
 {
 	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
 		return E_FAIL;
@@ -104,9 +105,9 @@ HRESULT CGEARItem::Bind_ShaderResources()
 	return S_OK;
 }
 
-CGEARItem* CGEARItem::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CGEARStone* CGEARStone::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CGEARItem* pInstance = new CGEARItem(pDevice, pContext);
+	CGEARStone* pInstance = new CGEARStone(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
@@ -117,9 +118,9 @@ CGEARItem* CGEARItem::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContex
 	return pInstance;
 }
 
-CGameObject* CGEARItem::Clone(void* pArg)
+CGameObject* CGEARStone::Clone(void* pArg)
 {
-	CGEARItem* pInstance = new CGEARItem(*this);
+	CGEARStone* pInstance = new CGEARStone(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
@@ -130,7 +131,7 @@ CGameObject* CGEARItem::Clone(void* pArg)
 	return pInstance;
 }
 
-void CGEARItem::Free()
+void CGEARStone::Free()
 {
 	__super::Free();
 

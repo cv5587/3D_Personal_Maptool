@@ -5,7 +5,7 @@
 #include "LandObject.h"	
 #include "FreeCamera.h"
 #include "Level_Loading.h"
-#include "GEARItem.h"
+#include "GEARStone.h"
 CData_Manager::CData_Manager(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,CTerrainManager* pTerrainManager)
 	:m_pGameInstance{CGameInstance::GetInstance()}
 	,m_pTerrainMgr{pTerrainManager}
